@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.0.5';
+  var VERSION = '1.0.7';
 
   var CFG = {
     path: '/c/welcome',
@@ -244,28 +244,29 @@
     '--sa:#F2EADF;--s2:#F5EDE1;--ha:#E6E3DC;background:#fff;border:1px solid var(--ha);',
     'color:var(--ik);font:17px/1.55 "EB Garamond",Georgia,serif;margin:0 0 20px}',
     '#cst-home *{box-sizing:border-box}',
-    '#cst-home section{padding:38px 46px;border-top:1px solid var(--ha)}',
-    '#cst-home .cst-mast{border-top:0;padding:46px 46px 38px}',
+    '#cst-home section{padding:48px 46px;border-top:1px solid var(--ha)}',
+    '#cst-home .cst-mast{border-top:0;padding:76px 46px 60px}',
     '#cst-home .ey{font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.16em;',
     'text-transform:uppercase;color:var(--mu);margin:0 0 14px}',
-    '#cst-home .ey.big{font-size:19px;letter-spacing:.18em;margin-bottom:20px}',
-    '#cst-home h1{font:600 58px/1.05 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0}',
+    '#cst-home .ey.big{font-size:19px;letter-spacing:.18em;margin-bottom:38px}',
+    '#cst-home h1{font:600 74px/1.03 "Cormorant Garamond",Georgia,serif;color:var(--nv);',
+    'letter-spacing:-.012em;margin:0}',
     '#cst-home h3{font:600 21px/1.2 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 4px}',
-    '#cst-home .sh{font:500 32px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 18px}',
+    '#cst-home .sh{font:500 32px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 24px}',
     '#cst-home .sh b{font-weight:600}',
-    '#cst-home .bar{width:72px;height:4px;background:var(--sl);margin:18px 0 30px}',
+    '#cst-home .bar{width:86px;height:4px;background:var(--sl);margin:42px 0 48px}',
     '#cst-home a.go{display:inline-block;font:600 14px Inter,system-ui,sans-serif;',
     'color:var(--gd)!important;text-decoration:none}',
     '#cst-home .btn{display:inline-block;padding:9px 14px;border:1px solid var(--sl);',
     'color:var(--nv)!important;font:600 13px Inter,system-ui,sans-serif;text-decoration:none;white-space:nowrap}',
     '#cst-home .cst-soon{color:var(--mu);font:600 14px Inter,system-ui,sans-serif}',
     /* month */
-    '#cst-home .month{background:var(--s2);padding:26px 30px 22px;border-left:3px solid var(--gd)}',
-    '#cst-home .mlab{margin:0 0 6px;font:600 11px Inter,system-ui,sans-serif;letter-spacing:.16em;',
+    '#cst-home .month{background:var(--s2);padding:34px 36px 30px;border-left:3px solid var(--gd)}',
+    '#cst-home .mlab{margin:0 0 12px;font:600 11px Inter,system-ui,sans-serif;letter-spacing:.16em;',
     'text-transform:uppercase;color:var(--gd)}',
-    '#cst-home .month h2{font:600 32px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 10px}',
+    '#cst-home .month h2{font:600 32px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 16px}',
     '#cst-home .tp{margin:0;font-size:18px;line-height:1.6;max-width:640px}',
-    '#cst-home .nextm{margin:16px 0 0;font:600 11px Inter,system-ui,sans-serif;letter-spacing:.16em;',
+    '#cst-home .nextm{margin:22px 0 0;font:600 11px Inter,system-ui,sans-serif;letter-spacing:.16em;',
     'text-transform:uppercase;color:var(--mu)}',
     /* gatherings */
     '#cst-home .ev{display:flex;gap:20px;align-items:center;padding:14px 0;border-top:1px solid var(--ha)}',
@@ -316,7 +317,7 @@
     '#cst-home .msg ul{margin:8px 0 0;padding-left:18px;font-size:16px}',
     '#cst-home .msg li{margin:4px 0}',
     /* first steps */
-    '#cst-home .lead{font-size:17px;line-height:1.6;color:var(--ik);margin:0 0 22px;max-width:780px}',
+    '#cst-home .lead{font-size:17px;line-height:1.6;color:var(--ik);margin:0 0 30px;max-width:780px}',
     '#cst-home .stepn{display:block;font:500 26px/1 "Cormorant Garamond",Georgia,serif;',
     'color:var(--sl);margin:0 0 6px}',
     /* where to go */
@@ -342,7 +343,7 @@
     /* phone */
     '@media (max-width:767px){',
     '#cst-home section,#cst-home .cst-mast,#cst-home .foot{padding-left:22px;padding-right:22px}',
-    '#cst-home h1{font-size:40px}',
+    '#cst-home h1{font-size:42px}',
     '#cst-home .sh{font-size:26px}',
     '#cst-home .arts,#cst-home .ppl,#cst-home .help,#cst-home .tq,#cst-home .msg{grid-template-columns:1fr}',
     '#cst-home .hp+.hp{border-left:0;border-top:1px solid var(--ha)}',
@@ -362,7 +363,7 @@
     return '' +
       '<section class="cst-mast">' +
         '<p class="ey big">Constellations Member Portal</p>' +
-        '<h1>Welcome. We’re glad you’re here.</h1>' +
+        '<h1>Welcome.<br>We’re glad you’re here.</h1>' +
         '<div class="bar"></div>' +
         '<div class="month">' +
           '<p class="mlab">' + esc(m.label) + '</p>' +
@@ -381,20 +382,20 @@
       '<section>' +
         '<h2 class="sh">First <b>steps</b></h2>' +
         '<p class="lead">These three take a few minutes each, and they shape the rest of ' +
-          'your time here \u2014 how people find you, what reaches you, and where to turn ' +
-          'when you\u2019re not sure.</p>' +
+          'your time here — how people find you, what reaches you, and where to turn ' +
+          'when you’re not sure.</p>' +
         '<div class="help">' +
           '<div class="hp"><span class="stepn">1</span><h3>Complete your profile</h3>' +
             'Share a little about yourself so other members can get to know you.' +
             '<span class="use">Your photograph</span>' +
             'Use the one our team emailed you, with the cream background. It keeps every ' +
             'profile in the portal looking like part of the same place.' +
-            '<a class="go" href="' + esc(u.profile) + '">Complete profile \u2192</a></div>' +
+            '<a class="go" href="' + esc(u.profile) + '">Complete profile →</a></div>' +
           '<div class="hp"><span class="stepn">2</span><h3>Customize your notifications</h3>' +
             'You decide what reaches you, and how often.' +
             '<span class="use">Keeps you posted on</span>' +
             'Connection requests, upcoming gatherings, new articles, and replies to your posts.' +
-            '<a class="go" href="' + esc(u.notifications) + '">Customize notifications \u2192</a></div>' +
+            '<a class="go" href="' + esc(u.notifications) + '">Customize notifications →</a></div>' +
           '<div class="hp"><span class="stepn">3</span><h3>Meet Nova</h3>' +
             'The Constellations assistant, available at any hour.' +
             '<span class="use">Good for</span>' +
@@ -402,7 +403,7 @@
             'before you say it.' +
             '<span class="not">Nova is not a person. For a concern about someone, use ' +
             'Report a Concern.</span>' +
-            '<a class="go" href="' + esc(u.nova) + '">Open Nova \u2192</a></div>' +
+            '<a class="go" href="' + esc(u.nova) + '">Open Nova →</a></div>' +
         '</div>' +
       '</section>';
   }
