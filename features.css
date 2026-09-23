@@ -1,0 +1,73 @@
+/* Constellations member features, loaded from GitHub Pages.
+   A Few Minutes With… (interview). Runs on the Member Story system: the first
+   paragraph "A FEW MINUTES WITH" (no ellipsis; the chip adds it) becomes the label chip, the title is the name.
+   Post pattern: label / photo / optional intro paragraph / then, per question, an h3
+   (no number; the template numbers them) and one or more answer paragraphs. In a
+   two-person interview each answer opens with the speaker's name in bold.
+   Optional closing: a blockquote (member's closing line), then an h2 and one paragraph
+   (e.g. TIM'S QUESTION FOR YOU). */
+@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap");
+
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] [data-nsm="tag"]::after{content:"\2026"}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap{counter-reset:afmw}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>p:empty,
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>p:has(>br:only-child){display:none}
+
+/* Photo: right-hand portrait, framed like the other features */
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>.node-image:first-of-type{float:right;width:250px;max-width:250px;margin:0 10px 36px 48px}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>.node-image:first-of-type img{object-position:50% 28%}
+
+/* Intro from Kate */
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>p:not(h3~p){font-family:"EB Garamond",Georgia,serif;font-size:20px;line-height:1.7;color:#5A5849}
+
+/* Questions */
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h3{counter-increment:afmw;position:relative;display:flow-root;margin:44px 0 0;padding:24px 0 0 48px;background:none;border-top:1px solid #E6E3DC;font-family:Inter,system-ui,sans-serif;font-size:12px;font-weight:600;letter-spacing:.14em;line-height:1.65;text-transform:uppercase;color:#7D6220}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h3::before{content:counter(afmw);position:absolute;left:0;top:18px;font-family:"Cormorant Garamond",Georgia,serif;font-size:30px;font-weight:600;line-height:1;letter-spacing:0;color:#CBBBA0}
+
+/* Answers */
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h3~p{margin:14px 0 0;padding-left:48px;font-family:"EB Garamond",Georgia,serif;font-size:19px;line-height:1.7;color:#22231E}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h3+p{margin-top:12px}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>p>strong:first-child{margin-right:10px;font-family:Inter,system-ui,sans-serif;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#1A2238}
+
+/* Closing: a blockquote is the member's own closing line; an h2 opens the
+   "question for you" section, and the paragraph after it is set as a callout. */
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>blockquote{clear:both;margin:48px 0 0;padding:4px 0 4px 22px;border-left:3px solid #CBBBA0;font-family:"Cormorant Garamond",Georgia,serif;font-size:24px;font-weight:500;line-height:1.35;color:#1A2238}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h2{clear:both;margin:44px 0 0;padding-top:24px;border-top:1px solid #E6E3DC;font-size:12px;letter-spacing:.14em;color:#7D6220}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h2~p{margin:10px 0 0;padding-left:0;font-family:"Cormorant Garamond",Georgia,serif;font-size:25px;font-weight:600;line-height:1.3;color:#1A2238}
+
+@media (max-width:767px){
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap{padding-left:6px;padding-right:6px}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>.node-image:first-of-type{float:none;width:100%;max-width:300px;margin:0 0 30px}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>p:not(h3~p){font-size:18px}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h3{margin-top:36px;padding:20px 0 0 30px;font-size:11.5px}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h3::before{top:15px;font-size:26px}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h3~p{padding-left:0;font-size:17.5px}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>blockquote{font-size:21px}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>h2~p{font-size:22px}
+}
+
+/* Worth Sharing (a recommendation). Runs on the Member Story system.
+   Post pattern: WORTH SHARING / member photo / a paragraph that is only italic text
+   (the type stamp, e.g. *SHOW* or *BOOK*) / detail rows, each a paragraph opening with
+   a bold label (**Title** Dark, **Created by** …, **Recommended by** …, **Why** *"…"*)
+   / a paragraph that is only a link (Check It Out →).
+   Keep each row's value either plain text or entirely italic. */
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>.node-image:first-of-type{width:180px;max-width:180px;margin:0 36px 36px 0}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>.node-image:first-of-type img{object-position:50% 30%}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>em):not(:has(>strong)):not(:has(>a)){display:table;margin:0 0 14px auto;padding:5px 12px 4px;border:1.5px solid #7D6220;transform:rotate(-2deg);font-family:Inter,system-ui,sans-serif;font-size:11px;font-weight:600;letter-spacing:.18em;line-height:1.4;text-transform:uppercase;color:#7D6220}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>em):not(:has(>strong)):not(:has(>a))>em{font-style:normal}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child){display:grid;grid-template-columns:140px 1fr;column-gap:36px;align-items:baseline;margin:0;padding:17px 22px;border:1px solid #CBBBA0;border-top:0;border-bottom:1px solid #E6E3DC;background:linear-gradient(#E6E3DC,#E6E3DC) 180px 0/1px 100% no-repeat;font-family:"EB Garamond",Georgia,serif;font-size:19px;line-height:1.5;color:#22231E}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:not(:has(>strong:first-child))+p:has(>strong:first-child){border-top:1px solid #CBBBA0;font-family:"Cormorant Garamond",Georgia,serif;font-size:26px;font-weight:600;line-height:1.2;color:#1A2238}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child):last-child,
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child):has(+p>a:only-child){border-bottom-color:#CBBBA0}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p>strong:first-child{font-family:Inter,system-ui,sans-serif;font-size:11px;font-weight:600;letter-spacing:.16em;line-height:1.6;text-transform:uppercase;color:#7D6220}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child)>em{color:#1A2238}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>a:only-child){margin:22px 0 0;padding-left:216px;font-family:Inter,system-ui,sans-serif;font-size:16px;font-weight:600}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>a:only-child)>a{color:#7D6220!important;text-decoration:none}
+@media (max-width:767px){
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>.node-image:first-of-type{width:170px;max-width:170px;margin:0 0 26px}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child){grid-template-columns:96px 1fr;column-gap:26px;padding:15px 16px;background-position:125px 0;font-size:17.5px}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:not(:has(>strong:first-child))+p:has(>strong:first-child){font-size:23px}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p>strong:first-child{font-size:10px;letter-spacing:.12em}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>a:only-child){padding-left:0}
+}
