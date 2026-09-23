@@ -65,8 +65,9 @@
 [data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>a:only-child){margin:22px 0 0;padding-left:216px;font-family:Inter,system-ui,sans-serif;font-size:16px;font-weight:600}
 [data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>a:only-child)>a{color:#7D6220!important;text-decoration:none}
 @media (max-width:767px){
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap{padding-left:6px;padding-right:6px}
 [data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>.node-image:first-of-type{width:170px;max-width:170px;margin:0 0 26px}
-[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child){grid-template-columns:96px 1fr;column-gap:26px;padding:15px 16px;background-position:125px 0;font-size:17.5px}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child){grid-template-columns:92px 1fr;column-gap:24px;padding:15px 14px;background-position:118px 0;font-size:17.5px}
 [data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:not(:has(>strong:first-child))+p:has(>strong:first-child){font-size:23px}
 [data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p>strong:first-child{font-size:10px;letter-spacing:.12em}
 [data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>a:only-child){padding-left:0}
