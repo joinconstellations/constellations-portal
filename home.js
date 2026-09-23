@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.0.5';
 
   var CFG = {
     path: '/c/welcome',
@@ -25,6 +25,8 @@
       discussions: '/c/discussion',
       coaching:    '/c/coaching',
       nova:        '/c/nova',
+      profile:       '/account',
+      notifications: '/account/notifications',
       report:      '/c/report',
       /* null renders as muted text instead of a dead link */
       beFeatured:          null,   /* '/c/guides/be-featured' once published  */
@@ -59,15 +61,9 @@
        runs full width. */
     reminders: [],
 
-    featureLink: {
-      'THREE QUESTIONS':    'Read the answers',
-      'PASSION PROJECTS':   'See the work',
-      'GOOD COMPANY':       'Read more',
-      'A FEW MINUTES WITH': 'Read the conversation',
-      'WORTH SHARING':      'See what they shared',
-      'QUOTE':              'Read more',
-      'MEMBER STORY':       'Read their story'
-    }
+    /* Card link text. The card already shows the content, so the link only
+       needs to say where it goes. Name a format here to override it. */
+    featureLink: {}
   };
 
   /* --------------------------------------------------------------- helpers */
@@ -255,8 +251,8 @@
     '#cst-home .ey.big{font-size:19px;letter-spacing:.18em;margin-bottom:20px}',
     '#cst-home h1{font:600 58px/1.05 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0}',
     '#cst-home h3{font:600 21px/1.2 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 4px}',
-    '#cst-home .sh{font:500 32px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--mu);margin:0 0 18px}',
-    '#cst-home .sh b{font-weight:600;color:var(--nv)}',
+    '#cst-home .sh{font:500 32px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 18px}',
+    '#cst-home .sh b{font-weight:600}',
     '#cst-home .bar{width:72px;height:4px;background:var(--sl);margin:18px 0 30px}',
     '#cst-home a.go{display:inline-block;font:600 14px Inter,system-ui,sans-serif;',
     'color:var(--gd)!important;text-decoration:none}',
@@ -319,6 +315,10 @@
     '#cst-home .msg .panel{background:var(--s2);padding:22px 24px}',
     '#cst-home .msg ul{margin:8px 0 0;padding-left:18px;font-size:16px}',
     '#cst-home .msg li{margin:4px 0}',
+    /* first steps */
+    '#cst-home .lead{font-size:17px;line-height:1.6;color:var(--ik);margin:0 0 22px;max-width:780px}',
+    '#cst-home .stepn{display:block;font:500 26px/1 "Cormorant Garamond",Georgia,serif;',
+    'color:var(--sl);margin:0 0 6px}',
     /* where to go */
     '#cst-home .help{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ha)}',
     '#cst-home .hp{padding:22px 22px 24px;font-size:16px;line-height:1.45;display:flex;flex-direction:column}',
@@ -362,13 +362,47 @@
     return '' +
       '<section class="cst-mast">' +
         '<p class="ey big">Constellations Member Portal</p>' +
-        '<h1>We’re glad you’re here.</h1>' +
+        '<h1>Welcome. We’re glad you’re here.</h1>' +
         '<div class="bar"></div>' +
         '<div class="month">' +
           '<p class="mlab">' + esc(m.label) + '</p>' +
           '<h2>' + esc(m.title) + '</h2>' +
           '<p class="tp">' + esc(m.body) + '</p>' +
           '<p class="nextm">' + esc(m.next) + '</p>' +
+        '</div>' +
+      '</section>';
+  }
+
+  /* First steps. Mirrors the Get started checklist so the two never drift:
+     Portal Profile, Notifications, Nova, in that order. */
+  function stepsHTML() {
+    var u = CFG.urls;
+    return '' +
+      '<section>' +
+        '<h2 class="sh">First <b>steps</b></h2>' +
+        '<p class="lead">These three take a few minutes each, and they shape the rest of ' +
+          'your time here \u2014 how people find you, what reaches you, and where to turn ' +
+          'when you\u2019re not sure.</p>' +
+        '<div class="help">' +
+          '<div class="hp"><span class="stepn">1</span><h3>Complete your profile</h3>' +
+            'Share a little about yourself so other members can get to know you.' +
+            '<span class="use">Your photograph</span>' +
+            'Use the one our team emailed you, with the cream background. It keeps every ' +
+            'profile in the portal looking like part of the same place.' +
+            '<a class="go" href="' + esc(u.profile) + '">Complete profile \u2192</a></div>' +
+          '<div class="hp"><span class="stepn">2</span><h3>Customize your notifications</h3>' +
+            'You decide what reaches you, and how often.' +
+            '<span class="use">Keeps you posted on</span>' +
+            'Connection requests, upcoming gatherings, new articles, and replies to your posts.' +
+            '<a class="go" href="' + esc(u.notifications) + '">Customize notifications \u2192</a></div>' +
+          '<div class="hp"><span class="stepn">3</span><h3>Meet Nova</h3>' +
+            'The Constellations assistant, available at any hour.' +
+            '<span class="use">Good for</span>' +
+            'Questions about how the portal works, or practicing what you want to say ' +
+            'before you say it.' +
+            '<span class="not">Nova is not a person. For a concern about someone, use ' +
+            'Report a Concern.</span>' +
+            '<a class="go" href="' + esc(u.nova) + '">Open Nova \u2192</a></div>' +
         '</div>' +
       '</section>';
   }
@@ -432,7 +466,7 @@
             '<span class="use">Good to know</span>' +
             '<span class="not">Booked and paid for separately from membership.</span>' +
             '<a class="go" href="' + esc(u.coaching) + '">See coaching →</a></div>' +
-          '<div class="hp"><h3>Ask Nova</h3>Our AI assistant.' +
+          '<div class="hp"><h3>Ask Nova</h3>The Constellations assistant.' +
             '<span class="use">Use it for</span>Quick questions about the portal, how things ' +
             'work here, or practicing what to say.' +
             '<span class="use">Good to know</span>' +
@@ -495,7 +529,7 @@
           '</div>';
       }).join('');
 
-      mount.insertAdjacentElement('beforebegin', el(
+      mount.appendChild(el(
         '<section><h2 class="sh">Featured <b>Gathering</b></h2>' + rows +
         '<p style="margin:14px 0 0"><a class="go" href="' + esc(CFG.urls.calendar) +
         '">See the full calendar →</a></p></section>'));
@@ -546,7 +580,7 @@
             '<p>' + esc(lede) + '</p></a>';
       }).join('');
 
-      mount.insertAdjacentElement('beforebegin', el(
+      mount.appendChild(el(
         '<section><h2 class="sh">Featured <b>Articles</b></h2>' +
         '<div class="arts">' + cards + '</div>' +
         '<p style="margin:16px 0 0"><a class="go" href="' + esc(CFG.urls.allArticles) +
@@ -590,7 +624,7 @@
               '<a class="go" href="' + esc(postUrl(p, 'community')) + '">Meet ' +
               esc(who) + ' →</a></div>';
         }).join('');
-        html += '<section><h2 class="sh"><b>Members</b></h2>' +
+        html += '<section><h2 class="sh">Our <b>Community</b></h2>' +
                 '<div class="ppl">' + cards + '</div></section>';
       }
 
@@ -599,7 +633,7 @@
           var l    = label(p);
           var ps   = paragraphs(p).slice(1);
           var src  = photo(p);
-          var cta  = CFG.featureLink[l] || 'Read more';
+          var cta  = CFG.featureLink[l] || 'View Post';
           var role = '', body = '';
 
           if (ps.length && ps[0].length <= 90) { role = ps[0]; body = ps[1] || ''; }
@@ -631,7 +665,7 @@
         html += '<section style="border-top:0;padding-top:6px">' + spots + '</section>';
       }
 
-      if (html) mount.insertAdjacentElement('beforebegin', el('<div>' + html + '</div>'));
+      if (html) mount.appendChild(el('<div>' + html + '</div>'));
     });
   }
 
@@ -670,25 +704,35 @@
     var root = document.createElement('div');
     root.id = CFG.root;
     root.setAttribute('data-cst-home', VERSION);
+    /* Three fixed slots keep the running order steady no matter which
+       request answers first. */
     root.innerHTML = mastheadHTML() +
-                     '<div id="cst-live"></div>' +
+                     stepsHTML() +
+                     '<div id="cst-ev"></div>' +
+                     '<div id="cst-ar"></div>' +
+                     '<div id="cst-co"></div>' +
                      staticHTML();
     host.parentElement.insertBefore(root, host);
     hideOld();
 
-    var mount = root.querySelector('#cst-live');
-
-    /* Order matters visually; each block is independent and silent on failure. */
-    fillGatherings(mount).catch(function () {});
-    fillArticles(mount).catch(function () {});
-    fillCommunity(mount).catch(function () {});
+    /* Each block is independent and silent on failure. */
+    fillGatherings(root.querySelector('#cst-ev')).catch(function () {});
+    fillArticles(root.querySelector('#cst-ar')).catch(function () {});
+    fillCommunity(root.querySelector('#cst-co')).catch(function () {});
   }
 
   function teardown() {
     var r = document.getElementById(CFG.root);
-    if (r) r.remove();
     var nvx = document.getElementById('nvx-space');
-    if (nvx) nvx.style.display = '';
+    if (nvx) {
+      nvx.style.display = '';
+      /* React sometimes reconciles Circle's own node inside ours; put it back
+         before removing ours, so nothing of Circle's goes with it. */
+      if (r && r.contains(nvx) && r.parentElement) {
+        r.parentElement.insertBefore(nvx, r);
+      }
+    }
+    if (r) r.remove();
   }
 
   var lastPath = null;
