@@ -96,3 +96,12 @@
    The age and location label keeps the light outlined style. portal.js block 49
    marks FEATURED MEMBER with data-nsm-fm. */
 [data-nsm] [data-nsm="tag"][data-nsm-fm]{background:#E7D7C1;border:0;padding:4px 10px 3px}
+
+/* Hide the floating Nova launcher while an editor or other modal is open, so it
+   never sits on top of Save or Publish. Nova stays in the sidebar. */
+body:has([role="dialog"][data-open]:not(#chatbase-bubble-window)) #chatbase-bubble-button,
+body:has([role="dialog"][data-open]:not(#chatbase-bubble-window)) #chatbase-message-bubbles,
+body:has([role="dialog"][data-state="open"]:not(#chatbase-bubble-window)) #chatbase-bubble-button,
+body:has([role="dialog"][data-state="open"]:not(#chatbase-bubble-window)) #chatbase-message-bubbles,
+body:has([aria-modal="true"]:not(#chatbase-bubble-window)) #chatbase-bubble-button,
+body:has([aria-modal="true"]:not(#chatbase-bubble-window)) #chatbase-message-bubbles{display:none!important}
