@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.7.0';
+  var VERSION = '1.7.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -28,7 +28,9 @@
       profile:       '/account',
       notifications: '/account/notifications',
       report:      '/c/report',
-      walkthrough:  null,   /* booking link for the 15-minute call; null = Coming soon */
+      /* the 15-minute walkthrough call, booked on Acuity; null = Coming soon */
+      walkthrough: 'https://joinconstellations.as.me/schedule/6aab1eb9/appointment/' +
+                   '98669212/calendar/11037328?appointmentTypeIds[]=98669212',
       /* null renders as muted text instead of a dead link */
       beFeatured:          null,   /* '/c/guides/be-featured' once published  */
       connectionRequests:  null,   /* guide not written yet                   */
@@ -565,7 +567,9 @@
              '<div class="sb"><h3>' + title + '</h3>' +
                '<p>' + lines + '</p></div>' +
              (href
-               ? '<a class="go" href="' + esc(href) + '">' + label + ' →</a>'
+               ? '<a class="go" href="' + esc(href) + '"' +
+                 (/^https?:/.test(href) ? ' target="_blank" rel="noopener"' : '') +
+                 '>' + label + ' →</a>'
                : '<span class="go cst-soon">Coming soon</span>') +
            '</div>';
   }
@@ -746,10 +750,9 @@
                     .map(function (x) { return x.trim(); }).filter(Boolean);
           head = t[0] || ''; lede = t[1] || '';
         }
+        /* The topic tag is dropped on Home; only the read time is shown. */
         var bits = head.split(/\s*·\s*/);
-        var headHTML = bits.length > 1
-          ? esc(bits[0]) + ' · <span class="nb">' + esc(bits.slice(1).join(' · ')) + '</span>'
-          : esc(head);
+        var headHTML = esc(bits.length > 1 ? bits.slice(1).join(' · ') : head);
         return '<a class="thart" href="' + esc(postUrl(p, 'articles')) + '">' +
             '<span class="lab2">' + headHTML + '</span>' +
             '<h4>' + esc(p.name) + '</h4>' +
