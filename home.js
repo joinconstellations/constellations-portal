@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.12.0';
+  var VERSION = '1.13.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -870,7 +870,7 @@
       var people = [], features = [], quotes = [];
       live.forEach(function (p) {
         var l = label(p);
-        if (CFG.memberLabels.indexOf(l) > -1) { if (people.length < 3) people.push(p); }
+        if (CFG.memberLabels.indexOf(l) > -1) { if (people.length < 6) people.push(p); }
         else if (l === 'QUOTE') { if (quotes.length < CFG.quoteCount) quotes.push(p); }
         else if (CFG.featureLabels.indexOf(l) > -1) { if (features.length < CFG.featureCount) features.push(p); }
       });
