@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.7.1';
+  var VERSION = '1.8.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -59,13 +59,14 @@
         'Are you leaving something behind, adjusting to where you are now, or ' +
           'wondering what might come next?'
       ],
-      /* One member reply, shown under the questions. It is named by message
-         id rather than copied, so an edited or deleted message drops off Home
-         by itself. `parent` is the question it was posted under. */
-      reply: {
-        room:    '821ece14-f597-44af-a66e-4520f89721f4',
-        parent:  2154696378,
-        message: 2154697207
+      /* Member replies shown under the questions, in this order. They are
+         named by message id rather than copied, so a reply the member edits
+         or deletes changes or disappears here too. `parent` is the question
+         they were posted under. */
+      replies: {
+        room:     '821ece14-f597-44af-a66e-4520f89721f4',
+        parent:   2154696378,
+        messages: [2154697207, 2155838153]
       },
       novaAsk:   'What are small steps I can take this month to meet my goals?',
       nextLabel: 'October’s theme?',
@@ -168,6 +169,8 @@
   function nodeText(node) {
     if (!node) return '';
     if (node.text) return node.text;
+    /* a mention has no text child; Circle keeps the readable form here */
+    if (node.type === 'mention') return node.circle_ios_fallback_text || '';
     return (node.content || []).map(nodeText).join('');
   }
 
@@ -494,6 +497,8 @@
     'letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}',
     '#cst-home .rtxt{margin:0;color:var(--nv);',
     'font:italic 500 18px/1.45 "Cormorant Garamond",Georgia,serif}',
+    '#cst-home .rtxt+.rtxt{margin-top:10px}',
+    '#cst-home .threply+.threply{margin-top:14px}',
     /* phone */
     '@media (max-width:767px){',
     '#cst-home section,#cst-home .cst-mast,#cst-home .foot{padding-left:22px;padding-right:22px}',
@@ -764,35 +769,50 @@
     });
   }
 
-  /* One member reply, under the questions. CFG.month.reply names it by message
-     id and nothing is copied into this file, so a reply the member edits or
-     deletes changes or disappears here too. */
+  /* Member replies, under the questions. CFG.month.replies names them by
+     message id and nothing is copied into this file, so a reply the member
+     edits or deletes changes or disappears here too. */
   function fillReply(mount) {
-    var c = CFG.month.reply;
-    if (!mount || !c || !c.message) return Promise.resolve();
+    var c = CFG.month.replies;
+    if (!mount || !c || !c.messages || !c.messages.length) return Promise.resolve();
     var base = '/internal_api/chat_rooms/' + c.room;
     return Promise.all([
       get(base + '/messages?parent_message_id=' + c.parent),
       get(base + '/participants')
     ]).then(function (res) {
-      var msg = records(res[0]).filter(function (x) {
-        return x.id === c.message && !x.deleted_at;
-      })[0];
-      if (!msg) return;
-      var text = nodeText(msg.rich_text_body && msg.rich_text_body.body).trim();
-      if (!text) return;
-      var who = records(res[1]).filter(function (p) {
-        return p.id === msg.chat_room_participant_id;
-      })[0] || {};
-      var name = who.name || '';
-      var face = who.avatar_url
-        ? '<img src="' + esc(who.avatar_url) + '" alt="">'
-        : '<span class="rini">' + esc(name.charAt(0)) + '</span>';
-      mount.appendChild(el(
-        '<div class="threply">' + face +
-          '<div><p class="rwho">' + esc(name) + '</p>' +
-          '<p class="rtxt">“' + esc(text) + '”</p></div>' +
-        '</div>'));
+      var msgs = records(res[0]), people = records(res[1]);
+
+      var html = c.messages.map(function (id) {
+        var msg = msgs.filter(function (x) {
+          return x.id === id && !x.deleted_at;
+        })[0];
+        if (!msg) return '';
+        var body  = msg.rich_text_body && msg.rich_text_body.body;
+        var paras = ((body && body.content) || []).map(function (n) {
+          return nodeText(n).trim();
+        }).filter(Boolean);
+        if (!paras.length) return '';
+
+        var who = people.filter(function (p) {
+          return p.id === msg.chat_room_participant_id;
+        })[0] || {};
+        var name = who.name || '';
+        var face = who.avatar_url
+          ? '<img src="' + esc(who.avatar_url) + '" alt="">'
+          : '<span class="rini">' + esc(name.charAt(0)) + '</span>';
+
+        /* the quotation marks open on the first paragraph and close on the last */
+        var said = paras.map(function (t, i) {
+          return '<p class="rtxt">' + (i ? '' : '“') + esc(t) +
+                 (i === paras.length - 1 ? '”' : '') + '</p>';
+        }).join('');
+
+        return '<div class="threply">' + face +
+                 '<div><p class="rwho">' + esc(name) + '</p>' + said + '</div>' +
+               '</div>';
+      }).join('');
+
+      if (html) mount.appendChild(el('<div>' + html + '</div>'));
     });
   }
 
