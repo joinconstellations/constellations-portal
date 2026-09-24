@@ -316,7 +316,7 @@ p.setAttribute('data-nsm','tag'); w.appendChild(p);
 }
 var fm=null;
 for(var d=w.firstElementChild;d;d=d.nextElementSibling){if(isFM(d)){fm=d;break;}}
-if(!fm&&FEAT[up(w.firstElementChild.textContent)]&&!/\bFROM (KATE|THE TEAM)\b/.test(up(w.textContent))){
+if(!fm&&FEAT[up(w.firstElementChild.textContent)]&&!/FROM (KATE|THE TEAM)/.test(up(w.textContent))){
 fm=document.createElement('p');fm.textContent='FEATURED MEMBER';
 fm.setAttribute('data-nsm','tag');fm.setAttribute('data-nsm-auto','1');
 }
