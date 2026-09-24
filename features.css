@@ -145,3 +145,7 @@ body:has([aria-modal="true"]:not(#chatbase-bubble-window)) #chatbase-message-bub
 [data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child),[data-nsm="story"][data-nsm-label="WORTH SHARING"]:has(a[href*="bookshop.org"]) .tiptap>p:has(>strong:first-child){margin-left:0}
 [data-nsm="story"][data-nsm-label="WORTH SHARING"]:has(a[href*="bookshop.org"]) .tiptap>p:has(>a:only-child){padding-left:0}
 }
+
+/* North Star Home quote tags: wrap cleanly with even gaps, no stray indent on the second line. */
+#cst-nshome .qi .qt{display:flex!important;flex-wrap:wrap;gap:8px;align-items:center}
+#cst-nshome .qi .qt .lab2,#cst-nshome .qi .qt .lab3{margin:0!important}
