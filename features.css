@@ -136,3 +136,12 @@ body:has([aria-modal="true"]:not(#chatbase-bubble-window)) #chatbase-message-bub
 /* Kate's Bookshelf: Kate's photo smaller than a member's. */
 [data-nsm="story"][data-nsm-label="WORTH SHARING"]:has(a[href*="bookshop.org"]) .tiptap>.node-image:first-of-type{width:130px;max-width:130px}
 [data-nsm="story"][data-nsm-label="WORTH SHARING"]:has(a[href*="bookshop.org"]) .tiptap>.node-image:first-of-type img{object-position:50% 20%}
+
+/* Worth Sharing: every detail row starts at the same left edge, whether it sits beside the photo or below it. */
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child){margin-left:216px}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"]:has(a[href*="bookshop.org"]) .tiptap>p:has(>strong:first-child){margin-left:166px}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"]:has(a[href*="bookshop.org"]) .tiptap>p:has(>a:only-child){padding-left:166px}
+@media (max-width:767px){
+[data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>strong:first-child),[data-nsm="story"][data-nsm-label="WORTH SHARING"]:has(a[href*="bookshop.org"]) .tiptap>p:has(>strong:first-child){margin-left:0}
+[data-nsm="story"][data-nsm-label="WORTH SHARING"]:has(a[href*="bookshop.org"]) .tiptap>p:has(>a:only-child){padding-left:0}
+}
