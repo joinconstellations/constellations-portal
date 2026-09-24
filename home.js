@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.15.2';
+  var VERSION = '1.15.3';
 
   var CFG = {
     path: '/c/welcome',
@@ -233,12 +233,14 @@
     return { tags: tags, rest: ps };
   }
   function chips(first, more) {
-    return '<span style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
-      (first ? '<span class="lab2">' + esc(first) + '</span>' : '') +
+    var base = 'display:inline-block;font:600 11px Inter,system-ui,sans-serif;letter-spacing:.14em;line-height:1.5;text-transform:uppercase;color:var(--nv,#1A2238);padding:4px 10px 3px;margin:0';
+    return '<span style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px">' +
+      (first ? '<span style="' + base + ';background:var(--pl,#E6DCC6)">' + esc(first) + '</span>' : '') +
       more.map(function (x) {
-        return '<span class="lab2" style="background:transparent;box-shadow:inset 0 0 0 1px #CBBBA0">' + esc(x) + '</span>';
+        return '<span style="' + base + ';background:var(--nb,#EEF1F6)">' + esc(x) + '</span>';
       }).join('') + '</span>';
   }
+
 
   function label(post) {
     var p = paragraphs(post);
@@ -720,10 +722,10 @@
      Kate's direction. Links to her Community post, which carries the affiliate note. */
   function shelfHTML() {
     return '' +
-      '<section style="padding:8px 32px 40px">' +
-        '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px;max-width:720px;margin:0 auto;padding:20px 24px;border:1px solid #CBBBA0;background:#FBF8F2">' +
+      '<section style="padding:8px 46px 40px">' +
+        '<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:24px;margin:0;padding:24px 28px;border:1px solid #CBBBA0;background:#FBF8F2">' +
           '<img src="https://app.circle.so/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBCRHZmL2dzPSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--766a15ea983256a3a4855194c8287cbc575c0302/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFKb0FUQTZDbk5oZG1WeWV3WTZDbk4wY21sd1ZBPT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--174cceaf9a31f17164863935309188a5606afc21/Kate_Portrait.png" alt="Kate Inez Harrington" style="flex:none;width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:50% 15%">' +
-          '<div style="flex:1 1 260px;min-width:0">' +
+          '<div style="flex:0 1 auto;min-width:0;max-width:560px">' +
             '<p style="margin:0 0 4px;font-family:Inter,system-ui,sans-serif;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#7D6220">From Kate</p>' +
             '<p style="margin:0 0 6px;font-family:&quot;Cormorant Garamond&quot;,Georgia,serif;font-size:26px;font-weight:600;line-height:1.15;color:#1A2238">Kate’s Bookshelf</p>' +
             '<p style="margin:0 0 10px;font-family:&quot;EB Garamond&quot;,Georgia,serif;font-size:18px;line-height:1.5;color:#5A5849">Books I’d hand to a client in a session, for dating, friendship and connection.</p>' +
@@ -1023,7 +1025,7 @@
         var src = photo(p);
         return '<a class="qi" href="' + esc(postUrl(p, 'community')) + '">' +
             (src ? '<img src="' + esc(src) + '" alt="">' : '') +
-            '<span class="qw">' + (qtags.length ? '<span style="display:block;margin-bottom:10px">' + chips('', qtags) + '</span>' : '') + '<q>' + esc(decode(q)) + '</q>' +
+            '<span class="qw">' + chips(label(p), qtags) + '<q>' + esc(decode(q)) + '</q>' +
             '<cite>' + esc(who) + '</cite></span></a>';
       }).join('');
       if (asides) html += '<div class="qa">' + asides + '</div>';
