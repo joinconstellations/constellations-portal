@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.0.8';
+  var VERSION = '1.0.9';
 
   var CFG = {
     path: '/c/welcome',
@@ -415,8 +415,8 @@
           '<div class="hp"><span class="stepn">3</span><h3>Meet Nova</h3>' +
             'Ask Nova how the Portal works, where to find something, or practice what you ' +
             'want to say.' +
-            '<span class="not">Nova is an AI assistant — not a person or a reporting ' +
-            'channel.</span>' +
+            '<span class="not">Nova is the Constellations AI assistant — not a person ' +
+            'or a reporting channel.</span>' +
             '<a class="go" href="' + esc(u.nova) + '">Ask Nova →</a></div>' +
         '</div>' +
         '<div class="stuck">' +
@@ -494,7 +494,7 @@
             '<span class="use">Good to know</span>' +
             '<span class="not">Booked and paid for separately from membership.</span>' +
             '<a class="go" href="' + esc(u.coaching) + '">See coaching →</a></div>' +
-          '<div class="hp"><h3>Ask Nova</h3>The Constellations assistant.' +
+          '<div class="hp"><h3>Ask Nova</h3>The Constellations AI assistant.' +
             '<span class="use">Use it for</span>Quick questions about the portal, how things ' +
             'work here, or practicing what to say.' +
             '<span class="use">Good to know</span>' +
