@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.0.9';
+  var VERSION = '1.1.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -252,7 +252,8 @@
     '#cst-home .ey{font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.16em;',
     'text-transform:uppercase;color:var(--mu);margin:0 0 14px}',
     '#cst-home .ey.big{font-size:19px;letter-spacing:.18em;margin-bottom:38px}',
-    '#cst-home h1{font:600 74px/1.03 "Cormorant Garamond",Georgia,serif;color:var(--nv);',
+    '#cst-home .t1{display:block;font:600 74px/1.03 "Cormorant Garamond",Georgia,serif;',
+    'color:var(--nv);',
     'letter-spacing:-.012em;margin:0}',
     '#cst-home h3{font:600 21px/1.2 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 4px}',
     '#cst-home .sh{font:500 32px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 24px}',
@@ -323,17 +324,17 @@
     '#cst-home .lead{font-size:17px;line-height:1.6;color:var(--ik);margin:0 0 30px;max-width:780px}',
     '#cst-home .stepn{display:block;font:500 26px/1 "Cormorant Garamond",Georgia,serif;',
     'color:var(--sl);margin:0 0 6px}',
-    '#cst-home .stuck{border:1px solid var(--ha);border-top:0;padding:24px 22px 26px}',
+    '#cst-home .stuck{border:1px solid var(--sl);background:transparent;',
+    'padding:24px 26px 26px;margin-top:24px}',
     '#cst-home .stuck h3{font:600 10.5px Inter,system-ui,sans-serif;letter-spacing:.14em;',
     'text-transform:uppercase;color:var(--gd);margin:0 0 8px}',
     '#cst-home .stuck p{font-size:16px;line-height:1.5;color:var(--ik);margin:0}',
-    '#cst-home .stuck ul{list-style:none;margin:14px 0 0;padding:0;display:grid;',
-    'grid-template-columns:1fr 1fr;gap:9px 28px}',
-    '#cst-home .stuck li{font-size:15px;line-height:1.45}',
-    '#cst-home .stuck li a{color:var(--gd)!important;text-decoration:none;font-weight:600}',
-    '#cst-home .stuck-f{margin-top:18px!important;font-size:14px;color:var(--mu)}',
+    '#cst-home .stuck ul{list-style:none;margin:16px 0 0;padding:0;display:block}',
+    '#cst-home .stuck li{margin:0 0 8px;font-size:17px;line-height:1.4}',
+    '#cst-home .stuck li a{font:500 17px "EB Garamond",Georgia,serif;',
+    'color:var(--gd)!important;text-decoration:none;border-bottom:1px solid var(--sl)}',
+    '#cst-home .stuck-f{margin-top:22px!important;font-size:15px;color:var(--mu)}',
     '#cst-home .stuck-f a{color:var(--mu)!important;text-decoration:underline}',
-    '@media(max-width:767px){#cst-home .stuck ul{grid-template-columns:1fr}}',
     /* where to go */
     '#cst-home .help{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ha)}',
     '#cst-home .hp{padding:22px 22px 24px;font-size:16px;line-height:1.45;display:flex;flex-direction:column}',
@@ -357,7 +358,7 @@
     /* phone */
     '@media (max-width:767px){',
     '#cst-home section,#cst-home .cst-mast,#cst-home .foot{padding-left:22px;padding-right:22px}',
-    '#cst-home h1{font-size:42px}',
+    '#cst-home .t1{font-size:42px}',
     '#cst-home .sh{font-size:26px}',
     '#cst-home .arts,#cst-home .ppl,#cst-home .help,#cst-home .tq,#cst-home .msg{grid-template-columns:1fr}',
     '#cst-home .hp+.hp{border-left:0;border-top:1px solid var(--ha)}',
@@ -377,7 +378,7 @@
     return '' +
       '<section class="cst-mast">' +
         '<p class="ey big">Constellations Member Portal</p>' +
-        '<h1>Welcome.<br>We’re glad you’re here.</h1>' +
+        '<h2 class="t1">Welcome.<br>We’re glad you’re here.</h2>' +
         '<div class="bar"></div>' +
         '<div class="month">' +
           '<p class="mlab">' + esc(m.label) + '</p>' +
@@ -392,14 +393,15 @@
      Portal Profile, Notifications, Nova, in that order. */
   function stepsHTML() {
     var u = CFG.urls;
+    /* A guide that is not written yet is left out, not shown greyed. */
     function gl(href, label) {
       return href
         ? '<li><a href="' + esc(href) + '">' + label + ' →</a></li>'
-        : '<li><span class="cst-soon">' + label + '</span></li>';
+        : '';
     }
     return '' +
       '<section>' +
-        '<h2 class="sh">Start <b>here</b></h2>' +
+        '<h2 class="sh">New to the Portal? <b>Start here</b></h2>' +
         '<p class="lead">These three steps will help you get settled in the Portal. ' +
           'You can complete them one at a time. You do not need to explore everything ' +
           'today.</p>' +
@@ -714,9 +716,13 @@
     return feed || null;
   }
 
+  /* The portal's hideTitle() hides the parent of any <h1>, which is why the
+     masthead title is a .t1 rather than an <h1>. This repairs it either way. */
   function hideOld() {
     var nvx = document.getElementById('nvx-space');
     if (nvx && nvx.style.display !== 'none') nvx.style.display = 'none';
+    var mast = document.querySelector('#' + CFG.root + ' .cst-mast');
+    if (mast && mast.style.display === 'none') mast.style.display = '';
   }
 
   function build() {
