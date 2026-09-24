@@ -140,7 +140,8 @@ if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded"
     if (w) {
       while (w.firstChild) {
         var n = w.lastChild;
-        if (n.removeAttribute) n.removeAttribute("data-nsm");
+        if (n.getAttribute && n.getAttribute("data-nsm-auto")) { w.removeChild(n); continue; }
+        if (n.removeAttribute) { n.removeAttribute("data-nsm"); n.removeAttribute("data-nsm-fm"); }
         if (t) t.insertBefore(n, t.firstChild); else w.parentNode.insertBefore(n, w);
       }
       if (w.parentNode) w.parentNode.removeChild(w);
@@ -213,7 +214,7 @@ if (post.getAttribute("data-nsm-label") !== lab) post.setAttribute("data-nsm-lab
 
 /* ---- block 35 ---- */
 (function(){
-var MARK="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9s-4.428-9-9.75-9-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 01-.814 1.686.75.75 0 00.44 1.223z\"/></svg>";
+var MARK="<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.750-3.970 9.750-9s-4.428-9-9.750-9-9.750 3.970-9.750 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 01-.814 1.686.75.75 0 00.44 1.223z\"/></svg>";
 var HTML='<div class="csd-lockup">'+MARK+'<h2>Discussions</h2></div>'
 +'<div class="csd-lede">Common Ground</div>'
 +'<div class="csd-rule"></div>'
@@ -284,19 +285,45 @@ if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded"
 ;
 
 /* ---- block 49 ---- */
+/* Label row on member features: the format label, then FEATURED MEMBER, then one
+   short line such as "30s · NEW JERSEY". FEATURED MEMBER is added automatically
+   when the post does not include it, and is always set in the light outlined style. */
 (function(){
+var FEAT={"MEMBER STORY":1,"GOOD COMPANY":1,"THREE QUESTIONS":1,"PASSION PROJECTS":1,"A FEW MINUTES WITH":1,"WORTH SHARING":1,"QUOTE":1};
+function up(s){return (s||'').replace(/\s+/g,' ').trim().toUpperCase();}
+function isFM(el){return up(el.textContent)==='FEATURED MEMBER';}
 function fix(){
-var ps=document.querySelectorAll('[data-nsm="story"]');
+var ps=document.querySelectorAll('[data-nsm="story"],[data-nsm="card"]');
 for(var i=0;i<ps.length;i++){
 var w=ps[i].querySelector('[data-nsm="tags"]');
-if(!w||w.children.length!==1) continue;
-var t=ps[i].querySelector('.tiptap'); if(!t) continue;
+if(!w||!w.firstElementChild) continue;
+if(ps[i].getAttribute('data-nsm')==='story'){
+var t=ps[i].querySelector('.tiptap');
+for(var g=0;t&&g<2;g++){
 var p=t.firstElementChild;
-if(!p||p.tagName!=='P') continue;
+if(!p||p.tagName!=='P') break;
 var x=p.textContent.trim();
-if(!x||x.length>60) continue;
-if(x===w.firstElementChild.textContent.trim()) continue;
+if(!x||x.length>60) break;
+if(x===w.firstElementChild.textContent.trim()) break;
+var extra=0;
+for(var c=w.firstElementChild.nextElementSibling;c;c=c.nextElementSibling){if(!isFM(c))extra++;}
+if(!isFM(p)&&extra>0) break;
 p.setAttribute('data-nsm','tag'); w.appendChild(p);
+}
+var fm=null;
+for(var d=w.firstElementChild;d;d=d.nextElementSibling){if(isFM(d)){fm=d;break;}}
+if(!fm&&FEAT[up(w.firstElementChild.textContent)]){
+fm=document.createElement('p');fm.textContent='FEATURED MEMBER';
+fm.setAttribute('data-nsm','tag');fm.setAttribute('data-nsm-auto','1');
+}
+if(fm&&fm!==w.firstElementChild&&fm.previousElementSibling!==w.firstElementChild){
+w.insertBefore(fm,w.firstElementChild.nextSibling);
+}
+}
+for(var e=w.firstElementChild;e;e=e.nextElementSibling){
+if(isFM(e)){if(!e.hasAttribute('data-nsm-fm'))e.setAttribute('data-nsm-fm','1');}
+else if(e.hasAttribute('data-nsm-fm'))e.removeAttribute('data-nsm-fm');
+}
 }
 }
 var q=false;
