@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.4.2';
+  var VERSION = '1.5.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -39,14 +39,27 @@
       notificationsGuide:  null    /* guide not written yet                   */
     },
 
-    /* Monthly theme. The month is the date stamp; the theme is the title. */
+    /* Monthly theme. Everything the theme box shows is named here, so a new
+       month is one edit: the stamp, the title, the body, the two articles by
+       slug, the two discussion questions, the Nova prompt, next month. */
     month: {
       stamp: 'September',
       title: 'Transitions',
       body:  'Moving through change, waiting for what comes next, and finding a ' +
-             'way forward when you feel stuck. You’ll see this theme across the ' +
-             'articles, the discussions and the gatherings all month.',
-      next:  'Next month · Masking'
+             'way forward when you feel stuck. Explore the theme through reading, ' +
+             'conversation, and Nova.',
+      articles: ['when-a-friendship-fades', 'become-a-regular'],
+      reading:  'Two pieces from the Constellations Library about change, ' +
+                'belonging, and what comes next.',
+      questions: [
+        'What’s something you believed about relationships when you were younger ' +
+          'that you see differently now?',
+        'Are you leaving something behind, adjusting to where you are now, or ' +
+          'wondering what might come next?'
+      ],
+      novaAsk:   'What are small steps I can take this month to meet my goals?',
+      nextLabel: 'October’s theme?',
+      nextTitle: 'Masking'
     },
 
     /* Drawn from the Guiding Principles document, not written here. */
@@ -58,12 +71,6 @@
       { name: 'Pressure Is Poison', url: 'pressureIsPoison',
         line: 'When pressure rises, the answer is not to decide faster.' }
     ],
-
-    /* Name up to three article slugs to override this week's rotation. */
-    featuredArticles: [],
-
-    /* Reading order runs from the earliest published date. Week 0 starts here. */
-    rotationEpoch: '2026-08-31T00:00:00Z',
 
     /* How many member features Home shows, and how many short quotes run
        below them as small asides. */
@@ -357,17 +364,6 @@
     '#cst-home .msg li{margin:4px 0}',
     /* first steps */
     '#cst-home .lead{font-size:17px;line-height:1.6;color:var(--ik);margin:0 0 30px;max-width:780px}',
-    '#cst-home .stuck{border:1px solid var(--sl);background:transparent;',
-    'padding:24px 26px 26px;margin-top:24px}',
-    '#cst-home .stuck h3{font:600 10.5px Inter,system-ui,sans-serif;letter-spacing:.14em;',
-    'text-transform:uppercase;color:var(--gd);margin:0 0 8px}',
-    '#cst-home .stuck p{font-size:16px;line-height:1.5;color:var(--ik);margin:0}',
-    '#cst-home .stuck ul{list-style:none;margin:16px 0 0;padding:0;display:block}',
-    '#cst-home .stuck li{margin:0 0 8px;font-size:17px;line-height:1.4}',
-    '#cst-home .stuck li a{font:500 17px "EB Garamond",Georgia,serif;',
-    'color:var(--gd)!important;text-decoration:none;border-bottom:1px solid var(--sl)}',
-    '#cst-home .stuck-f{margin-top:22px!important;font-size:15px;color:var(--mu)}',
-    '#cst-home .stuck-f a{color:var(--mu)!important;text-decoration:underline}',
     /* where to go */
     '#cst-home .help{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ha)}',
     '#cst-home .help.two{grid-template-columns:repeat(2,1fr)}',
@@ -395,23 +391,11 @@
        normal Circle page comes back. */
     'body.view-space--2860046 #cst-home ~ *{display:none !important}',
     '#cst-home .sand{background:#FAF8F4}',
-    '#cst-home .band{background:var(--sa)}',
     /* this month */
     '#cst-home .mo{padding-top:34px}',
     '#cst-home .mo .ey{margin-bottom:8px}',
-    '#cst-home .morule{width:86px;height:3px;background:var(--gd);margin:0 0 14px}',
-    '#cst-home .mobig{margin:0;font:500 66px/1 "Cormorant Garamond",Georgia,serif;',
-    'letter-spacing:.03em;text-transform:uppercase;color:var(--sl)}',
-    '#cst-home .moti{margin:8px 0 18px;font:600 40px/1.1 "Cormorant Garamond",Georgia,serif;',
-    'color:var(--nv)}',
-    '#cst-home .motx{margin:0;font-size:18px;line-height:1.6;max-width:660px}',
-    '#cst-home .monext{margin:20px 0 0;font:600 11px Inter,system-ui,sans-serif;',
-    'letter-spacing:.16em;text-transform:uppercase;color:var(--mu)}',
     /* getting started, merged help */
     '#cst-home .hp h3{margin-bottom:12px}',
-    '#cst-home .stuck{border:0;border-top:1px solid var(--ha);padding:26px 0 0;margin-top:0}',
-    '#cst-home .nova-note{margin:14px 0 0!important;font-size:15px;color:var(--mu)}',
-    '#cst-home .nova-note a{color:var(--gd)!important;text-decoration:none;font-weight:600}',
     /* community */
     '#cst-home .pc .lab2{display:block;margin:0 0 10px}',
     '#cst-home .featme{display:flex;justify-content:space-between;align-items:center;',
@@ -431,8 +415,6 @@
     '#cst-home .qi q{display:block;font:italic 500 18px/1.45 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
     '#cst-home .qi cite{display:block;margin-top:8px;font:600 10.5px Inter,system-ui,sans-serif;font-style:normal;',
     'letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}',
-    /* conversation band */
-    '#cst-home .band p{margin:0 0 18px;font-size:18px;line-height:1.6;max-width:640px}',
     /* footer principles */
     '#cst-home .prg{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:6px}',
     '#cst-home .prc .prm{display:block;width:34px;height:2px;background:var(--gd);margin:0 0 12px}',
@@ -441,7 +423,6 @@
     'border-bottom:1px solid var(--sl)}',
     '#cst-home .prc p{margin:0;font-size:15px;line-height:1.5;color:var(--mu)}',
     /* 1.3.0 — welcome opening: two steps as hairline-separated rows */
-    '#cst-home .ey.mast{margin-bottom:16px}',
     '#cst-home .cst-mast .lead{margin:22px 0 0}',
     '#cst-home .steps{margin-top:26px}',
     '#cst-home .strow{display:flex;align-items:center;gap:22px;padding:24px 0;',
@@ -454,6 +435,41 @@
     'color:var(--nv)}',
     '#cst-home .strow p{margin:0;font-size:16px;line-height:1.5;color:var(--mu)}',
     '#cst-home .strow .go{flex:none;margin:0;white-space:nowrap}',
+    /* 1.5.0 — the theme box: one outline around the month, the reading,
+       the conversation and Nova, so the three routes read as one idea. */
+    '#cst-home .thbox{border:1px solid var(--sl);padding:36px 38px 30px}',
+    '#cst-home .thhead{display:grid;grid-template-columns:230px 1fr;gap:34px;align-items:start}',
+    '#cst-home .thleaf{display:block;color:var(--gd);margin:0 0 12px}',
+    '#cst-home .thleaf svg{width:36px;height:36px;display:block}',
+    '#cst-home .thmo{margin:0;font:500 42px/1 "Cormorant Garamond",Georgia,serif;color:var(--gd)}',
+    '#cst-home .thti{margin:0 0 14px;font:600 52px/1 "Cormorant Garamond",Georgia,serif;',
+    'letter-spacing:-.01em;color:var(--nv)}',
+    '#cst-home .thtx{margin:0;font-size:18px;line-height:1.6;max-width:560px}',
+    '#cst-home .thsec{margin-top:34px;padding-top:30px;border-top:1px solid var(--ha)}',
+    '#cst-home .thh{display:flex;align-items:center;gap:11px;margin:0 0 6px;',
+    'font:600 27px/1.15 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
+    '#cst-home .thh svg{width:22px;height:22px;flex:none;color:var(--gd)}',
+    '#cst-home .thnote{margin:0 0 22px;font-size:16px;color:var(--mu);max-width:620px}',
+    '#cst-home .tharts{display:grid;grid-template-columns:1fr 1fr;gap:30px}',
+    '#cst-home .thart{display:block;text-decoration:none;color:inherit!important}',
+    '#cst-home .thart h4{margin:6px 0 8px;',
+    'font:600 27px/1.12 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
+    '#cst-home .thart p{margin:0 0 12px;font-size:16px;line-height:1.5;color:var(--mu)}',
+    '#cst-home .thart .go{font:600 14px Inter,system-ui,sans-serif;color:var(--gd)!important}',
+    '#cst-home .thqs{display:grid;gap:18px;max-width:720px}',
+    '#cst-home .thq{display:block;text-decoration:none;padding-left:16px;',
+    'border-left:2px solid var(--sl);color:var(--gd)!important;',
+    'font:500 23px/1.32 "Cormorant Garamond",Georgia,serif}',
+    '#cst-home .thmore{margin:20px 0 0}',
+    '#cst-home .thnova{margin-top:34px;background:var(--s2);padding:26px 28px 28px}',
+    '#cst-home .thnovagrid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}',
+    '#cst-home .thnovagrid p{margin:0;font-size:16px;line-height:1.55}',
+    '#cst-home .thask{margin:0 0 14px!important;color:var(--nv);',
+    'font:500 22px/1.35 "Cormorant Garamond",Georgia,serif}',
+    '#cst-home .thnext{display:flex;align-items:baseline;justify-content:flex-end;',
+    'gap:14px;margin:30px 0 0}',
+    '#cst-home .thnext .ey{margin:0}',
+    '#cst-home .thnext b{font:600 30px "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
     /* phone */
     '@media (max-width:767px){',
     '#cst-home section,#cst-home .cst-mast,#cst-home .foot{padding-left:22px;padding-right:22px}',
@@ -467,14 +483,19 @@
     '#cst-home .ev{flex-wrap:wrap;gap:14px}',
     '#cst-home .ev>div:nth-child(2){min-width:calc(100% - 100px)}',
     '#cst-home .ev .btn{flex-basis:100%;text-align:center}',
-    '#cst-home .mobig{font-size:44px}',
-    '#cst-home .moti{font-size:30px}',
     '#cst-home .prg{grid-template-columns:1fr;gap:22px}',
     '#cst-home .strow{flex-wrap:wrap;gap:16px;padding:22px 0}',
     '#cst-home .strow .sb{flex:1 1 180px}',
     '#cst-home .strow .go{flex:1 1 100%;padding-left:76px}',
     '#cst-home .featme{flex-direction:column;align-items:flex-start;gap:12px}',
     '#cst-home .spot.alt{flex-direction:column}',
+    '#cst-home .thbox{padding:26px 22px 24px}',
+    '#cst-home .thhead{grid-template-columns:1fr;gap:16px}',
+    '#cst-home .thti{font-size:36px}',
+    '#cst-home .thmo{font-size:34px}',
+    '#cst-home .thq{font-size:21px}',
+    '#cst-home .tharts,#cst-home .thnovagrid{grid-template-columns:1fr}',
+    '#cst-home .thnext{justify-content:flex-start}',
     '}'
   ].join('');
 
@@ -492,7 +513,31 @@
             'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
             'aria-hidden="true" focusable="false">' +
             '<path d="M18 9a6 6 0 1 0-12 0c0 4.8-2 6.2-2 6.2h16S18 13.8 18 9"/>' +
-            '<path d="M10.2 18.6a2.1 2.1 0 0 0 3.6 0"/></svg>'
+            '<path d="M10.2 18.6a2.1 2.1 0 0 0 3.6 0"/></svg>',
+    leaves: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" ' +
+            'aria-hidden="true" focusable="false">' +
+            '<g transform="translate(-1,-2) scale(.62)">' +
+            '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/>' +
+            '<path d="M2 21c0-3 1.9-5.4 5.1-6C9.5 14.5 12 13 13 12"/></g>' +
+            '<g transform="translate(9,8) scale(.62)">' +
+            '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/>' +
+            '<path d="M2 21c0-3 1.9-5.4 5.1-6C9.5 14.5 12 13 13 12"/></g></svg>',
+    book:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
+            'aria-hidden="true" focusable="false">' +
+            '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>' +
+            '<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    talk:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
+            'aria-hidden="true" focusable="false">' +
+            '<path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/>' +
+            '<path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>',
+    spark:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
+            'aria-hidden="true" focusable="false">' +
+            '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>' +
+            '<path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>'
   };
 
   function stepRow(icon, title, lines, href, label) {
@@ -505,24 +550,13 @@
   }
 
   /* Welcome. Masthead and the two first steps are one block: a member opening
-     the Portal sees the greeting and what to do next without scrolling.
-     Nova is a resource, not a step, so it stays in the guide note below. */
+     the Portal sees the greeting and what to do next without scrolling. */
   function welcomeHTML() {
     var u = CFG.urls;
-    /* A guide that is not written yet is left out, not shown greyed. */
-    function gl(href, label) {
-      return href
-        ? '<li><a href="' + esc(href) + '">' + label + ' →</a></li>'
-        : '';
-    }
-    var guides = gl(u.yourProfile,       'Complete your profile and add your photograph') +
-                 gl(u.connectionRequests, 'How Connection Requests work') +
-                 gl(u.addToHomeScreen,   'Save the Portal to your phone');
-
     return '' +
       '<section class="cst-mast">' +
-        '<p class="ey mast">Welcome</p>' +
-        '<h2 class="t1">We’re glad you’re here.</h2>' +
+        '<p class="ey big">Constellations Member Portal</p>' +
+        '<h2 class="t1">Welcome.<br>We’re glad you’re here.</h2>' +
         '<p class="lead">Start with these two steps.</p>' +
         '<div class="steps">' +
           stepRow(ICON.person, 'Complete your profile',
@@ -534,41 +568,63 @@
                   'You can change this anytime.',
                   u.notifications, 'Customize notifications') +
         '</div>' +
-        (guides
-          ? '<div class="stuck">' +
-              '<h3>Feeling stuck?</h3>' +
-              '<p>These short guides walk you through one task at a time.</p>' +
-              '<ul>' + guides + '</ul>' +
-              '<p class="nova-note">Nova, the Constellations AI assistant, can also ' +
-              'answer questions about how the Portal works. ' +
-              '<a href="' + esc(u.nova) + '">Ask Nova →</a></p>' +
-            '</div>'
-          : '') +
       '</section>';
   }
 
-  /* This month. The month is a date stamp, the theme is the title. */
-  function monthHTML() {
-    var m = CFG.month;
+  /* This month. One outlined box holds the theme and the three ways into it:
+     what to read, what to talk about, and what to ask Nova. The two articles
+     come from Circle, so #cst-ar is a fixed slot inside the box. */
+  function themeHTML() {
+    var m = CFG.month, u = CFG.urls;
+
+    var qs = (m.questions || []).map(function (q) {
+      return '<a class="thq" href="' + esc(u.discussions) + '">' + esc(q) + '</a>';
+    }).join('');
+
     return '' +
       '<section class="mo">' +
-        '<div class="morule"></div>' +
-        '<p class="ey">This month</p>' +
-        '<p class="mobig">' + esc(m.stamp) + '</p>' +
-        '<h2 class="moti">' + esc(m.title) + '</h2>' +
-        '<p class="motx">' + esc(m.body) + '</p>' +
-        '<p class="monext">' + esc(m.next) + '</p>' +
-      '</section>';
-  }
+        '<div class="thbox">' +
 
-  function conversationHTML() {
-    var u = CFG.urls;
-    return '' +
-      '<section class="band">' +
-        '<h2 class="sh">Join the <b>conversation</b></h2>' +
-        '<p>Open conversations across the community. You’re welcome to read ' +
-        'without posting for as long as you like.</p>' +
-        '<a class="btn" href="' + esc(u.discussions) + '">Go to Discussions →</a>' +
+          '<div class="thhead">' +
+            '<div><span class="thleaf">' + ICON.leaves + '</span>' +
+              '<p class="ey">This month</p>' +
+              '<p class="thmo">' + esc(m.stamp) + '</p></div>' +
+            '<div><h2 class="thti">' + esc(m.title) + '</h2>' +
+              '<p class="thtx">' + esc(m.body) + '</p></div>' +
+          '</div>' +
+
+          '<div class="thsec">' +
+            '<h3 class="thh">' + ICON.book + 'Suggested Reading</h3>' +
+            '<p class="thnote">' + esc(m.reading) + '</p>' +
+            '<div id="cst-ar"></div>' +
+            '<p class="thmore"><a class="go" href="' + esc(u.allArticles) +
+              '">Browse all articles →</a></p>' +
+          '</div>' +
+
+          '<div class="thsec">' +
+            '<h3 class="thh">' + ICON.talk + 'Join the Conversation</h3>' +
+            '<p class="thnote">Answer a question, or read what other members ' +
+              'have shared.</p>' +
+            '<div class="thqs">' + qs + '</div>' +
+            '<p class="thmore"><a class="go" href="' + esc(u.discussions) +
+              '">Go to Discussions →</a></p>' +
+          '</div>' +
+
+          '<div class="thnova">' +
+            '<h3 class="thh">' + ICON.spark + 'Ask Nova</h3>' +
+            '<div class="thnovagrid">' +
+              '<p>Nova is the Constellations AI assistant. It can answer ' +
+              'questions about dating, friendship, communication, and finding ' +
+              'your way around the Portal. Nova is not a coach or a counselor.</p>' +
+              '<div><p class="thask">“' + esc(m.novaAsk) + '”</p>' +
+                '<a class="go" href="' + esc(u.nova) + '">Ask Nova →</a></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<p class="thnext"><span class="ey">' + esc(m.nextLabel) + '</span>' +
+            '<b>' + esc(m.nextTitle) + '</b></p>' +
+
+        '</div>' +
       '</section>';
   }
 
@@ -648,29 +704,15 @@
     });
   }
 
+  /* The two articles named in CFG.month.articles, in that order. A slug that
+     no longer resolves is left out rather than shown broken. */
   function fillArticles(mount) {
+    if (!mount) return Promise.resolve();
     return posts(CFG.spaces.articles, 60).then(function (rs) {
-      var all = rs.filter(function (p) {
-        return p.slug && p.slug !== 'all-articles' && p.published_at;
-      }).sort(function (a, b) {
-        return new Date(a.published_at) - new Date(b.published_at);
-      });
-      if (!all.length) return;
-
-      var pick;
-      if (CFG.featuredArticles.length) {
-        pick = CFG.featuredArticles.map(function (s) {
-          return all.filter(function (p) { return p.slug === s; })[0];
-        }).filter(Boolean);
-      }
-      if (!pick || pick.length !== 3) {
-        var week = Math.floor(
-          (Date.now() - new Date(CFG.rotationEpoch).getTime()) / 6048e5);
-        if (week < 0) week = 0;
-        pick = [0, 1, 2].map(function (i) {
-          return all[((week * 3 + i) % all.length + all.length) % all.length];
-        });
-      }
+      var pick = (CFG.month.articles || []).map(function (s) {
+        return rs.filter(function (p) { return p.slug === s; })[0];
+      }).filter(Boolean);
+      if (!pick.length) return;
 
       var cards = pick.map(function (p) {
         var ps = paragraphs(p);
@@ -686,17 +728,14 @@
         var headHTML = bits.length > 1
           ? esc(bits[0]) + ' · <span class="nb">' + esc(bits.slice(1).join(' · ')) + '</span>'
           : esc(head);
-        return '<a class="ac" href="' + esc(postUrl(p, 'articles')) + '">' +
+        return '<a class="thart" href="' + esc(postUrl(p, 'articles')) + '">' +
             '<span class="lab2">' + headHTML + '</span>' +
-            '<h3>' + esc(p.name) + '</h3>' +
-            '<p>' + esc(lede) + '</p></a>';
+            '<h4>' + esc(p.name) + '</h4>' +
+            '<p>' + esc(lede) + '</p>' +
+            '<span class="go">Read the article →</span></a>';
       }).join('');
 
-      mount.appendChild(el(
-        '<section><h2 class="sh">Featured <b>Articles</b></h2>' +
-        '<div class="arts">' + cards + '</div>' +
-        '<p style="margin:16px 0 0"><a class="go" href="' + esc(CFG.urls.allArticles) +
-        '">All articles →</a></p></section>'));
+      mount.appendChild(el('<div class="tharts">' + cards + '</div>'));
     });
   }
 
@@ -868,15 +907,13 @@
     var root = document.createElement('div');
     root.id = CFG.root;
     root.setAttribute('data-cst-home', VERSION);
-    /* Orientation, then people, then the month, then what to read, then what
-       to join, then what is happening, then where to get help. Each live slot
+    /* Orientation, then people, then this month's theme with the three ways
+       into it, then what is happening, then where to get help. Each live slot
        is a fixed div so the running order never depends on which request
-       answers first. */
+       answers first. #cst-ar sits inside the theme box. */
     root.innerHTML = welcomeHTML() +
                      '<div id="cst-co"></div>' +
-                     monthHTML() +
-                     '<div id="cst-ar"></div>' +
-                     conversationHTML() +
+                     themeHTML() +
                      '<div id="cst-ev"></div>' +
                      supportHTML();
     host.parentElement.insertBefore(root, host);
