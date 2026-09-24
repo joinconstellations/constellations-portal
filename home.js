@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.1.0';
+  var VERSION = '1.2.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -39,15 +39,25 @@
       notificationsGuide:  null    /* guide not written yet                   */
     },
 
-    /* Monthly theme. Placeholder design, approved as interim. */
+    /* Monthly theme. The month is the date stamp; the theme is the title. */
     month: {
-      label: 'September · This month’s theme',
+      stamp: 'September',
       title: 'Transitions',
-      body:  'The in-between. The waiting, the not knowing, and the building of ' +
-             'something you can’t see the shape of yet. It runs through the ' +
+      body:  'Moving through change, waiting for what comes next, and finding a ' +
+             'way forward when you feel stuck. You’ll see this theme across the ' +
              'articles, the discussions and the gatherings all month.',
-      next:  'Next month · Masking'
+      next:  'In October we’ll turn to Masking.'
     },
+
+    /* Drawn from the Guiding Principles document, not written here. */
+    principles: [
+      { name: 'Clarity Is Kindness', url: 'clarityIsKindness',
+        line: 'Say what you mean. Ask direct questions. Nobody should have to guess.' },
+      { name: 'Slow Is Safe', url: 'slowIsSafe',
+        line: 'Time lets you notice patterns and make a decision that is yours.' },
+      { name: 'Pressure Is Poison', url: 'pressureIsPoison',
+        line: 'When pressure rises, the answer is not to decide faster.' }
+    ],
 
     /* Name up to three article slugs to override this week's rotation. */
     featuredArticles: [],
@@ -58,11 +68,6 @@
     memberLabels:  ['NEW MEMBER', 'FEATURED MEMBER'],
     featureLabels: ['PASSION PROJECTS', 'THREE QUESTIONS', 'GOOD COMPANY',
                     'A FEW MINUTES WITH', 'WORTH SHARING', 'QUOTE', 'MEMBER STORY'],
-
-    /* Must be quoted from the Community Guidelines Agreement, never written
-       here. While this is empty the reminders panel is hidden and the block
-       runs full width. */
-    reminders: [],
 
     /* Card link text. The card already shows the content, so the link only
        needs to say where it goes. Name a format here to override it. */
@@ -234,12 +239,6 @@
     };
   }
 
-  function linkOr(href, text, cls) {
-    return href
-      ? '<a class="' + cls + '" href="' + esc(href) + '">' + esc(text) + ' →</a>'
-      : '<span class="' + cls + ' cst-soon">' + esc(text) + '</span>';
-  }
-
   /* ------------------------------------------------------------------- css */
 
   var CSS = [
@@ -337,6 +336,7 @@
     '#cst-home .stuck-f a{color:var(--mu)!important;text-decoration:underline}',
     /* where to go */
     '#cst-home .help{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ha)}',
+    '#cst-home .help.two{grid-template-columns:repeat(2,1fr)}',
     '#cst-home .hp{padding:22px 22px 24px;font-size:16px;line-height:1.45;display:flex;flex-direction:column}',
     '#cst-home .hp+.hp{border-left:1px solid var(--ha)}',
     '#cst-home .hp .use{font:600 10.5px Inter,system-ui,sans-serif;letter-spacing:.14em;',
@@ -355,6 +355,51 @@
     '#cst-home .pc .who>div{padding-top:4px}',
     '#cst-home .msg.cst-one{grid-template-columns:1fr}',
     '#cst-home .btn.cst-quiet{color:var(--mu)!important;border-style:dashed;background:transparent}',
+    /* 1.2.0 — alternating grounds and section shapes */
+    '#cst-home .sand{background:#FAF8F4}',
+    '#cst-home .band{background:var(--sa)}',
+    /* this month */
+    '#cst-home .mo{padding-top:52px}',
+    '#cst-home .morule{width:86px;height:3px;background:var(--gd);margin:0 0 20px}',
+    '#cst-home .mobig{margin:0;font:500 66px/1 "Cormorant Garamond",Georgia,serif;',
+    'letter-spacing:.03em;text-transform:uppercase;color:var(--sl)}',
+    '#cst-home .moti{margin:8px 0 18px;font:600 40px/1.1 "Cormorant Garamond",Georgia,serif;',
+    'color:var(--nv)}',
+    '#cst-home .motx{margin:0;font-size:18px;line-height:1.6;max-width:660px}',
+    '#cst-home .monext{margin:20px 0 0;font:600 11px Inter,system-ui,sans-serif;',
+    'letter-spacing:.16em;text-transform:uppercase;color:var(--mu)}',
+    /* getting started, merged help */
+    '#cst-home .hp h3{margin-bottom:12px}',
+    '#cst-home .stuck{border:0;border-top:1px solid var(--ha);padding:26px 0 0;margin-top:0}',
+    '#cst-home .startbox{border:1px solid var(--ha);padding:26px 28px 28px}',
+    '#cst-home .startbox .help{border:0}',
+    '#cst-home .startbox .hp{padding:0 28px 0 0}',
+    '#cst-home .startbox .hp+.hp{border-left:1px solid var(--ha);padding-left:28px}',
+    '#cst-home .startbox .help{grid-template-columns:1fr 1fr;margin-bottom:26px}',
+    '#cst-home .nova-note{margin:14px 0 0!important;font-size:15px;color:var(--mu)}',
+    '#cst-home .nova-note a{color:var(--gd)!important;text-decoration:none;font-weight:600}',
+    /* community */
+    '#cst-home .pc .lab2{display:block;margin:0 0 10px}',
+    '#cst-home .cr{margin:22px 0 0;font-size:16px;color:var(--ik)}',
+    '#cst-home .cr a{color:var(--gd)!important;text-decoration:none;font-weight:600}',
+    '#cst-home .featme{display:flex;justify-content:space-between;align-items:center;',
+    'gap:24px;background:var(--s2);border-left:3px solid var(--gd);padding:16px 20px;',
+    'margin-top:30px;font-size:16px;line-height:1.5}',
+    '#cst-home .featme p{margin:0}',
+    '#cst-home .featme b{font-weight:600;color:var(--nv)}',
+    '#cst-home .featme a,#cst-home .featme span.q{flex:none;font:600 13px Inter,system-ui,sans-serif;',
+    'color:var(--gd)!important;text-decoration:none;white-space:nowrap}',
+    '#cst-home .featme span.q{color:var(--mu)!important}',
+    '#cst-home .spot.alt{flex-direction:row-reverse}',
+    /* conversation band */
+    '#cst-home .band p{margin:0 0 18px;font-size:18px;line-height:1.6;max-width:640px}',
+    /* footer principles */
+    '#cst-home .prg{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:6px}',
+    '#cst-home .prc .prm{display:block;width:34px;height:2px;background:var(--gd);margin:0 0 12px}',
+    '#cst-home .prc h3{margin:0 0 6px;font:600 22px "Cormorant Garamond",Georgia,serif}',
+    '#cst-home .prc h3 a{color:var(--nv)!important;text-decoration:none;',
+    'border-bottom:1px solid var(--sl)}',
+    '#cst-home .prc p{margin:0;font-size:15px;line-height:1.5;color:var(--mu)}',
     /* phone */
     '@media (max-width:767px){',
     '#cst-home section,#cst-home .cst-mast,#cst-home .foot{padding-left:22px;padding-right:22px}',
@@ -368,29 +413,30 @@
     '#cst-home .ev{flex-wrap:wrap;gap:14px}',
     '#cst-home .ev>div:nth-child(2){min-width:calc(100% - 100px)}',
     '#cst-home .ev .btn{flex-basis:100%;text-align:center}',
+    '#cst-home .mobig{font-size:44px}',
+    '#cst-home .moti{font-size:30px}',
+    '#cst-home .prg{grid-template-columns:1fr;gap:22px}',
+    '#cst-home .startbox .help{grid-template-columns:1fr}',
+    '#cst-home .startbox .hp{padding:0}',
+    '#cst-home .startbox .hp+.hp{border-left:0;border-top:1px solid var(--ha);',
+    'padding-left:0;padding-top:24px;margin-top:24px}',
+    '#cst-home .featme{flex-direction:column;align-items:flex-start;gap:12px}',
+    '#cst-home .spot.alt{flex-direction:column}',
     '}'
   ].join('');
 
   /* -------------------------------------------------------------- sections */
 
   function mastheadHTML() {
-    var m = CFG.month;
     return '' +
       '<section class="cst-mast">' +
         '<p class="ey big">Constellations Member Portal</p>' +
         '<h2 class="t1">Welcome.<br>We’re glad you’re here.</h2>' +
-        '<div class="bar"></div>' +
-        '<div class="month">' +
-          '<p class="mlab">' + esc(m.label) + '</p>' +
-          '<h2>' + esc(m.title) + '</h2>' +
-          '<p class="tp">' + esc(m.body) + '</p>' +
-          '<p class="nextm">' + esc(m.next) + '</p>' +
-        '</div>' +
       '</section>';
   }
 
-  /* Start here. Mirrors the Get started checklist so the two never drift:
-     Portal Profile, Notifications, Nova, in that order. */
+  /* Getting Started. Two steps, because Nova is a resource, not a step.
+     The guide list lives inside the same box rather than a second one. */
   function stepsHTML() {
     var u = CFG.urls;
     /* A guide that is not written yet is left out, not shown greyed. */
@@ -399,110 +445,76 @@
         ? '<li><a href="' + esc(href) + '">' + label + ' →</a></li>'
         : '';
     }
+    var guides = gl(u.yourProfile,       'Complete your profile and add your photograph') +
+                 gl(u.connectionRequests, 'How Connection Requests work') +
+                 gl(u.addToHomeScreen,   'Save the Portal to your phone');
+
     return '' +
       '<section>' +
-        '<h2 class="sh">New to the Portal? <b>Start here</b></h2>' +
-        '<p class="lead">These three steps will help you get settled in the Portal. ' +
-          'You can complete them one at a time. You do not need to explore everything ' +
-          'today.</p>' +
-        '<div class="help">' +
-          '<div class="hp"><span class="stepn">1</span><h3>Complete your profile</h3>' +
-            'Add a little about yourself so other members can get to know you. Upload the ' +
-            'cream-background photograph our team emailed you.' +
-            '<a class="go" href="' + esc(u.profile) + '">Complete my profile →</a></div>' +
-          '<div class="hp"><span class="stepn">2</span><h3>Choose your notifications</h3>' +
-            'Decide which Portal updates you want to receive by email, including Connection ' +
-            'Requests, Gatherings, and replies. You can change your choices later.' +
-            '<a class="go" href="' + esc(u.notifications) + '">Choose my notifications →</a></div>' +
-          '<div class="hp"><span class="stepn">3</span><h3>Meet Nova</h3>' +
-            'Ask Nova how the Portal works, where to find something, or practice what you ' +
-            'want to say.' +
-            '<span class="not">Nova is the Constellations AI assistant — not a person ' +
-            'or a reporting channel.</span>' +
-            '<a class="go" href="' + esc(u.nova) + '">Ask Nova →</a></div>' +
-        '</div>' +
-        '<div class="stuck">' +
-          '<h3>Feeling stuck?</h3>' +
-          '<p>These short guides walk you through one task at a time.</p>' +
-          '<ul>' +
-            gl(u.yourProfile,        'Complete your profile and add your photograph') +
-            gl(u.notificationsGuide, 'Choose your notification settings') +
-            gl(u.connectionRequests, 'Learn how Connection Requests work') +
-            gl(u.addToHomeScreen,    'Save the Portal to your phone') +
-          '</ul>' +
-          '<p class="stuck-f">Still need help? <a href="' + esc(u.nova) + '">Ask Nova</a>.' +
-            '<br>To tell us about a possible Community Guidelines violation, use ' +
-            '<a href="' + esc(u.report) + '">Report a Concern</a>.</p>' +
+        '<h2 class="sh">Getting <b>Started</b></h2>' +
+        '<p class="lead">Here are two steps to help you get settled.</p>' +
+        '<div class="startbox">' +
+          '<div class="help">' +
+            '<div class="hp"><span class="stepn">1</span><h3>Complete Your Profile</h3>' +
+              'Tell other members a little about yourself, then upload the ' +
+              'cream-background photograph our team emailed you.' +
+              '<a class="go" href="' + esc(u.profile) + '">Complete my profile →</a></div>' +
+            '<div class="hp"><span class="stepn">2</span><h3>Customize Notifications</h3>' +
+              'Choose which Portal updates you receive by email, including Connection ' +
+              'Requests, Gatherings, and replies. You can change these settings anytime.' +
+              '<a class="go" href="' + esc(u.notifications) + '">Customize my notifications →</a></div>' +
+          '</div>' +
+          (guides
+            ? '<div class="stuck">' +
+                '<h3>Feeling stuck?</h3>' +
+                '<p>These short guides walk you through one task at a time.</p>' +
+                '<ul>' + guides + '</ul>' +
+                '<p class="nova-note">Nova, the Constellations AI assistant, can also ' +
+                'answer questions about how the Portal works. ' +
+                '<a href="' + esc(u.nova) + '">Ask Nova →</a></p>' +
+              '</div>'
+            : '') +
         '</div>' +
       '</section>';
   }
 
-  function staticHTML() {
+  /* This month. The month is a date stamp, the theme is the title. */
+  function monthHTML() {
+    var m = CFG.month;
+    return '' +
+      '<section class="mo">' +
+        '<div class="morule"></div>' +
+        '<p class="ey">This month</p>' +
+        '<p class="mobig">' + esc(m.stamp) + '</p>' +
+        '<h2 class="moti">' + esc(m.title) + '</h2>' +
+        '<p class="motx">' + esc(m.body) + '</p>' +
+        '<p class="monext">' + esc(m.next) + '</p>' +
+      '</section>';
+  }
+
+  function conversationHTML() {
     var u = CFG.urls;
     return '' +
-      /* be featured */
-      '<section>' +
-        '<div class="feat-me">' +
-          '<div>' +
-            '<h2 class="sh" style="margin-bottom:6px">Would you like to be <b>featured</b>?</h2>' +
-            '<p style="margin:0">Share a few answers, something you made, a pet, or a ' +
-            'recommendation. You approve everything before it goes up.</p>' +
-          '</div>' +
-          (u.beFeatured
-            ? '<a class="btn" href="' + esc(u.beFeatured) + '">See the ways to be featured →</a>'
-            : '<span class="btn cst-quiet">See the ways to be featured</span>') +
-        '</div>' +
-      '</section>' +
+      '<section class="band">' +
+        '<h2 class="sh">Join the <b>conversation</b></h2>' +
+        '<p>Open conversations across the community. You’re welcome to read ' +
+        'without posting for as long as you like.</p>' +
+        '<a class="btn" href="' + esc(u.discussions) + '">Go to Discussions →</a>' +
+      '</section>';
+  }
 
-      /* discussions */
-      '<section>' +
-        '<h2 class="sh">Have you joined a <b>discussion</b> yet?</h2>' +
-        '<div class="disc">' +
-          '<p style="margin:0">Open conversations across the community. You’re welcome to ' +
-          'read without posting for as long as you like.</p>' +
-          '<a class="btn" href="' + esc(u.discussions) + '">Go to Discussions →</a>' +
-        '</div>' +
-      '</section>' +
-
-      /* direct messages */
-      '<section>' +
-        '<h2 class="sh"><b>Direct Messages</b> &amp; Connection Requests</h2>' +
-        '<div class="msg' + (CFG.reminders.length ? '' : ' cst-one') + '">' +
-          '<div>' +
-            '<h2>Reaching out to another member</h2>' +
-            '<p style="margin:6px 0 14px">Every conversation here starts with a Connection ' +
-            'Request. Our short guide covers how to send one, what happens next, and how to ' +
-            'keep it comfortable for both of you.</p>' +
-            linkOr(u.connectionRequests, 'How Connection Requests Work', 'go') +
-          '</div>' +
-          (CFG.reminders.length
-            ? '<div class="panel">' +
-                '<p class="ey" style="margin-bottom:8px">Friendly reminders</p>' +
-                '<ul>' + CFG.reminders.map(function (r) {
-                  return '<li>' + esc(r) + '</li>';
-                }).join('') + '</ul>' +
-              '</div>'
-            : '') +
-        '</div>' +
-      '</section>' +
-
-      /* where to go */
-      '<section>' +
-        '<h2 class="sh">Where to <b>go</b></h2>' +
-        '<div class="help">' +
+  function supportHTML() {
+    var u = CFG.urls;
+    return '' +
+      '<section class="sand">' +
+        '<h2 class="sh">Talk to a <b>person</b></h2>' +
+        '<div class="help two">' +
           '<div class="hp"><h3>Book coaching</h3>One-to-one time with a coach.' +
             '<span class="use">Use it for</span>Working through something specific, like a ' +
             'first date, a message you’re stuck on, or a plan.' +
             '<span class="use">Good to know</span>' +
             '<span class="not">Booked and paid for separately from membership.</span>' +
             '<a class="go" href="' + esc(u.coaching) + '">See coaching →</a></div>' +
-          '<div class="hp"><h3>Ask Nova</h3>The Constellations AI assistant.' +
-            '<span class="use">Use it for</span>Quick questions about the portal, how things ' +
-            'work here, or practicing what to say.' +
-            '<span class="use">Good to know</span>' +
-            '<span class="not">Nova is not a person. For a concern about someone, use ' +
-            'Report a Concern.</span>' +
-            '<a class="go" href="' + esc(u.nova) + '">Open Nova →</a></div>' +
           '<div class="hp"><h3>Report a concern</h3>A private route to our team.' +
             '<span class="use">Use it for</span>When someone’s behavior worries you, or ' +
             'something doesn’t feel right.' +
@@ -513,15 +525,16 @@
         '</div>' +
       '</section>' +
 
-      /* footer */
       '<div class="foot">' +
         '<p class="ey">Our Guiding Principles</p>' +
-        '<div class="pr">' +
-          (u.clarityIsKindness
-            ? '<a href="' + esc(u.clarityIsKindness) + '">Clarity Is Kindness</a>'
-            : '<span>Clarity Is Kindness</span>') +
-          '<a href="' + esc(u.slowIsSafe) + '">Slow Is Safe</a>' +
-          '<a href="' + esc(u.pressureIsPoison) + '">Pressure Is Poison</a>' +
+        '<div class="prg">' +
+          CFG.principles.map(function (pr) {
+            var href = u[pr.url];
+            return '<div class="prc"><span class="prm"></span>' +
+              '<h3>' + (href ? '<a href="' + esc(href) + '">' + esc(pr.name) + '</a>'
+                             : esc(pr.name)) + '</h3>' +
+              '<p>' + esc(pr.line) + '</p></div>';
+          }).join('') +
         '</div>' +
       '</div>';
   }
@@ -560,7 +573,7 @@
       }).join('');
 
       mount.appendChild(el(
-        '<section><h2 class="sh">Featured <b>Gathering</b></h2>' + rows +
+        '<section><h2 class="sh">The next <b>Gathering</b></h2>' + rows +
         '<p style="margin:14px 0 0"><a class="go" href="' + esc(CFG.urls.calendar) +
         '">See the full calendar →</a></p></section>'));
     });
@@ -620,6 +633,7 @@
 
   function fillCommunity(mount) {
     return posts(CFG.spaces.community, 30).then(function (rs) {
+      var u = CFG.urls;
       var live = rs.filter(function (p) {
         return p.published_at && p.slug &&
                (!p.status || p.status === 'published');
@@ -634,7 +648,10 @@
         else if (CFG.featureLabels.indexOf(l) > -1) { if (features.length < 2) features.push(p); }
       });
 
-      var html = '';
+      if (!people.length && !features.length) return;
+
+      var html = '<section class="sand">' +
+                 '<h2 class="sh">Meet the <b>Community</b></h2>';
 
       if (people.length) {
         var cards = people.map(function (p) {
@@ -646,7 +663,9 @@
             ? '<img class="ph" src="' + esc(src) + '" alt="">'
             : '<div class="ph">' + esc((p.name || '?').replace(/^Meet\s+/i, '').charAt(0)) + '</div>';
           var who = (p.name || '').replace(/^Meet\s+/i, '');
-          return '<div class="pc"><div class="who">' + face +
+          return '<div class="pc">' +
+              '<span class="lab2">' + esc(label(p)) + '</span>' +
+              '<div class="who">' + face +
               '<div><h3>' + esc(who) + '</h3>' +
               '<span class="meta">' + esc(meta) + '</span></div></div>' +
               (hello ? '<div class="lab">Say hello if</div><p>' + esc(hello) + '</p>'
@@ -654,12 +673,19 @@
               '<a class="go" href="' + esc(postUrl(p, 'community')) + '">Meet ' +
               esc(who) + ' →</a></div>';
         }).join('');
-        html += '<section><h2 class="sh">Our <b>Community</b></h2>' +
-                '<div class="ppl">' + cards + '</div></section>';
+        html += '<div class="ppl">' + cards + '</div>';
+
+        /* Connection Requests explained where it is relevant, rather than in a
+           section of its own. */
+        html += '<p class="cr">Want to reach out to someone? Every conversation here ' +
+                'starts with a Connection Request. ' +
+                (u.connectionRequests
+                  ? '<a href="' + esc(u.connectionRequests) + '">How Connection Requests work →</a>'
+                  : '') + '</p>';
       }
 
       if (features.length) {
-        var spots = features.map(function (p) {
+        var spots = features.map(function (p, idx) {
           var l    = label(p);
           var ps   = paragraphs(p).slice(1);
           var src  = photo(p);
@@ -683,7 +709,8 @@
             mid = body ? '<p>' + esc(body) + '</p>' : '';
           }
 
-          return '<div class="spot">' +
+          /* alternate the photograph side so two features do not mirror */
+          return '<div class="spot' + (idx % 2 ? ' alt' : '') + '">' +
               (src ? '<img src="' + esc(src) + '" alt="">' : '') +
               '<div><span class="lab2">' + esc(l) + '</span>' +
               '<h2>' + esc(p.name) + '</h2>' +
@@ -692,10 +719,22 @@
               '<a class="go" href="' + esc(postUrl(p, 'community')) + '">' +
               esc(cta) + ' →</a></div></div>';
         }).join('');
-        html += '<section style="border-top:0;padding-top:6px">' + spots + '</section>';
+        html += '<div style="margin-top:38px;padding-top:38px;border-top:1px solid var(--ha)">' +
+                spots + '</div>';
       }
 
-      if (html) mount.appendChild(el('<div>' + html + '</div>'));
+      /* Be featured — a slim strip, not a section of its own. */
+      html += '<div class="featme">' +
+          '<p><b>Would you like to be featured?</b> Share a few answers, something ' +
+          'you made, a pet, or a recommendation. You approve everything before it ' +
+          'goes up.</p>' +
+          (u.beFeatured
+            ? '<a href="' + esc(u.beFeatured) + '">See the ways →</a>'
+            : '<span class="q">Coming soon</span>') +
+        '</div>';
+
+      html += '</section>';
+      mount.appendChild(el('<div>' + html + '</div>'));
     });
   }
 
@@ -738,14 +777,18 @@
     var root = document.createElement('div');
     root.id = CFG.root;
     root.setAttribute('data-cst-home', VERSION);
-    /* Three fixed slots keep the running order steady no matter which
-       request answers first. */
+    /* Orientation, then people, then the month, then what to read, then what
+       to join, then what is happening, then where to get help. Each live slot
+       is a fixed div so the running order never depends on which request
+       answers first. */
     root.innerHTML = mastheadHTML() +
                      stepsHTML() +
-                     '<div id="cst-ev"></div>' +
-                     '<div id="cst-ar"></div>' +
                      '<div id="cst-co"></div>' +
-                     staticHTML();
+                     monthHTML() +
+                     '<div id="cst-ar"></div>' +
+                     conversationHTML() +
+                     '<div id="cst-ev"></div>' +
+                     supportHTML();
     host.parentElement.insertBefore(root, host);
     hideOld();
 
