@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.4.0';
+  var VERSION = '1.4.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -792,7 +792,10 @@
       var asides = quotes.map(function (p) {
         var q = (blocks(p).filter(function (b) { return b.type === 'q'; })[0] || {}).text || '';
         if (!q) return '';
-        var who = paragraphs(p).slice(1).filter(notLabel)[0] || p.name || '';
+        var loc = paragraphs(p).slice(1).filter(notLabel).filter(function (t) {
+          return t.length <= 60 && t !== p.name;
+        })[0] || '';
+        var who = (p.name || '') + (loc ? ' · ' + loc : '');
         var src = photo(p);
         return '<a class="qi" href="' + esc(postUrl(p, 'community')) + '">' +
             (src ? '<img src="' + esc(src) + '" alt="">' : '') +
