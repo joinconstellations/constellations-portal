@@ -201,6 +201,10 @@ if (post.getAttribute("data-nsm-label") !== lab) post.setAttribute("data-nsm-lab
     var a = t.closest('a[href]');
     if (a) {
       var href = a.getAttribute("href") || "";
+      /* A real link inside a card is still a link. Without this every entry on
+         a contents page (All Guides, All Articles) is swallowed here, and no
+         guide opens. Fixed 24 Sep 2026. */
+      if (href && href.charAt(0) !== "#") return;
       if (!card) return;
     } else if (!card) {
       return;
