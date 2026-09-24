@@ -105,3 +105,13 @@ body:has([role="dialog"][data-state="open"]:not(#chatbase-bubble-window)) #chatb
 body:has([role="dialog"][data-state="open"]:not(#chatbase-bubble-window)) #chatbase-message-bubbles,
 body:has([aria-modal="true"]:not(#chatbase-bubble-window)) #chatbase-bubble-button,
 body:has([aria-modal="true"]:not(#chatbase-bubble-window)) #chatbase-message-bubbles{display:none!important}
+
+/* Community header: title and rule only. Lede, intro paragraph and doorway links removed 24 Sep 2026 (Discussions, Gatherings, Articles and Nova live in the sidebar). Copy still sits in the snippet's SPACES.community config. */
+[data-nvx="community"] .nvx-lede,[data-nvx="community"] .nvx-sub,[data-nvx="community"]>.nvx-door{display:none!important}
+
+/* Pinned "Would you like to be featured?" post in Community: mirrors the note on Home. */
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]){background:#F5EDE1!important;border:0!important;border-left:3px solid #7D6220!important;border-radius:0!important;box-shadow:none!important;padding:18px 22px!important}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-testid="see-more-less"] button{display:none!important}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"] p{margin:0 0 6px!important;font-size:16px;line-height:1.5}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]) a[href$="/c/community/be-featured"]{color:#1A2238!important}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"] em{font:600 13px Inter,system-ui,sans-serif!important;font-style:normal!important;color:#5A5849!important}
