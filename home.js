@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.3.0';
+  var VERSION = '1.4.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -64,6 +64,11 @@
 
     /* Reading order runs from the earliest published date. Week 0 starts here. */
     rotationEpoch: '2026-08-31T00:00:00Z',
+
+    /* How many member features Home shows, and how many short quotes run
+       below them as small asides. */
+    featureCount: 3,
+    quoteCount:   2,
 
     memberLabels:  ['NEW MEMBER', 'FEATURED MEMBER'],
     featureLabels: ['PASSION PROJECTS', 'THREE QUESTIONS', 'GOOD COMPANY',
@@ -162,6 +167,7 @@
         else if (t === 'image')       out.push({ type: 'img',  text: '',                 node: n });
         else if (t === 'bulletList')  out.push({ type: 'ul',   text: '',                 node: n });
         else if (t === 'orderedList') out.push({ type: 'ol',   text: '',                 node: n });
+        else if (t === 'blockquote')  out.push({ type: 'q',    text: nodeText(n).trim(), node: n });
       });
       return out;
     }
@@ -177,6 +183,7 @@
       else if (tag === 'img')               out.push({ type: 'img', text: '',                   dom: c });
       else if (tag === 'ul')                out.push({ type: 'ul',  text: '',                   dom: c });
       else if (tag === 'ol')                out.push({ type: 'ol',  text: '',                   dom: c });
+      else if (tag === 'blockquote')        out.push({ type: 'q',   text: c.textContent.trim(), dom: c });
     });
     return out;
   }
@@ -189,6 +196,12 @@
   function label(post) {
     var p = paragraphs(post);
     return p.length ? p[0].toUpperCase().replace(/\s+/g, ' ').trim() : '';
+  }
+
+  /* False for a label line such as FEATURED MEMBER, so it is never shown as text. */
+  function notLabel(t) {
+    var u = t.toUpperCase().replace(/\s+/g, ' ').trim();
+    return CFG.memberLabels.indexOf(u) < 0 && CFG.featureLabels.indexOf(u) < 0;
   }
 
   function photo(post) {
@@ -410,6 +423,14 @@
     'color:var(--gd)!important;text-decoration:none;white-space:nowrap}',
     '#cst-home .featme span.q{color:var(--mu)!important}',
     '#cst-home .spot.alt{flex-direction:row-reverse}',
+    /* 1.4.0 — quotes as small asides below the features */
+    '#cst-home .qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px 40px;',
+    'margin-top:34px;padding-top:30px;border-top:1px solid var(--ha)}',
+    '#cst-home .qi{display:flex;gap:18px;align-items:flex-start;max-width:720px;text-decoration:none!important;color:inherit!important}',
+    '#cst-home .qi img{width:64px;height:64px;object-fit:cover;object-position:50% 25%;border:1px solid var(--sl);flex:none}',
+    '#cst-home .qi q{display:block;font:italic 500 18px/1.45 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
+    '#cst-home .qi cite{display:block;margin-top:8px;font:600 10.5px Inter,system-ui,sans-serif;font-style:normal;',
+    'letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}',
     /* conversation band */
     '#cst-home .band p{margin:0 0 18px;font-size:18px;line-height:1.6;max-width:640px}',
     /* footer principles */
@@ -689,14 +710,15 @@
         return new Date(b.published_at) - new Date(a.published_at);
       });
 
-      var people = [], features = [];
+      var people = [], features = [], quotes = [];
       live.forEach(function (p) {
         var l = label(p);
         if (CFG.memberLabels.indexOf(l) > -1) { if (people.length < 3) people.push(p); }
-        else if (CFG.featureLabels.indexOf(l) > -1) { if (features.length < 2) features.push(p); }
+        else if (l === 'QUOTE') { if (quotes.length < CFG.quoteCount) quotes.push(p); }
+        else if (CFG.featureLabels.indexOf(l) > -1) { if (features.length < CFG.featureCount) features.push(p); }
       });
 
-      if (!people.length && !features.length) return;
+      if (!people.length && !features.length && !quotes.length) return;
 
       var html = '<section class="sand">' +
                  '<h2 class="sh">Meet the <b>Community</b></h2>';
@@ -723,14 +745,14 @@
         }).join('');
         /* No Connection Request prompt here: a featured member may not have
            joined the Portal yet, so there may be no profile to connect from.
-           The mechanic is explained by the guide in Getting Started instead. */
+           The mechanic is explained in the Guides instead. */
         html += '<div class="ppl">' + cards + '</div>';
       }
 
       if (features.length) {
         var spots = features.map(function (p, idx) {
           var l    = label(p);
-          var ps   = paragraphs(p).slice(1);
+          var ps   = paragraphs(p).slice(1).filter(notLabel);
           var src  = photo(p);
           var cta  = CFG.featureLink[l] || 'View Post';
           var role = '', body = '';
@@ -765,6 +787,18 @@
         html += '<div style="margin-top:38px;padding-top:38px;border-top:1px solid var(--ha)">' +
                 spots + '</div>';
       }
+
+      /* Quotes: short, in the member's own words, set as small asides. */
+      var asides = quotes.map(function (p) {
+        var q = (blocks(p).filter(function (b) { return b.type === 'q'; })[0] || {}).text || '';
+        if (!q) return '';
+        var who = paragraphs(p).slice(1).filter(notLabel)[0] || p.name || '';
+        var src = photo(p);
+        return '<a class="qi" href="' + esc(postUrl(p, 'community')) + '">' +
+            (src ? '<img src="' + esc(src) + '" alt="">' : '') +
+            '<span><q>' + esc(decode(q)) + '</q><cite>' + esc(who) + '</cite></span></a>';
+      }).join('');
+      if (asides) html += '<div class="qa">' + asides + '</div>';
 
       /* Be featured — a slim strip, not a section of its own. */
       html += '<div class="featme">' +
