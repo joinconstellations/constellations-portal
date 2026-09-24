@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.13.1';
+  var VERSION = '1.14.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -698,6 +698,23 @@
       '</section>';
   }
 
+  /* Kate's Bookshelf: one quiet block near the end of Home, added 24 Sep 2026 at
+     Kate's direction. Links to her Community post, which carries the affiliate note. */
+  function shelfHTML() {
+    return '' +
+      '<section style="padding:8px 32px 40px">' +
+        '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px;max-width:720px;margin:0 auto;padding:20px 24px;border:1px solid #CBBBA0;background:#FBF8F2">' +
+          '<img src="https://app.circle.so/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBCRHZmL2dzPSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--766a15ea983256a3a4855194c8287cbc575c0302/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDRG9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFKb0FUQTZDbk5oZG1WeWV3WTZDbk4wY21sd1ZBPT0iLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--174cceaf9a31f17164863935309188a5606afc21/Kate_Portrait.png" alt="Kate Inez Harrington" style="flex:none;width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:50% 15%">' +
+          '<div style="flex:1 1 260px;min-width:0">' +
+            '<p style="margin:0 0 4px;font-family:Inter,system-ui,sans-serif;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#7D6220">From Kate</p>' +
+            '<p style="margin:0 0 6px;font-family:&quot;Cormorant Garamond&quot;,Georgia,serif;font-size:26px;font-weight:600;line-height:1.15;color:#1A2238">Kate’s Bookshelf</p>' +
+            '<p style="margin:0 0 10px;font-family:&quot;EB Garamond&quot;,Georgia,serif;font-size:18px;line-height:1.5;color:#5A5849">Books I’d hand to a client in a session, for dating, friendship and connection.</p>' +
+            '<a href="/c/community/kates-bookshelf" style="font-family:Inter,system-ui,sans-serif;font-size:15px;font-weight:600;color:#7D6220;text-decoration:none">See the bookshelf →</a>' +
+          '</div>' +
+        '</div>' +
+      '</section>';
+  }
+
   function supportHTML() {
     var u = CFG.urls;
     return '' +
@@ -869,6 +886,7 @@
 
       var people = [], features = [], quotes = [];
       live.forEach(function (p) {
+        if (p.slug === 'kates-bookshelf') return; /* has its own block near the end */
         var l = label(p);
         if (CFG.memberLabels.indexOf(l) > -1) { if (people.length < 6) people.push(p); }
         else if (l === 'QUOTE') { if (quotes.length < CFG.quoteCount) quotes.push(p); }
@@ -1040,6 +1058,7 @@
                      themeHTML() +
                      '<div id="cst-co"></div>' +
                      '<div id="cst-ev"></div>' +
+                     shelfHTML() +
                      supportHTML();
     host.parentElement.insertBefore(root, host);
     hideOld();
