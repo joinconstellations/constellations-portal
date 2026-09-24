@@ -72,3 +72,22 @@
 [data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p>strong:first-child{font-size:10px;letter-spacing:.12em}
 [data-nsm="story"][data-nsm-label="WORTH SHARING"] .tiptap>p:has(>a:only-child){padding-left:0}
 }
+
+/* Quote (a short message in the member's own words). Runs on the Member Story system.
+   Post pattern: QUOTE / member photo / a blockquote holding the quote (no quotation
+   marks; the template adds them) / one short paragraph for the attribution
+   (e.g. Mal, or Kate · Washington, D.C.). */
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>p:empty,
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>p:has(>br:only-child){display:none}
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>.node-image:first-of-type{width:180px;max-width:180px;margin:0 44px 30px 0}
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>.node-image:first-of-type img{object-position:50% 30%}
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>blockquote{clear:none;margin:6px 0 0 224px;padding:4px 0 4px 26px;border:0;border-left:3px solid #CBBBA0;font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:500;font-size:28px;line-height:1.38;color:#1A2238}
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>blockquote>p:first-child::before{content:"\201C"}
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>blockquote>p:last-child::after{content:"\201D"}
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>blockquote+p{margin:16px 0 0 224px;padding-left:29px;font-family:"EB Garamond",Georgia,serif;font-size:18px;line-height:1.5;color:#5A5849}
+@media (max-width:767px){
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap{padding-left:6px;padding-right:6px}
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>.node-image:first-of-type{float:none;width:170px;max-width:170px;margin:0 0 28px}
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>blockquote{margin-left:0;padding-left:18px;font-size:23px}
+[data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>blockquote+p{margin-left:0;padding-left:21px;font-size:17px}
+}
