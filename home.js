@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.2.3';
+  var VERSION = '1.3.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -344,8 +344,6 @@
     '#cst-home .msg li{margin:4px 0}',
     /* first steps */
     '#cst-home .lead{font-size:17px;line-height:1.6;color:var(--ik);margin:0 0 30px;max-width:780px}',
-    '#cst-home .stepn{display:block;font:500 26px/1 "Cormorant Garamond",Georgia,serif;',
-    'color:var(--sl);margin:0 0 6px}',
     '#cst-home .stuck{border:1px solid var(--sl);background:transparent;',
     'padding:24px 26px 26px;margin-top:24px}',
     '#cst-home .stuck h3{font:600 10.5px Inter,system-ui,sans-serif;letter-spacing:.14em;',
@@ -399,11 +397,6 @@
     /* getting started, merged help */
     '#cst-home .hp h3{margin-bottom:12px}',
     '#cst-home .stuck{border:0;border-top:1px solid var(--ha);padding:26px 0 0;margin-top:0}',
-    '#cst-home .startbox{border:1px solid var(--ha);padding:26px 28px 28px}',
-    '#cst-home .startbox .help{border:0}',
-    '#cst-home .startbox .hp{padding:0 28px 0 0}',
-    '#cst-home .startbox .hp+.hp{border-left:1px solid var(--ha);padding-left:28px}',
-    '#cst-home .startbox .help{grid-template-columns:1fr 1fr;margin-bottom:26px}',
     '#cst-home .nova-note{margin:14px 0 0!important;font-size:15px;color:var(--mu)}',
     '#cst-home .nova-note a{color:var(--gd)!important;text-decoration:none;font-weight:600}',
     /* community */
@@ -426,6 +419,20 @@
     '#cst-home .prc h3 a{color:var(--nv)!important;text-decoration:none;',
     'border-bottom:1px solid var(--sl)}',
     '#cst-home .prc p{margin:0;font-size:15px;line-height:1.5;color:var(--mu)}',
+    /* 1.3.0 — welcome opening: two steps as hairline-separated rows */
+    '#cst-home .ey.mast{margin-bottom:16px}',
+    '#cst-home .cst-mast .lead{margin:22px 0 0}',
+    '#cst-home .steps{margin-top:26px}',
+    '#cst-home .strow{display:flex;align-items:center;gap:22px;padding:24px 0;',
+    'border-top:1px solid var(--ha)}',
+    '#cst-home .strow .ico{flex:none;width:54px;height:54px;border-radius:50%;',
+    'background:var(--sa);color:var(--gd);display:flex;align-items:center;justify-content:center}',
+    '#cst-home .strow .ico svg{width:26px;height:26px;display:block}',
+    '#cst-home .strow .sb{flex:1 1 auto;min-width:0}',
+    '#cst-home .strow h3{margin:0 0 6px;font:600 25px/1.15 "Cormorant Garamond",Georgia,serif;',
+    'color:var(--nv)}',
+    '#cst-home .strow p{margin:0;font-size:16px;line-height:1.5;color:var(--mu)}',
+    '#cst-home .strow .go{flex:none;margin:0;white-space:nowrap}',
     /* phone */
     '@media (max-width:767px){',
     '#cst-home section,#cst-home .cst-mast,#cst-home .foot{padding-left:22px;padding-right:22px}',
@@ -442,10 +449,9 @@
     '#cst-home .mobig{font-size:44px}',
     '#cst-home .moti{font-size:30px}',
     '#cst-home .prg{grid-template-columns:1fr;gap:22px}',
-    '#cst-home .startbox .help{grid-template-columns:1fr}',
-    '#cst-home .startbox .hp{padding:0}',
-    '#cst-home .startbox .hp+.hp{border-left:0;border-top:1px solid var(--ha);',
-    'padding-left:0;padding-top:24px;margin-top:24px}',
+    '#cst-home .strow{flex-wrap:wrap;gap:16px;padding:22px 0}',
+    '#cst-home .strow .sb{flex:1 1 180px}',
+    '#cst-home .strow .go{flex:1 1 100%;padding-left:76px}',
     '#cst-home .featme{flex-direction:column;align-items:flex-start;gap:12px}',
     '#cst-home .spot.alt{flex-direction:column}',
     '}'
@@ -453,17 +459,34 @@
 
   /* -------------------------------------------------------------- sections */
 
-  function mastheadHTML() {
-    return '' +
-      '<section class="cst-mast">' +
-        '<p class="ey big">Constellations Member Portal</p>' +
-        '<h2 class="t1">Welcome.<br>We’re glad you’re here.</h2>' +
-      '</section>';
+  /* Icons are inline so they load with the page and take their colour from
+     the badge. Stroke only, 24-grid, decorative — the row title is the
+     accessible label, so the SVG is hidden from screen readers. */
+  var ICON = {
+    person: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
+            'aria-hidden="true" focusable="false">' +
+            '<circle cx="12" cy="8" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/></svg>',
+    bell:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
+            'aria-hidden="true" focusable="false">' +
+            '<path d="M18 9a6 6 0 1 0-12 0c0 4.8-2 6.2-2 6.2h16S18 13.8 18 9"/>' +
+            '<path d="M10.2 18.6a2.1 2.1 0 0 0 3.6 0"/></svg>'
+  };
+
+  function stepRow(icon, title, lines, href, label) {
+    return '<div class="strow">' +
+             '<span class="ico">' + icon + '</span>' +
+             '<div class="sb"><h3>' + title + '</h3>' +
+               '<p>' + lines + '</p></div>' +
+             '<a class="go" href="' + esc(href) + '">' + label + ' →</a>' +
+           '</div>';
   }
 
-  /* Getting Started. Two steps, because Nova is a resource, not a step.
-     The guide list lives inside the same box rather than a second one. */
-  function stepsHTML() {
+  /* Welcome. Masthead and the two first steps are one block: a member opening
+     the Portal sees the greeting and what to do next without scrolling.
+     Nova is a resource, not a step, so it stays in the guide note below. */
+  function welcomeHTML() {
     var u = CFG.urls;
     /* A guide that is not written yet is left out, not shown greyed. */
     function gl(href, label) {
@@ -476,31 +499,30 @@
                  gl(u.addToHomeScreen,   'Save the Portal to your phone');
 
     return '' +
-      '<section>' +
-        '<h2 class="sh">Getting <b>Started</b></h2>' +
-        '<p class="lead">Here are two steps to help you get settled.</p>' +
-        '<div class="startbox">' +
-          '<div class="help">' +
-            '<div class="hp"><span class="stepn">1</span><h3>Complete Your Profile</h3>' +
-              'Tell other members a little about yourself, then upload the ' +
-              'cream-background photograph our team emailed you.' +
-              '<a class="go" href="' + esc(u.profile) + '">Complete my profile →</a></div>' +
-            '<div class="hp"><span class="stepn">2</span><h3>Customize Notifications</h3>' +
-              'Choose which Portal updates you receive by email, including Connection ' +
-              'Requests, Gatherings, and replies. You can change these settings anytime.' +
-              '<a class="go" href="' + esc(u.notifications) + '">Customize my notifications →</a></div>' +
-          '</div>' +
-          (guides
-            ? '<div class="stuck">' +
-                '<h3>Feeling stuck?</h3>' +
-                '<p>These short guides walk you through one task at a time.</p>' +
-                '<ul>' + guides + '</ul>' +
-                '<p class="nova-note">Nova, the Constellations AI assistant, can also ' +
-                'answer questions about how the Portal works. ' +
-                '<a href="' + esc(u.nova) + '">Ask Nova →</a></p>' +
-              '</div>'
-            : '') +
+      '<section class="cst-mast">' +
+        '<p class="ey mast">Welcome</p>' +
+        '<h2 class="t1">We’re glad you’re here.</h2>' +
+        '<p class="lead">Start with these two steps.</p>' +
+        '<div class="steps">' +
+          stepRow(ICON.person, 'Complete your profile',
+                  'Share a bit about yourself.<br>Add the cream-background ' +
+                  'photograph we emailed you.',
+                  u.profile, 'Edit my profile') +
+          stepRow(ICON.bell, 'Customize notifications',
+                  'Choose which updates you receive by email.<br>' +
+                  'You can change this anytime.',
+                  u.notifications, 'Customize notifications') +
         '</div>' +
+        (guides
+          ? '<div class="stuck">' +
+              '<h3>Feeling stuck?</h3>' +
+              '<p>These short guides walk you through one task at a time.</p>' +
+              '<ul>' + guides + '</ul>' +
+              '<p class="nova-note">Nova, the Constellations AI assistant, can also ' +
+              'answer questions about how the Portal works. ' +
+              '<a href="' + esc(u.nova) + '">Ask Nova →</a></p>' +
+            '</div>'
+          : '') +
       '</section>';
   }
 
@@ -813,8 +835,7 @@
        to join, then what is happening, then where to get help. Each live slot
        is a fixed div so the running order never depends on which request
        answers first. */
-    root.innerHTML = mastheadHTML() +
-                     stepsHTML() +
+    root.innerHTML = welcomeHTML() +
                      '<div id="cst-co"></div>' +
                      monthHTML() +
                      '<div id="cst-ar"></div>' +
