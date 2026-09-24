@@ -337,3 +337,39 @@ document.addEventListener('DOMContentLoaded',ping);ping();
 })();
 
 ;
+/* ---- block 50 (added 24 Sep 2026) ----
+   STOPGAP. Copy corrections to the space-header template, which still lives in
+   Circle's JavaScript snippet field (64,323 of 65,536 characters — no safe room
+   to edit there). Fold both into the template when it moves to space-header.js,
+   then delete this block. */
+(function () {
+  var ARTICLES = 'If you’d prefer articles that are shorter, or more direct, ' +
+                 'check out the articles in our North Star space. Use whichever ' +
+                 'space works best for you.';
+  function fix() {
+    if (!document.body) return;
+    /* Articles (2860047) — Kate's rewritten quote. */
+    if (document.body.classList.contains('view-space--2860047')) {
+      var p = document.querySelector('.nvx-quote .nvx-qbody p');
+      if (p && p.getAttribute('data-cst-copy') !== '1') {
+        var o = p.querySelector('.nvx-qm-o'), c = p.querySelector('.nvx-qm-c');
+        while (p.firstChild) p.removeChild(p.firstChild);
+        if (o) p.appendChild(o);
+        p.appendChild(document.createTextNode(ARTICLES));
+        if (c) p.appendChild(c);
+        p.setAttribute('data-cst-copy', '1');
+      }
+    }
+    /* Nova (2860067) — coaching is temporarily off the portal, so the link in
+       the quote is unwrapped to plain text rather than left pointing at it. */
+    if (document.body.classList.contains('view-space--2860067')) {
+      var a = document.querySelector('.nvx-quote .nvx-qbody a[href*="coaching"]');
+      if (a && a.parentNode) {
+        a.parentNode.replaceChild(document.createTextNode(a.textContent), a);
+      }
+    }
+  }
+  setInterval(fix, 600); fix();
+})();
+
+;
