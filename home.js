@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.5.0';
+  var VERSION = '1.5.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -434,7 +434,10 @@
     '#cst-home .strow h3{margin:0 0 6px;font:600 25px/1.15 "Cormorant Garamond",Georgia,serif;',
     'color:var(--nv)}',
     '#cst-home .strow p{margin:0;font-size:16px;line-height:1.5;color:var(--mu)}',
-    '#cst-home .strow .go{flex:none;margin:0;white-space:nowrap}',
+    /* The Ask Nova launcher is fixed to the bottom-right of the viewport and
+       is about 150px wide. Anything flush right passes under it as the page
+       scrolls, so right-aligned links keep a gutter clear of it. */
+    '#cst-home .strow .go{flex:none;margin:0 120px 0 0;white-space:nowrap}',
     /* 1.5.0 — the theme box: one outline around the month, the reading,
        the conversation and Nova, so the three routes read as one idea. */
     '#cst-home .thbox{border:1px solid var(--sl);padding:36px 38px 30px}',
@@ -467,7 +470,7 @@
     '#cst-home .thask{margin:0 0 14px!important;color:var(--nv);',
     'font:500 22px/1.35 "Cormorant Garamond",Georgia,serif}',
     '#cst-home .thnext{display:flex;align-items:baseline;justify-content:flex-end;',
-    'gap:14px;margin:30px 0 0}',
+    'gap:14px;margin:30px 120px 0 0}',
     '#cst-home .thnext .ey{margin:0}',
     '#cst-home .thnext b{font:600 30px "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
     /* phone */
@@ -486,7 +489,7 @@
     '#cst-home .prg{grid-template-columns:1fr;gap:22px}',
     '#cst-home .strow{flex-wrap:wrap;gap:16px;padding:22px 0}',
     '#cst-home .strow .sb{flex:1 1 180px}',
-    '#cst-home .strow .go{flex:1 1 100%;padding-left:76px}',
+    '#cst-home .strow .go{flex:1 1 100%;padding-left:76px;margin-right:0}',
     '#cst-home .featme{flex-direction:column;align-items:flex-start;gap:12px}',
     '#cst-home .spot.alt{flex-direction:column}',
     '#cst-home .thbox{padding:26px 22px 24px}',
@@ -495,7 +498,7 @@
     '#cst-home .thmo{font-size:34px}',
     '#cst-home .thq{font-size:21px}',
     '#cst-home .tharts,#cst-home .thnovagrid{grid-template-columns:1fr}',
-    '#cst-home .thnext{justify-content:flex-start}',
+    '#cst-home .thnext{justify-content:flex-start;margin-right:0}',
     '}'
   ].join('');
 
