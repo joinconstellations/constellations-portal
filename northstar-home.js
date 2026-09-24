@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.0.0';
+  var VERSION = '2.1.0';
 
   var CFG = {
     path: '/c/northstar',
@@ -29,27 +29,31 @@
       articles:    '/c/nsarticles',
       nova:        '/c/nsnova',
       guides:      '/c/guides',          /* there is no nsguides space */
-      coaching:    '/c/coaching',
+      /* coaching is temporarily off both Home pages at Kate's direction */
       report:      '/c/report',
       profile:       '/account',
       notifications: '/account/notifications',
       walkthrough: 'https://joinconstellations.as.me/schedule/6aab1eb9/appointment/' +
                    '98669212/calendar/11037328?appointmentTypeIds[]=98669212',
       /* null shows muted text instead of a dead link */
-      beFeatured:          null,
+      beFeatured:          '/c/guides/be-featured',
       connectionRequests:  null,
-      clarityIsKindness:   null,
+      clarityIsKindness:   '/c/guides/clarity-is-kindness',
       slowIsSafe:          '/c/guides/slow-is-safe',
       pressureIsPoison:    '/c/guides/pressure-is-poison'
     },
 
-    /* Kate's approved North Star explainer. Do not reword without her. */
+    /* Kate's approved North Star explainer, rewritten by her 24 Sep.
+       Do not reword without her. */
     what: [
-      'North Star is a more structured part of Constellations designed for ' +
-      'members who’d like more support, guidance, and moderation as they ' +
-      'participate in our community.',
-      'Look for the blue heading. Whenever you see it, you are in a North Star space.'
+      'North Star is a part of the Constellations Portal for members who want ' +
+      'more support and structure. North Star has shorter and more focused ' +
+      'articles, clear steps, direct explanations, more examples, and more ' +
+      'active help from our team.',
+      'Look for the blue North Star. When you see it, you’re in a North Star space.'
     ],
+    /* the caption beside the sample, in the welcome box */
+    tagSample: 'This is what it looks like. It sits at the top of every North Star space.',
 
     /* This month. Mirrors the Constellations Home, in North Star register. */
     month: {
@@ -62,8 +66,15 @@
       articles: ['north-star-when-a-friendship-fades',
                  'north-star-a-clear-ending-is-a-kindness'],
       questions: [ 'Are you in a transition right now?',
-                   'What is one thing you thought about friendship when you ' +
-                   'were younger? Do you think about it differently now?' ],
+                   'How have your interests changed as you have gotten older? ' +
+                   'What has stayed the same?' ],
+      /* One member reply, shown under the questions. Named by message id and
+         fetched live, so a reply the member edits or deletes changes here too. */
+      replies: {
+        room:     '4f8d094d-69bf-4f2a-bc82-6539c26aca90',
+        parent:   2154691965,
+        messages: [2154692292]
+      },
       novaAsk: 'What are small steps I can take this month to meet my goals?',
       nextLabel: 'October’s theme?',
       nextTitle: 'Masking'
@@ -83,20 +94,6 @@
         line: 'Take your time. Time helps you notice things and decide for yourself.' },
       { name: 'Pressure Is Poison', url: 'pressureIsPoison',
         line: 'If someone rushes you, you do not have to decide faster.' }
-    ],
-
-    /* The five North Star spaces. Gatherings are not shown on this page. */
-    doors: [
-      { title: 'Discussions', href: '/c/nsdiscussions',
-        body: 'Talk with other members. You can write a message, add an emoji, or just read.' },
-      { title: 'Articles', href: '/c/nsarticles',
-        body: 'Read about friendship, dating, and getting along with people.' },
-      { title: 'Community', href: '/c/ns-community',
-        body: 'Read about other members. Find out who they are and what they like.' },
-      { title: 'Nova', href: '/c/nsnova',
-        body: 'Ask a question and get an answer right away. Nova is a computer program.' },
-      { title: 'Guides', href: '/c/guides',
-        body: 'Learn how the Portal works. Learn what we expect from members.' }
     ]
   };
 
@@ -251,6 +248,31 @@
     return [];
   }
 
+  /* The second label line, when it names a member rather than a format. */
+  function memberTag(post) {
+    var p = paragraphs(post);
+    var u = (p[1] || '').toUpperCase().replace(/\s+/g, ' ').trim();
+    return CFG.memberLabels.indexOf(u) > -1 ? u : '';
+  }
+
+  /* Heading/paragraph pairs, for the interview formats where the question is
+     a heading and the answer is the paragraph under it. Without this the
+     answer shows on its own and reads like a fragment. */
+  function qaPairs(post) {
+    var b = blocks(post), out = [];
+    for (var i = 0; i < b.length; i++) {
+      if (b[i].type !== 'h' || !b[i].text) continue;
+      for (var j = i + 1; j < b.length; j++) {
+        if (b[j].type === 'h') break;
+        if (b[j].type === 'p' && b[j].text) {
+          out.push({ q: decode(b[i].text), a: decode(b[j].text) });
+          break;
+        }
+      }
+    }
+    return out;
+  }
+
   function postUrl(post, fallbackSpace) {
     if (post.url) {
       try { return new URL(post.url, location.origin).pathname; } catch (e) {}
@@ -288,6 +310,12 @@
     '#cst-nshome .what{margin:30px 0 0;padding:24px 26px;background:var(--nb)}',
     '#cst-nshome .what p{margin:0 0 14px;font-size:19px;line-height:1.6;max-width:700px}',
     '#cst-nshome .what p:last-child{margin-bottom:0}',
+    /* the sample North Star mark, so members know what to look for */
+    '#cst-nshome .nsex{display:flex;align-items:center;gap:16px;flex-wrap:wrap;',
+    'margin:20px 0 0;padding:16px 18px;background:#fff;border:1px solid var(--nv)}',
+    '#cst-nshome .nstag{font:600 15px Inter,system-ui,sans-serif;letter-spacing:.2em;',
+    'text-transform:uppercase;color:var(--nv)}',
+    '#cst-nshome .nsexl{font-size:17px;line-height:1.5;color:var(--mu)}',
     /* start here — three rows, same shape as the Constellations Home */
     '#cst-nshome .lead{font-size:19px;line-height:1.65;color:var(--ik);margin:0 0 30px;max-width:800px}',
     '#cst-nshome .cst-mast .lead{margin:44px 0 0}',
@@ -337,6 +365,16 @@
     'font:500 23px/1.35 "Cormorant Garamond",Georgia,serif}',
     '#cst-nshome .lab2{display:inline-block;font:600 11px Inter,system-ui,sans-serif;',
     'letter-spacing:.14em;text-transform:uppercase;color:var(--gd)}',
+    /* the member tag that rides beside the format tag */
+    '#cst-nshome .lab3{display:inline-block;margin-left:8px;',
+    'font:600 11px Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;',
+    'color:var(--nv);background:var(--nb);padding:4px 10px 3px}',
+    /* an interview answer, with the question above it */
+    '#cst-nshome .fq{margin:14px 0 6px!important;font:600 11px Inter,system-ui,sans-serif;',
+    'letter-spacing:.14em;text-transform:uppercase;color:var(--gd)}',
+    '#cst-nshome .fa{margin:0 0 12px!important;font-size:19px;line-height:1.55;color:var(--ik)}',
+    /* one help panel on its own row */
+    '#cst-nshome .help.one{grid-template-columns:1fr}',
     /* members */
     '#cst-nshome .ppl{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}',
     '#cst-nshome .pc{border:1px solid var(--ha);padding:20px 20px 22px;display:flex;flex-direction:column}',
@@ -357,7 +395,8 @@
     '#cst-nshome .spot.alt{flex-direction:row-reverse}',
     '#cst-nshome .spot img{width:200px;height:250px;object-fit:cover;object-position:50% 20%;',
     'box-shadow:10px 10px 0 var(--sa);flex:none}',
-    '#cst-nshome .spot .lab2{background:var(--pl);color:var(--nv);padding:4px 10px 3px;margin:0 0 12px}',
+    '#cst-nshome .spot .lab2,#cst-nshome .qi .lab2{background:var(--pl);color:var(--nv);',
+    'padding:4px 10px 3px;margin:0 0 12px}',
     '#cst-nshome .spot h2{font:600 34px/1.08 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:10px 0 0}',
     '#cst-nshome .spot h2::after{content:"";display:block;width:74px;height:3px;',
     'background:var(--pl);margin:14px 0 0}',
@@ -368,14 +407,30 @@
     'letter-spacing:.14em;text-transform:uppercase;color:var(--gd)}',
     /* a member quote, set the way the post is set in Community */
     '#cst-nshome .qa{display:grid;gap:40px;margin-top:38px;padding-top:34px;border-top:1px solid var(--ha)}',
+    '#cst-nshome .qsec{padding:44px 46px;border-top:1px solid var(--ha)}',
+    '#cst-nshome .qt{display:block;margin:0 0 16px}',
     '#cst-nshome .qi{display:flex;gap:30px;align-items:flex-start;max-width:860px;',
     'text-decoration:none!important;color:inherit!important}',
     '#cst-nshome .qi img{width:150px;height:188px;object-fit:cover;object-position:50% 20%;',
     'flex:none;box-shadow:10px 10px 0 var(--sa)}',
     '#cst-nshome .qi .qw{border-left:3px solid var(--sl);padding-left:26px;min-width:0}',
     '#cst-nshome .qi q{display:block;font:italic 500 23px/1.4 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
-    '#cst-nshome .qi cite{display:block;margin-top:14px;font-style:normal;',
-    'font:500 18px "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
+    '#cst-nshome .qi cite{display:block;margin-top:16px;font-style:normal;',
+    'font:600 12px Inter,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;',
+    'color:var(--nv)}',
+    '#cst-nshome .qi .qloc{display:block;margin-top:5px;font-weight:500;color:var(--mu)}',
+    /* the member reply under this month's questions */
+    '#cst-nshome .threply{display:flex;gap:16px;align-items:flex-start;max-width:680px;',
+    'margin-top:28px;background:var(--nb);padding:20px 22px}',
+    '#cst-nshome .threply img,#cst-nshome .threply .rini{width:46px;height:46px;flex:none;',
+    'border-radius:50%;object-fit:cover;background:var(--sa);display:flex;',
+    'align-items:center;justify-content:center;color:var(--nv);',
+    'font:600 19px "Cormorant Garamond",Georgia,serif}',
+    '#cst-nshome .rwho{margin:0 0 6px;font:600 11px Inter,system-ui,sans-serif;',
+    'letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}',
+    '#cst-nshome .rtxt{margin:0;color:var(--nv);',
+    'font:italic 500 19px/1.5 "Cormorant Garamond",Georgia,serif}',
+    '#cst-nshome .rtxt+.rtxt{margin-top:10px}',
     /* doorways and help */
     '#cst-nshome .help{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ha)}',
     '#cst-nshome .help.two{grid-template-columns:repeat(2,1fr)}',
@@ -405,8 +460,9 @@
     '#cst-nshome .prc p{margin:0;font-size:17px;line-height:1.5;color:var(--mu)}',
     /* phone */
     '@media (max-width:767px){',
-    '#cst-nshome section,#cst-nshome .cst-mast,#cst-nshome .foot',
+    '#cst-nshome section,#cst-nshome .cst-mast,#cst-nshome .foot,#cst-nshome .qsec',
     '{padding-left:22px;padding-right:22px}',
+    '#cst-nshome .nsex{gap:10px}',
     '#cst-nshome .nsbox{padding:24px 22px 22px}',
     '#cst-nshome .t1{font-size:40px}',
     '#cst-nshome .sh{font-size:28px}',
@@ -502,10 +558,12 @@
           '<h2 class="t1">Welcome.<br>We’re glad you’re here.</h2>' +
           '<div class="what">' +
             CFG.what.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
+            '<div class="nsex"><span class="nstag">North Star</span>' +
+              '<span class="nsexl">' + esc(CFG.tagSample) + '</span></div>' +
           '</div>' +
         '</div>' +
-        '<p class="lead">New here? Start with these three steps. You can do one ' +
-          'step today and the next step another day.</p>' +
+        '<p class="lead">New here? Start with these three steps.<br>' +
+          'You can do one step today and the next step another day.</p>' +
         '<div class="steps">' +
           stepRow(ICON.person, 'Fill in your profile',
                   'Write a little about yourself. Other members will read it.<br>' +
@@ -558,6 +616,7 @@
           '<div class="thsec">' +
             '<h3 class="thh">' + ICON.talk + 'Join the discussion</h3>' +
             '<div class="thqs">' + qs + '</div>' +
+            '<div id="cst-nsre"></div>' +
             '<p class="thmore"><a class="go" href="' + esc(u.discussions) +
               '">Go to Discussions →</a></p>' +
           '</div>' +
@@ -578,26 +637,14 @@
       '</section>';
   }
 
-  /* Where to go, then how to reach a person, then the principles. */
-  function doorsHTML() {
+  /* How to reach a person, then the principles. "Where to go" was removed at
+     Kate's direction, and coaching is temporarily off both Home pages. */
+  function supportHTML() {
     var u = CFG.urls;
     return '' +
       '<section>' +
-        '<h2 class="sh">Where to <b>go</b></h2>' +
-        '<p class="lead">Every space below has the blue North Star heading. You ' +
-          'can open any of them and look around. You do not have to post anything.</p>' +
-        '<div class="help">' +
-          CFG.doors.map(function (d) {
-            return '<div class="hp"><h3>' + esc(d.title) + '</h3>' + esc(d.body) +
-                   '<a class="go" href="' + esc(d.href) + '">Go to ' + esc(d.title) +
-                   ' →</a></div>';
-          }).join('') +
-        '</div>' +
-      '</section>' +
-
-      '<section>' +
         '<h2 class="sh">We’re <b>Here For You</b></h2>' +
-        '<div class="help two">' +
+        '<div class="help one">' +
           '<div class="hp"><h3>Report a concern</h3>' +
             'Tell us if something is wrong.' +
             '<span class="use">Use it for</span>Someone worries you. Someone is ' +
@@ -606,14 +653,6 @@
             '<span class="not">A real person reads every report. A person writes ' +
             'back within two business days. You do not have to give your name.</span>' +
             '<a class="go" href="' + esc(u.report) + '">Report a concern →</a></div>' +
-          '<div class="hp"><h3>Book coaching</h3>' +
-            'Meet one to one with a coach. A coach is a real person.' +
-            '<span class="use">Use it for</span>A first date. A message you are ' +
-            'stuck on. A plan you want to make.' +
-            '<span class="use">Good to know</span>' +
-            '<span class="not">Coaching costs extra money. It is not part of your ' +
-            'membership.</span>' +
-            '<a class="go" href="' + esc(u.coaching) + '">See coaching →</a></div>' +
         '</div>' +
       '</section>' +
 
@@ -666,7 +705,46 @@
     });
   }
 
-  function fillCommunity(mount) {
+  /* The member reply under this month's questions. Named by message id, so
+     nothing is copied into this file. */
+  function fillReply(mount) {
+    var c = CFG.month.replies;
+    if (!mount || !c || !c.messages || !c.messages.length) return Promise.resolve();
+    var base = '/internal_api/chat_rooms/' + c.room;
+    return Promise.all([
+      get(base + '/messages?parent_message_id=' + c.parent),
+      get(base + '/participants')
+    ]).then(function (res) {
+      var msgs = records(res[0]), people = records(res[1]);
+      var html = c.messages.map(function (id) {
+        var msg = msgs.filter(function (x) { return x.id === id && !x.deleted_at; })[0];
+        if (!msg) return '';
+        var body  = msg.rich_text_body && msg.rich_text_body.body;
+        var paras = ((body && body.content) || []).map(function (n) {
+          return nodeText(n).trim();
+        }).filter(Boolean);
+        if (!paras.length) return '';
+        var who = people.filter(function (p) {
+          return p.id === msg.chat_room_participant_id;
+        })[0] || {};
+        var name = who.name || '';
+        var face = who.avatar_url
+          ? '<img src="' + esc(who.avatar_url) + '" alt="">'
+          : '<span class="rini">' + esc(name.charAt(0)) + '</span>';
+        var said = paras.map(function (t, i) {
+          return '<p class="rtxt">' + (i ? '' : '“') + esc(t) +
+                 (i === paras.length - 1 ? '”' : '') + '</p>';
+        }).join('');
+        return '<div class="threply">' + face +
+                 '<div><p class="rwho">' + esc(name) + '</p>' + said + '</div></div>';
+      }).join('');
+      if (html) mount.appendChild(el('<div>' + html + '</div>'));
+    });
+  }
+
+  /* `quoteMount` sits high on the page, between the welcome and the month, so
+     a member's own words are the first thing after the three steps. */
+  function fillCommunity(mount, quoteMount) {
     if (!mount) return Promise.resolve();
     return posts(CFG.spaces.community, 30).then(function (rs) {
       var u = CFG.urls;
@@ -726,7 +804,13 @@
           else { body = ps[0] || ''; }
 
           var mid;
-          if (l === 'THREE QUESTIONS') {
+          if (l === 'A FEW MINUTES WITH') {
+            var pair = qaPairs(p)[0];
+            mid = pair
+              ? '<p class="fq">' + esc(pair.q) + '</p>' +
+                '<p class="fa">“' + esc(pair.a) + '”</p>'
+              : (body ? '<p>' + esc(body) + '</p>' : '');
+          } else if (l === 'THREE QUESTIONS') {
             var qs = listItems(p, 'ol').slice(0, 3);
             mid = qs.length
               ? '<div class="tq">' + qs.map(function (q) {
@@ -743,6 +827,7 @@
           return '<div class="spot' + (idx % 2 ? ' alt' : '') + '">' +
               (src ? '<img src="' + esc(src) + '" alt="">' : '') +
               '<div><span class="lab2">' + esc(l) + '</span>' +
+              (memberTag(p) ? '<span class="lab3">' + esc(memberTag(p)) + '</span>' : '') +
               '<h2>' + esc(p.name) + '</h2>' +
               (role ? '<p class="role">' + esc(role) + '</p>' : '') +
               mid +
@@ -759,14 +844,24 @@
         var loc = paragraphs(p).slice(1).filter(notLabel).filter(function (t) {
           return t.length <= 60 && t !== p.name;
         })[0] || '';
-        var who = (p.name || '') + (loc ? ' · ' + loc : '');
         var src = photo(p);
         return '<a class="qi" href="' + esc(postUrl(p, 'ns-community')) + '">' +
             (src ? '<img src="' + esc(src) + '" alt="">' : '') +
-            '<span class="qw"><q>' + esc(decode(q)) + '</q>' +
-            '<cite>' + esc(who) + '</cite></span></a>';
+            '<span class="qw">' +
+              '<span class="qt"><span class="lab2">' + esc(label(p)) + '</span>' +
+              (memberTag(p) ? '<span class="lab3">' + esc(memberTag(p)) + '</span>' : '') +
+              '</span>' +
+              '<q>' + esc(decode(q)) + '</q>' +
+              '<cite>' + esc(p.name || '') +
+                (loc ? '<span class="qloc">' + esc(loc) + '</span>' : '') +
+              '</cite></span></a>';
       }).join('');
-      if (asides) html += '<div class="qa">' + asides + '</div>';
+      /* the quote rides high on the page, not down in Community */
+      if (asides && quoteMount) {
+        quoteMount.appendChild(el('<section class="qsec">' + asides + '</section>'));
+      } else if (asides) {
+        html += '<div class="qa">' + asides + '</div>';
+      }
 
       html += '<div class="featme">' +
           '<p><b>Would you like to be in the Community space?</b> You can answer a ' +
@@ -846,15 +941,18 @@
     root.id = CFG.root;
     root.setAttribute('data-cst-nshome', VERSION);
     root.innerHTML = welcomeHTML() +
+                     '<div id="cst-nsq"></div>' +
                      themeHTML() +
                      '<div id="cst-nsco"></div>' +
-                     doorsHTML();
+                     supportHTML();
     host.parentElement.insertBefore(root, host);
     watch(root.parentElement);
     reseat();
 
     fillArticles(root.querySelector('#cst-nsar')).catch(function () {});
-    fillCommunity(root.querySelector('#cst-nsco')).catch(function () {});
+    fillReply(root.querySelector('#cst-nsre')).catch(function () {});
+    fillCommunity(root.querySelector('#cst-nsco'),
+                  root.querySelector('#cst-nsq')).catch(function () {});
   }
 
   function teardown() {
