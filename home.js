@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.13.0';
+  var VERSION = '1.13.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -918,7 +918,13 @@
           else { body = ps[0] || ''; }
 
           var mid;
-          if (l === 'THREE QUESTIONS') {
+          if (l === 'WORTH SHARING') {
+            var row = function (k) { var r = ps.filter(function (x) { return x.indexOf(k + ' ') === 0; })[0]; return r ? r.slice(k.length + 1).trim() : ''; };
+            var ttl = row('Title');
+            role = (ps[0] && ps[0].length <= 40 && ps[0].indexOf('Title ') !== 0 ? ps[0] : '') + (ttl ? (ps[0] && ps[0].length <= 40 ? ' · ' : '') + ttl : '');
+            body = row('Why');
+            mid = body ? '<p>' + esc(body) + '</p>' : '';
+          } else if (l === 'THREE QUESTIONS') {
             var qs = listItems(p, 'ol').slice(0, 3);
             mid = qs.length
               ? '<div class="tq">' + qs.map(function (q) {
