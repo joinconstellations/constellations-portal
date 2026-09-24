@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.15.3';
+  var VERSION = '1.15.4';
 
   var CFG = {
     path: '/c/welcome',
@@ -960,7 +960,7 @@
           if (l === 'WORTH SHARING') {
             var row = function (k) { var r = ps.filter(function (x) { return x.indexOf(k + ' ') === 0; })[0]; return r ? r.slice(k.length + 1).trim() : ''; };
             var ttl = row('Title');
-            role = (ps[0] && ps[0].length <= 40 && ps[0].indexOf('Title ') !== 0 ? ps[0] : '') + (ttl ? (ps[0] && ps[0].length <= 40 ? ' · ' : '') + ttl : '');
+            role = (ps[0] && ps[0].length <= 40 && ps[0].indexOf('Title ') !== 0 ? ps[0] : '') + (ttl ? (ps[0] && ps[0].length <= 40 && ps[0].indexOf('Title ') !== 0 ? ' · ' : '') + ttl : '');
             body = row('Why');
             mid = body ? '<p>' + esc(body) + '</p>' : '';
           } else if (l === 'A FEW MINUTES WITH') {
