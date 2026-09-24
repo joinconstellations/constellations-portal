@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.2.1';
+  var VERSION = '1.2.2';
 
   var CFG = {
     path: '/c/welcome',
@@ -363,8 +363,9 @@
     '#cst-home .sand{background:#FAF8F4}',
     '#cst-home .band{background:var(--sa)}',
     /* this month */
-    '#cst-home .mo{padding-top:52px}',
-    '#cst-home .morule{width:86px;height:3px;background:var(--gd);margin:0 0 20px}',
+    '#cst-home .mo{padding-top:34px}',
+    '#cst-home .mo .ey{margin-bottom:8px}',
+    '#cst-home .morule{width:86px;height:3px;background:var(--gd);margin:0 0 14px}',
     '#cst-home .mobig{margin:0;font:500 66px/1 "Cormorant Garamond",Georgia,serif;',
     'letter-spacing:.03em;text-transform:uppercase;color:var(--sl)}',
     '#cst-home .moti{margin:8px 0 18px;font:600 40px/1.1 "Cormorant Garamond",Georgia,serif;',
@@ -384,8 +385,6 @@
     '#cst-home .nova-note a{color:var(--gd)!important;text-decoration:none;font-weight:600}',
     /* community */
     '#cst-home .pc .lab2{display:block;margin:0 0 10px}',
-    '#cst-home .cr{margin:22px 0 0;font-size:16px;color:var(--ik)}',
-    '#cst-home .cr a{color:var(--gd)!important;text-decoration:none;font-weight:600}',
     '#cst-home .featme{display:flex;justify-content:space-between;align-items:center;',
     'gap:24px;background:var(--s2);border-left:3px solid var(--gd);padding:16px 20px;',
     'margin-top:30px;font-size:16px;line-height:1.5}',
@@ -677,15 +676,10 @@
               '<a class="go" href="' + esc(postUrl(p, 'community')) + '">Meet ' +
               esc(who) + ' →</a></div>';
         }).join('');
+        /* No Connection Request prompt here: a featured member may not have
+           joined the Portal yet, so there may be no profile to connect from.
+           The mechanic is explained by the guide in Getting Started instead. */
         html += '<div class="ppl">' + cards + '</div>';
-
-        /* Connection Requests explained where it is relevant, rather than in a
-           section of its own. */
-        html += '<p class="cr">Want to reach out to someone? Every conversation here ' +
-                'starts with a Connection Request. ' +
-                (u.connectionRequests
-                  ? '<a href="' + esc(u.connectionRequests) + '">How Connection Requests work →</a>'
-                  : '') + '</p>';
       }
 
       if (features.length) {
