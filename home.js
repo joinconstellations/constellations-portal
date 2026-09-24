@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.10.0';
+  var VERSION = '1.11.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -32,9 +32,9 @@
       walkthrough: 'https://joinconstellations.as.me/schedule/6aab1eb9/appointment/' +
                    '98669212/calendar/11037328?appointmentTypeIds[]=98669212',
       /* null renders as muted text instead of a dead link */
-      beFeatured:          null,   /* '/c/guides/be-featured' once published  */
+      beFeatured:          '/c/guides/be-featured',
       connectionRequests:  null,   /* guide not written yet                   */
-      clarityIsKindness:   null,   /* guide not written yet                   */
+      clarityIsKindness:   '/c/guides/clarity-is-kindness',
       slowIsSafe:          '/c/guides/slow-is-safe',
       pressureIsPoison:    '/c/guides/pressure-is-poison',
       yourProfile:         '/c/guides/your-portal-profile',
@@ -75,12 +75,11 @@
 
     /* A note under The next Gathering. Set to null to take it down. */
     gatheringNote: {
-      title: 'A note from the Constellations team',
+      title: 'Important note',
       body:  'We’re moving our virtual discussions and in-person events from ' +
              'Acuity Scheduling into the Portal, so everything you need will be ' +
-             'in one place. Some gatherings are already here, and more are on ' +
-             'the way. Please check back by Friday, September 25, for the full ' +
-             'updated calendar.'
+             'in one place. Please check back by Friday, September 25, for the ' +
+             'full updated calendar.'
     },
 
     /* Drawn from the Guiding Principles document, not written here. */
@@ -523,11 +522,13 @@
     '#cst-home .rtxt+.rtxt{margin-top:10px}',
     '#cst-home .threply+.threply{margin-top:14px}',
     /* a note from the team, under The next Gathering */
-    '#cst-home .gnote{margin-top:26px;background:var(--s2);border-left:3px solid var(--gd);',
-    'padding:20px 24px 22px;max-width:760px}',
-    '#cst-home .gnote h3{margin:0 0 8px;font:600 10.5px Inter,system-ui,sans-serif;',
-    'letter-spacing:.14em;text-transform:uppercase;color:var(--gd)}',
-    '#cst-home .gnote p{margin:0;font-size:16px;line-height:1.55;color:var(--ik)}',
+    '#cst-home .gnote{margin-top:30px;background:var(--s2);border:1px solid var(--gd);',
+    'border-left:6px solid var(--gd);padding:24px 28px 26px;max-width:860px}',
+    '#cst-home .gnote h3{display:flex;align-items:center;gap:9px;margin:0 0 10px;',
+    'font:600 12.5px Inter,system-ui,sans-serif;',
+    'letter-spacing:.18em;text-transform:uppercase;color:var(--gd)}',
+    '#cst-home .gnote h3 svg{width:17px;height:17px;flex:none}',
+    '#cst-home .gnote p{margin:0;font-size:18px;line-height:1.6;color:var(--ik)}',
     /* phone */
     '@media (max-width:767px){',
     '#cst-home section,#cst-home .cst-mast,#cst-home .foot{padding-left:22px;padding-right:22px}',
@@ -593,7 +594,12 @@
             'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
             'aria-hidden="true" focusable="false">' +
             '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>' +
-            '<path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>'
+            '<path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>',
+    alert:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ' +
+            'aria-hidden="true" focusable="false">' +
+            '<circle cx="12" cy="12" r="9.2"/><path d="M12 7.4v5.4"/>' +
+            '<path d="M12 16.4h.01"/></svg>'
   };
 
   /* A step with no link yet shows muted text rather than a dead link, the
@@ -762,7 +768,7 @@
 
       var note = CFG.gatheringNote;
       var noteHTML = note
-        ? '<div class="gnote"><h3>' + esc(note.title) + '</h3>' +
+        ? '<div class="gnote"><h3>' + ICON.alert + esc(note.title) + '</h3>' +
           '<p>' + esc(note.body) + '</p></div>'
         : '';
 
