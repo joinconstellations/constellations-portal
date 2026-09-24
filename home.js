@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.0.7';
+  var VERSION = '1.0.8';
 
   var CFG = {
     path: '/c/welcome',
@@ -33,7 +33,10 @@
       connectionRequests:  null,   /* guide not written yet                   */
       clarityIsKindness:   null,   /* guide not written yet                   */
       slowIsSafe:          '/c/guides/slow-is-safe',
-      pressureIsPoison:    '/c/guides/pressure-is-poison'
+      pressureIsPoison:    '/c/guides/pressure-is-poison',
+      yourProfile:         '/c/guides/your-portal-profile',
+      addToHomeScreen:     '/c/guides/add-to-home-screen',
+      notificationsGuide:  null    /* guide not written yet                   */
     },
 
     /* Monthly theme. Placeholder design, approved as interim. */
@@ -320,6 +323,17 @@
     '#cst-home .lead{font-size:17px;line-height:1.6;color:var(--ik);margin:0 0 30px;max-width:780px}',
     '#cst-home .stepn{display:block;font:500 26px/1 "Cormorant Garamond",Georgia,serif;',
     'color:var(--sl);margin:0 0 6px}',
+    '#cst-home .stuck{border:1px solid var(--ha);border-top:0;padding:24px 22px 26px}',
+    '#cst-home .stuck h3{font:600 10.5px Inter,system-ui,sans-serif;letter-spacing:.14em;',
+    'text-transform:uppercase;color:var(--gd);margin:0 0 8px}',
+    '#cst-home .stuck p{font-size:16px;line-height:1.5;color:var(--ik);margin:0}',
+    '#cst-home .stuck ul{list-style:none;margin:14px 0 0;padding:0;display:grid;',
+    'grid-template-columns:1fr 1fr;gap:9px 28px}',
+    '#cst-home .stuck li{font-size:15px;line-height:1.45}',
+    '#cst-home .stuck li a{color:var(--gd)!important;text-decoration:none;font-weight:600}',
+    '#cst-home .stuck-f{margin-top:18px!important;font-size:14px;color:var(--mu)}',
+    '#cst-home .stuck-f a{color:var(--mu)!important;text-decoration:underline}',
+    '@media(max-width:767px){#cst-home .stuck ul{grid-template-columns:1fr}}',
     /* where to go */
     '#cst-home .help{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ha)}',
     '#cst-home .hp{padding:22px 22px 24px;font-size:16px;line-height:1.45;display:flex;flex-direction:column}',
@@ -374,36 +388,49 @@
       '</section>';
   }
 
-  /* First steps. Mirrors the Get started checklist so the two never drift:
+  /* Start here. Mirrors the Get started checklist so the two never drift:
      Portal Profile, Notifications, Nova, in that order. */
   function stepsHTML() {
     var u = CFG.urls;
+    function gl(href, label) {
+      return href
+        ? '<li><a href="' + esc(href) + '">' + label + ' →</a></li>'
+        : '<li><span class="cst-soon">' + label + '</span></li>';
+    }
     return '' +
       '<section>' +
-        '<h2 class="sh">First <b>steps</b></h2>' +
-        '<p class="lead">These three take a few minutes each, and they shape the rest of ' +
-          'your time here — how people find you, what reaches you, and where to turn ' +
-          'when you’re not sure.</p>' +
+        '<h2 class="sh">Start <b>here</b></h2>' +
+        '<p class="lead">These three steps will help you get settled in the Portal. ' +
+          'You can complete them one at a time. You do not need to explore everything ' +
+          'today.</p>' +
         '<div class="help">' +
           '<div class="hp"><span class="stepn">1</span><h3>Complete your profile</h3>' +
-            'Share a little about yourself so other members can get to know you.' +
-            '<span class="use">Your photograph</span>' +
-            'Use the one our team emailed you, with the cream background. It keeps every ' +
-            'profile in the portal looking like part of the same place.' +
-            '<a class="go" href="' + esc(u.profile) + '">Complete profile →</a></div>' +
-          '<div class="hp"><span class="stepn">2</span><h3>Customize your notifications</h3>' +
-            'You decide what reaches you, and how often.' +
-            '<span class="use">Keeps you posted on</span>' +
-            'Connection requests, upcoming gatherings, new articles, and replies to your posts.' +
-            '<a class="go" href="' + esc(u.notifications) + '">Customize notifications →</a></div>' +
+            'Add a little about yourself so other members can get to know you. Upload the ' +
+            'cream-background photograph our team emailed you.' +
+            '<a class="go" href="' + esc(u.profile) + '">Complete my profile →</a></div>' +
+          '<div class="hp"><span class="stepn">2</span><h3>Choose your notifications</h3>' +
+            'Decide which Portal updates you want to receive by email, including Connection ' +
+            'Requests, Gatherings, and replies. You can change your choices later.' +
+            '<a class="go" href="' + esc(u.notifications) + '">Choose my notifications →</a></div>' +
           '<div class="hp"><span class="stepn">3</span><h3>Meet Nova</h3>' +
-            'The Constellations assistant, available at any hour.' +
-            '<span class="use">Good for</span>' +
-            'Questions about how the portal works, or practicing what you want to say ' +
-            'before you say it.' +
-            '<span class="not">Nova is not a person. For a concern about someone, use ' +
-            'Report a Concern.</span>' +
-            '<a class="go" href="' + esc(u.nova) + '">Open Nova →</a></div>' +
+            'Ask Nova how the Portal works, where to find something, or practice what you ' +
+            'want to say.' +
+            '<span class="not">Nova is an AI assistant — not a person or a reporting ' +
+            'channel.</span>' +
+            '<a class="go" href="' + esc(u.nova) + '">Ask Nova →</a></div>' +
+        '</div>' +
+        '<div class="stuck">' +
+          '<h3>Feeling stuck?</h3>' +
+          '<p>These short guides walk you through one task at a time.</p>' +
+          '<ul>' +
+            gl(u.yourProfile,        'Complete your profile and add your photograph') +
+            gl(u.notificationsGuide, 'Choose your notification settings') +
+            gl(u.connectionRequests, 'Learn how Connection Requests work') +
+            gl(u.addToHomeScreen,    'Save the Portal to your phone') +
+          '</ul>' +
+          '<p class="stuck-f">Still need help? <a href="' + esc(u.nova) + '">Ask Nova</a>.' +
+            '<br>To tell us about a possible Community Guidelines violation, use ' +
+            '<a href="' + esc(u.report) + '">Report a Concern</a>.</p>' +
         '</div>' +
       '</section>';
   }
