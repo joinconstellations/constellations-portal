@@ -8,7 +8,7 @@
    (e.g. TIM'S QUESTION FOR YOU). */
 @import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap");
 
-[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] [data-nsm="tag"]::after{content:"\2026"}
+[data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] [data-nsm="tag"]:first-child::after{content:"\2026"}
 [data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap{counter-reset:afmw}
 [data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>p:empty,
 [data-nsm="story"][data-nsm-label^="A FEW MINUTES WITH"] .tiptap>p:has(>br:only-child){display:none}
