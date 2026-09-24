@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.15.1';
+  var VERSION = '1.15.2';
 
   var CFG = {
     path: '/c/welcome',
@@ -914,7 +914,7 @@
       if (!people.length && !features.length && !quotes.length) return;
 
       var html = '<section class="sand">' +
-                 '<h2 class="sh">Meet the <b>Community</b></h2>';
+                 '<h2 class="sh">From the <b>Community</b></h2>';
 
       if (people.length) {
         var cards = people.map(function (p) {
