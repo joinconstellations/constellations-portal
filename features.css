@@ -116,3 +116,15 @@ body:has([aria-modal="true"]:not(#chatbase-bubble-window)) #chatbase-message-bub
 [data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"] p{margin:0 0 6px!important;font-size:16px;line-height:1.5}
 [data-circle="post"]:has(a[href$="/c/community/be-featured"]) a[href$="/c/community/be-featured"]{color:#1A2238!important}
 [data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"] em{font:600 13px Inter,system-ui,sans-serif!important;font-style:normal!important;color:#5A5849!important}
+
+/* Comments and the comment box sit inside the feature card, so the template rules above
+   (and in portal.css) were reaching them: the empty first line of the comment box was
+   hidden, so members could not type. Anything not in the post body is set back to plain. */
+[data-nsm] .tiptap:not([data-circle="post-body"] .tiptap)>p{display:block!important;float:none!important;margin:0 0 .5em!important;padding:0!important;border:0!important;background:none!important;transform:none!important;font:inherit!important;color:inherit!important;letter-spacing:normal!important;text-transform:none!important}
+[data-nsm] .tiptap:not([data-circle="post-body"] .tiptap)>p:last-child{margin-bottom:0!important}
+[data-nsm] .tiptap:not([data-circle="post-body"] .tiptap)>p>strong,[data-nsm] .tiptap:not([data-circle="post-body"] .tiptap)>p>em{margin:0!important;font-family:inherit!important;font-size:inherit!important;letter-spacing:normal!important;text-transform:none!important;color:inherit!important}
+[data-nsm] .tiptap:not([data-circle="post-body"] .tiptap)>blockquote{float:none!important;margin:0 0 .5em!important;padding:0 0 0 12px!important;border:0!important;border-left:2px solid #CBBBA0!important;font:inherit!important;color:inherit!important}
+[data-nsm] .tiptap:not([data-circle="post-body"] .tiptap)>blockquote>p::before,[data-nsm] .tiptap:not([data-circle="post-body"] .tiptap)>blockquote>p::after,[data-nsm] .tiptap:not([data-circle="post-body"] .tiptap)>h3::before{content:none!important}
+
+/* Home people cards: portrait photos crop toward the face, not the middle (Evan). Square photos are unaffected. */
+#cst-home img.ph{object-position:50% 12%!important}
