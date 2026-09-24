@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.9.0';
+  var VERSION = '1.10.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -309,7 +309,7 @@
 
   var CSS = [
     '#cst-home{--nv:#1A2238;--ik:#22231E;--mu:#5A5849;--gd:#7D6220;--sl:#CBBBA0;',
-    '--sa:#F2EADF;--s2:#F5EDE1;--ha:#E6E3DC;background:#fff;border:1px solid var(--ha);',
+    '--sa:#F2EADF;--s2:#F5EDE1;--ha:#E6E3DC;--pl:#E7D7C1;background:#fff;border:1px solid var(--ha);',
     'color:var(--ik);font:17px/1.55 "EB Garamond",Georgia,serif;margin:0 0 20px}',
     '#cst-home *{box-sizing:border-box}',
     '#cst-home section{padding:48px 46px;border-top:1px solid var(--ha)}',
@@ -369,7 +369,10 @@
     '#cst-home .spot+.spot{margin-top:34px;padding-top:34px;border-top:1px solid var(--ha)}',
     '#cst-home .spot img{width:200px;height:250px;object-fit:cover;object-position:50% 20%;',
     'border:1px solid var(--sl);box-shadow:10px 10px 0 var(--sa);flex:none}',
-    '#cst-home .spot h2{font:600 30px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:8px 0 4px}',
+    '#cst-home .spot h2{font:600 34px/1.08 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:10px 0 0}',
+    /* the short tan rule that sits under every post title in Community */
+    '#cst-home .spot h2::after{content:"";display:block;',
+    'width:74px;height:3px;background:var(--pl);margin:14px 0 0}',
     '#cst-home .spot .role{margin:0 0 10px;font:italic 500 19px "Cormorant Garamond",Georgia,serif;color:var(--gd)}',
     '#cst-home .spot p{margin:0 0 12px}',
     '#cst-home .tq{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:4px 0 14px;font-size:16px}',
@@ -422,7 +425,10 @@
     /* getting started, merged help */
     '#cst-home .hp h3{margin-bottom:12px}',
     /* community */
-    '#cst-home .pc .lab2{display:block;margin:0 0 10px}',
+    /* In Community the labels are cream pills, not gold small caps. Scoped to
+       this section so the article cards in the theme box keep their own line. */
+    '#cst-home .pc .lab2,#cst-home .spot .lab2{display:inline-block;background:var(--pl);',
+    'color:var(--nv);padding:4px 10px 3px;letter-spacing:.15em;margin:0 0 12px}',
     '#cst-home .featme{display:flex;justify-content:space-between;align-items:center;',
     'gap:24px;background:var(--s2);border-left:3px solid var(--gd);padding:16px 20px;',
     'margin-top:30px;font-size:16px;line-height:1.5}',
@@ -433,17 +439,20 @@
     '#cst-home .featme span.q{color:var(--mu)!important}',
     '#cst-home .spot.alt{flex-direction:row-reverse}',
     /* 1.4.0 — quotes as small asides below the features */
-    '#cst-home .qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px 40px;',
-    'margin-top:34px;padding-top:30px;border-top:1px solid var(--ha)}',
-    '#cst-home .qi{display:flex;gap:18px;align-items:flex-start;max-width:720px;',
+    '#cst-home .qa{display:grid;gap:40px;',
+    'margin-top:38px;padding-top:34px;border-top:1px solid var(--ha)}',
+    /* Set the way the post itself is set in Community: framed portrait with
+       the offset sand block, a sand rule down the left, the quote in italic
+       Cormorant with room to breathe, and the name beneath. */
+    '#cst-home .qi{display:flex;gap:30px;align-items:flex-start;max-width:860px;',
     'text-decoration:none!important;color:inherit!important}',
-    '#cst-home .qi img{width:56px;height:56px;border-radius:50%;object-fit:cover;',
-    'object-position:50% 25%;flex:none}',
-    /* The quote reads as an excerpt of the post, in body face rather than
-       italic Cormorant: these run several lines and long italic is hard work. */
-    '#cst-home .qi cite{display:block;margin:0 0 8px;font:600 10.5px Inter,system-ui,sans-serif;',
-    'font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}',
-    '#cst-home .qi q{display:block;font:17px/1.6 "EB Garamond",Georgia,serif;color:var(--ik)}',
+    '#cst-home .qi img{width:150px;height:188px;object-fit:cover;object-position:50% 20%;',
+    'flex:none;box-shadow:10px 10px 0 var(--sa)}',
+    '#cst-home .qi .qw{border-left:3px solid var(--sl);padding-left:26px;min-width:0}',
+    '#cst-home .qi q{display:block;font:italic 500 22px/1.4 "Cormorant Garamond",Georgia,serif;',
+    'color:var(--nv)}',
+    '#cst-home .qi cite{display:block;margin-top:14px;font-style:normal;',
+    'font:500 18px "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
     /* footer principles */
     '#cst-home .prg{display:grid;grid-template-columns:repeat(3,1fr);gap:44px;margin-top:0}',
     '#cst-home .prc .prm{display:block;width:34px;height:2px;background:var(--gd);margin:0 0 12px}',
@@ -538,6 +547,9 @@
     '#cst-home .strow .go{flex:1 1 100%;padding-left:76px;margin-right:0}',
     '#cst-home .featme{flex-direction:column;align-items:flex-start;gap:12px}',
     '#cst-home .spot.alt{flex-direction:column}',
+    '#cst-home .qi{flex-direction:column;gap:20px}',
+    '#cst-home .qi img{width:130px;height:163px;box-shadow:8px 8px 0 var(--sa)}',
+    '#cst-home .qi q{font-size:20px}',
     '#cst-home .thbox{padding:26px 22px 24px}',
     '#cst-home .thhead{grid-template-columns:1fr;gap:16px}',
     '#cst-home .thti{font-size:36px}',
@@ -941,8 +953,8 @@
         var src = photo(p);
         return '<a class="qi" href="' + esc(postUrl(p, 'community')) + '">' +
             (src ? '<img src="' + esc(src) + '" alt="">' : '') +
-            '<span><cite>' + esc(who) + '</cite>' +
-            '<q>' + esc(decode(q)) + '</q></span></a>';
+            '<span class="qw"><q>' + esc(decode(q)) + '</q>' +
+            '<cite>' + esc(who) + '</cite></span></a>';
       }).join('');
       if (asides) html += '<div class="qa">' + asides + '</div>';
 
