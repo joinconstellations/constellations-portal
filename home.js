@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.5.1';
+  var VERSION = '1.6.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -48,15 +48,22 @@
       body:  'Moving through change, waiting for what comes next, and finding a ' +
              'way forward when you feel stuck. Explore the theme through reading, ' +
              'conversation, and Nova.',
+      label:    'This month’s theme',
       articles: ['when-a-friendship-fades', 'become-a-regular'],
-      reading:  'Two pieces from the Constellations Library about change, ' +
-                'belonging, and what comes next.',
       questions: [
         'What’s something you believed about relationships when you were younger ' +
           'that you see differently now?',
         'Are you leaving something behind, adjusting to where you are now, or ' +
           'wondering what might come next?'
       ],
+      /* One member reply, shown under the questions. It is named by message
+         id rather than copied, so an edited or deleted message drops off Home
+         by itself. `parent` is the question it was posted under. */
+      reply: {
+        room:    '821ece14-f597-44af-a66e-4520f89721f4',
+        parent:  2154696378,
+        message: 2154697207
+      },
       novaAsk:   'What are small steps I can take this month to meet my goals?',
       nextLabel: 'October’s theme?',
       nextTitle: 'Masking'
@@ -290,7 +297,7 @@
     'color:var(--ik);font:17px/1.55 "EB Garamond",Georgia,serif;margin:0 0 20px}',
     '#cst-home *{box-sizing:border-box}',
     '#cst-home section{padding:48px 46px;border-top:1px solid var(--ha)}',
-    '#cst-home .cst-mast{border-top:0;padding:76px 46px 60px}',
+    '#cst-home .cst-mast{border-top:0;padding:76px 46px 30px}',
     '#cst-home .ey{font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.16em;',
     'text-transform:uppercase;color:var(--mu);margin:0 0 14px}',
     '#cst-home .ey.big{font-size:19px;letter-spacing:.18em;margin-bottom:38px}',
@@ -374,7 +381,8 @@
     '#cst-home .hp .not{color:var(--mu);font-size:15px}',
     '#cst-home .hp .go{margin-top:auto;padding-top:14px}',
     /* footer */
-    '#cst-home .foot{padding:28px 46px;border-top:1px solid var(--ha);background:#FAF8F4}',
+    '#cst-home .foot{padding:44px 46px 48px;border-top:1px solid var(--ha)}',
+    '#cst-home .foot .ey{margin-bottom:30px}',
     '#cst-home .pr{display:flex;gap:34px;flex-wrap:wrap}',
     '#cst-home .pr a,#cst-home .pr span{font:600 22px "Cormorant Garamond",Georgia,serif;',
     'color:var(--nv)!important;text-decoration:none;border-bottom:1px solid var(--sl)}',
@@ -390,7 +398,8 @@
        hiding it. If home.js ever fails to load, nothing matches and the
        normal Circle page comes back. */
     'body.view-space--2860046 #cst-home ~ *{display:none !important}',
-    '#cst-home .sand{background:#FAF8F4}',
+    /* The page is white throughout. Restore a ground here if that changes. */
+    '#cst-home .sand{background:#fff}',
     /* this month */
     '#cst-home .mo{padding-top:34px}',
     '#cst-home .mo .ey{margin-bottom:8px}',
@@ -416,7 +425,7 @@
     '#cst-home .qi cite{display:block;margin-top:8px;font:600 10.5px Inter,system-ui,sans-serif;font-style:normal;',
     'letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}',
     /* footer principles */
-    '#cst-home .prg{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:6px}',
+    '#cst-home .prg{display:grid;grid-template-columns:repeat(3,1fr);gap:44px;margin-top:0}',
     '#cst-home .prc .prm{display:block;width:34px;height:2px;background:var(--gd);margin:0 0 12px}',
     '#cst-home .prc h3{margin:0 0 6px;font:600 22px "Cormorant Garamond",Georgia,serif}',
     '#cst-home .prc h3 a{color:var(--nv)!important;text-decoration:none;',
@@ -424,7 +433,7 @@
     '#cst-home .prc p{margin:0;font-size:15px;line-height:1.5;color:var(--mu)}',
     /* 1.3.0 — welcome opening: two steps as hairline-separated rows */
     '#cst-home .cst-mast .lead{margin:22px 0 0}',
-    '#cst-home .steps{margin-top:26px}',
+    '#cst-home .steps{margin-top:46px}',
     '#cst-home .strow{display:flex;align-items:center;gap:22px;padding:24px 0;',
     'border-top:1px solid var(--ha)}',
     '#cst-home .strow .ico{flex:none;width:54px;height:54px;border-radius:50%;',
@@ -442,17 +451,15 @@
        the conversation and Nova, so the three routes read as one idea. */
     '#cst-home .thbox{border:1px solid var(--sl);padding:36px 38px 30px}',
     '#cst-home .thhead{display:grid;grid-template-columns:230px 1fr;gap:34px;align-items:start}',
-    '#cst-home .thleaf{display:block;color:var(--gd);margin:0 0 12px}',
-    '#cst-home .thleaf svg{width:36px;height:36px;display:block}',
+    '#cst-home .thrule{display:block;width:86px;height:3px;background:var(--gd);margin:0 0 16px}',
     '#cst-home .thmo{margin:0;font:500 42px/1 "Cormorant Garamond",Georgia,serif;color:var(--gd)}',
-    '#cst-home .thti{margin:0 0 14px;font:600 52px/1 "Cormorant Garamond",Georgia,serif;',
+    '#cst-home .thti{margin:0 0 14px;font:600 46px/1.02 "Cormorant Garamond",Georgia,serif;',
     'letter-spacing:-.01em;color:var(--nv)}',
     '#cst-home .thtx{margin:0;font-size:18px;line-height:1.6;max-width:560px}',
     '#cst-home .thsec{margin-top:34px;padding-top:30px;border-top:1px solid var(--ha)}',
-    '#cst-home .thh{display:flex;align-items:center;gap:11px;margin:0 0 6px;',
-    'font:600 27px/1.15 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
-    '#cst-home .thh svg{width:22px;height:22px;flex:none;color:var(--gd)}',
-    '#cst-home .thnote{margin:0 0 22px;font-size:16px;color:var(--mu);max-width:620px}',
+    '#cst-home .thh{display:flex;align-items:center;gap:13px;margin:0 0 26px;',
+    'font:600 34px/1.12 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
+    '#cst-home .thh svg{width:27px;height:27px;flex:none;color:var(--gd)}',
     '#cst-home .tharts{display:grid;grid-template-columns:1fr 1fr;gap:30px}',
     '#cst-home .thart{display:block;text-decoration:none;color:inherit!important}',
     '#cst-home .thart h4{margin:6px 0 8px;',
@@ -469,10 +476,21 @@
     '#cst-home .thnovagrid p{margin:0;font-size:16px;line-height:1.55}',
     '#cst-home .thask{margin:0 0 14px!important;color:var(--nv);',
     'font:500 22px/1.35 "Cormorant Garamond",Georgia,serif}',
-    '#cst-home .thnext{display:flex;align-items:baseline;justify-content:flex-end;',
-    'gap:14px;margin:30px 120px 0 0}',
+    '#cst-home .thnext{display:flex;align-items:baseline;justify-content:flex-start;',
+    'gap:14px;margin:24px 0 0}',
     '#cst-home .thnext .ey{margin:0}',
-    '#cst-home .thnext b{font:600 30px "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
+    '#cst-home .thnext b{font:600 27px "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
+    /* one member reply, shown under the questions */
+    '#cst-home .threply{display:flex;gap:16px;align-items:flex-start;max-width:640px;',
+    'margin-top:28px;background:var(--s2);padding:20px 22px}',
+    '#cst-home .threply img,#cst-home .threply .rini{width:44px;height:44px;flex:none;',
+    'border-radius:50%;object-fit:cover;background:var(--sa);display:flex;',
+    'align-items:center;justify-content:center;color:var(--nv);',
+    'font:600 18px "Cormorant Garamond",Georgia,serif}',
+    '#cst-home .rwho{margin:0 0 5px;font:600 10.5px Inter,system-ui,sans-serif;',
+    'letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}',
+    '#cst-home .rtxt{margin:0;color:var(--nv);',
+    'font:italic 500 18px/1.45 "Cormorant Garamond",Georgia,serif}',
     /* phone */
     '@media (max-width:767px){',
     '#cst-home section,#cst-home .cst-mast,#cst-home .foot{padding-left:22px;padding-right:22px}',
@@ -498,7 +516,6 @@
     '#cst-home .thmo{font-size:34px}',
     '#cst-home .thq{font-size:21px}',
     '#cst-home .tharts,#cst-home .thnovagrid{grid-template-columns:1fr}',
-    '#cst-home .thnext{justify-content:flex-start;margin-right:0}',
     '}'
   ].join('');
 
@@ -517,15 +534,6 @@
             'aria-hidden="true" focusable="false">' +
             '<path d="M18 9a6 6 0 1 0-12 0c0 4.8-2 6.2-2 6.2h16S18 13.8 18 9"/>' +
             '<path d="M10.2 18.6a2.1 2.1 0 0 0 3.6 0"/></svg>',
-    leaves: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-            'stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" ' +
-            'aria-hidden="true" focusable="false">' +
-            '<g transform="translate(-1,-2) scale(.62)">' +
-            '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/>' +
-            '<path d="M2 21c0-3 1.9-5.4 5.1-6C9.5 14.5 12 13 13 12"/></g>' +
-            '<g transform="translate(9,8) scale(.62)">' +
-            '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/>' +
-            '<path d="M2 21c0-3 1.9-5.4 5.1-6C9.5 14.5 12 13 13 12"/></g></svg>',
     book:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
             'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
             'aria-hidden="true" focusable="false">' +
@@ -589,26 +597,26 @@
         '<div class="thbox">' +
 
           '<div class="thhead">' +
-            '<div><span class="thleaf">' + ICON.leaves + '</span>' +
-              '<p class="ey">This month</p>' +
+            '<div><span class="thrule"></span>' +
               '<p class="thmo">' + esc(m.stamp) + '</p></div>' +
-            '<div><h2 class="thti">' + esc(m.title) + '</h2>' +
-              '<p class="thtx">' + esc(m.body) + '</p></div>' +
+            '<div>' +
+              '<p class="ey">' + esc(m.label) + '</p>' +
+              '<h2 class="thti">' + esc(m.title) + '</h2>' +
+              '<p class="thtx">' + esc(m.body) + '</p>' +
+              '<p class="thnext"><span class="ey">' + esc(m.nextLabel) + '</span>' +
+                '<b>' + esc(m.nextTitle) + '</b></p>' +
+            '</div>' +
           '</div>' +
 
           '<div class="thsec">' +
             '<h3 class="thh">' + ICON.book + 'Suggested Reading</h3>' +
-            '<p class="thnote">' + esc(m.reading) + '</p>' +
             '<div id="cst-ar"></div>' +
-            '<p class="thmore"><a class="go" href="' + esc(u.allArticles) +
-              '">Browse all articles →</a></p>' +
           '</div>' +
 
           '<div class="thsec">' +
-            '<h3 class="thh">' + ICON.talk + 'Join the Conversation</h3>' +
-            '<p class="thnote">Answer a question, or read what other members ' +
-              'have shared.</p>' +
+            '<h3 class="thh">' + ICON.talk + 'Join the Discussion</h3>' +
             '<div class="thqs">' + qs + '</div>' +
+            '<div id="cst-re"></div>' +
             '<p class="thmore"><a class="go" href="' + esc(u.discussions) +
               '">Go to Discussions →</a></p>' +
           '</div>' +
@@ -624,9 +632,6 @@
             '</div>' +
           '</div>' +
 
-          '<p class="thnext"><span class="ey">' + esc(m.nextLabel) + '</span>' +
-            '<b>' + esc(m.nextTitle) + '</b></p>' +
-
         '</div>' +
       '</section>';
   }
@@ -635,7 +640,7 @@
     var u = CFG.urls;
     return '' +
       '<section class="sand">' +
-        '<h2 class="sh">Talk to a <b>person</b></h2>' +
+        '<h2 class="sh">We’re <b>Here For You</b></h2>' +
         '<div class="help two">' +
           '<div class="hp"><h3>Book coaching</h3>One-to-one time with a coach.' +
             '<span class="use">Use it for</span>Working through something specific, like a ' +
@@ -739,6 +744,38 @@
       }).join('');
 
       mount.appendChild(el('<div class="tharts">' + cards + '</div>'));
+    });
+  }
+
+  /* One member reply, under the questions. CFG.month.reply names it by message
+     id and nothing is copied into this file, so a reply the member edits or
+     deletes changes or disappears here too. */
+  function fillReply(mount) {
+    var c = CFG.month.reply;
+    if (!mount || !c || !c.message) return Promise.resolve();
+    var base = '/internal_api/chat_rooms/' + c.room;
+    return Promise.all([
+      get(base + '/messages?parent_message_id=' + c.parent),
+      get(base + '/participants')
+    ]).then(function (res) {
+      var msg = records(res[0]).filter(function (x) {
+        return x.id === c.message && !x.deleted_at;
+      })[0];
+      if (!msg) return;
+      var text = nodeText(msg.rich_text_body && msg.rich_text_body.body).trim();
+      if (!text) return;
+      var who = records(res[1]).filter(function (p) {
+        return p.id === msg.chat_room_participant_id;
+      })[0] || {};
+      var name = who.name || '';
+      var face = who.avatar_url
+        ? '<img src="' + esc(who.avatar_url) + '" alt="">'
+        : '<span class="rini">' + esc(name.charAt(0)) + '</span>';
+      mount.appendChild(el(
+        '<div class="threply">' + face +
+          '<div><p class="rwho">' + esc(name) + '</p>' +
+          '<p class="rtxt">“' + esc(text) + '”</p></div>' +
+        '</div>'));
     });
   }
 
@@ -925,6 +962,7 @@
     /* Each block is independent and silent on failure. */
     fillGatherings(root.querySelector('#cst-ev')).catch(function () {});
     fillArticles(root.querySelector('#cst-ar')).catch(function () {});
+    fillReply(root.querySelector('#cst-re')).catch(function () {});
     fillCommunity(root.querySelector('#cst-co')).catch(function () {});
   }
 
