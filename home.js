@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.14.0';
+  var VERSION = '1.15.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -220,6 +220,24 @@
   function paragraphs(post) {
     return blocks(post).filter(function (b) { return b.type === 'p' && b.text; })
                        .map(function (b) { return decode(b.text); });
+  }
+
+  /* Short all-caps lines under the format label (FEATURED MEMBER, 30s · MARYLAND,
+     MEMBER STORY · VIRGINIA). Shown as chips on top of a card, never as body text. */
+  function isTagLine(s) {
+    return s.length <= 40 && !/[a-z]/.test(s.replace(/(\d)s\b/g, '$1S'));
+  }
+  function tagLines(post) {
+    var ps = paragraphs(post).slice(1), tags = [];
+    while (ps.length && isTagLine(ps[0])) tags.push(ps.shift());
+    return { tags: tags, rest: ps };
+  }
+  function chips(first, more) {
+    return '<span style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
+      (first ? '<span class="lab2">' + esc(first) + '</span>' : '') +
+      more.map(function (x) {
+        return '<span class="lab2" style="background:transparent;box-shadow:inset 0 0 0 1px #CBBBA0">' + esc(x) + '</span>';
+      }).join('') + '</span>';
   }
 
   function label(post) {
@@ -927,7 +945,8 @@
       if (features.length) {
         var spots = features.map(function (p, idx) {
           var l    = label(p);
-          var ps   = paragraphs(p).slice(1).filter(notLabel);
+          var tl   = tagLines(p);
+          var ps   = tl.rest.filter(notLabel);
           var src  = photo(p);
           var cta  = CFG.featureLink[l] || 'View Post';
           var role = '', body = '';
@@ -942,6 +961,24 @@
             role = (ps[0] && ps[0].length <= 40 && ps[0].indexOf('Title ') !== 0 ? ps[0] : '') + (ttl ? (ps[0] && ps[0].length <= 40 ? ' · ' : '') + ttl : '');
             body = row('Why');
             mid = body ? '<p>' + esc(body) + '</p>' : '';
+          } else if (l === 'A FEW MINUTES WITH') {
+            /* An interview: lead with the first question, then the first answer,
+               so the card reads as an interview rather than a stray sentence. */
+            var bl = blocks(p), qi = -1;
+            for (var k = 0; k < bl.length; k++) { if (bl[k].type === 'h') { qi = k; break; } }
+            if (qi > -1) {
+              role = decode(bl[qi].text);
+              var an = bl.slice(qi + 1).filter(function (b) { return b.type === 'p' && b.text; })[0];
+              var txt = an ? decode(an.text) : '', who = '';
+              var f = an && an.node && an.node.content && an.node.content[0];
+              if (f && f.marks && f.marks.some(function (m) { return m.type === 'bold'; })) {
+                who = (f.text || '').trim();
+                if (who && txt.indexOf(who) === 0) txt = txt.slice(who.length).trim();
+              }
+              mid = txt ? '<p>' + (who ? '<b>' + esc(who) + '</b> ' : '') + esc(txt) + '</p>' : '';
+            } else {
+              mid = body ? '<p>' + esc(body) + '</p>' : '';
+            }
           } else if (l === 'THREE QUESTIONS') {
             var qs = listItems(p, 'ol').slice(0, 3);
             mid = qs.length
@@ -958,7 +995,7 @@
           /* alternate the photograph side so two features do not mirror */
           return '<div class="spot' + (idx % 2 ? ' alt' : '') + '">' +
               (src ? '<img src="' + esc(src) + '" alt="">' : '') +
-              '<div><span class="lab2">' + esc(l) + '</span>' +
+              '<div>' + chips(l, tl.tags) +
               '<h2>' + esc(p.name) + '</h2>' +
               (role ? '<p class="role">' + esc(role) + '</p>' : '') +
               mid +
@@ -976,11 +1013,16 @@
         var loc = paragraphs(p).slice(1).filter(notLabel).filter(function (t) {
           return t.length <= 60 && t !== p.name;
         })[0] || '';
-        var who = (p.name || '') + (loc ? ' · ' + loc : '');
+        var nm = (p.name || '').trim();
+        if (nm && loc.toLowerCase().indexOf(nm.toLowerCase() + ' · ') === 0) loc = loc.slice(nm.length + 3).trim();
+        var qtags = tagLines(p).tags.filter(function (x) { return x !== 'QUOTE'; });
+        if (loc && !isTagLine(loc)) qtags.push(loc.toUpperCase());
+        else if (loc && qtags.indexOf(loc) < 0) qtags.push(loc);
+        var who = nm;
         var src = photo(p);
         return '<a class="qi" href="' + esc(postUrl(p, 'community')) + '">' +
             (src ? '<img src="' + esc(src) + '" alt="">' : '') +
-            '<span class="qw"><q>' + esc(decode(q)) + '</q>' +
+            '<span class="qw">' + (qtags.length ? '<span style="display:block;margin-bottom:10px">' + chips('', qtags) + '</span>' : '') + '<q>' + esc(decode(q)) + '</q>' +
             '<cite>' + esc(who) + '</cite></span></a>';
       }).join('');
       if (asides) html += '<div class="qa">' + asides + '</div>';
