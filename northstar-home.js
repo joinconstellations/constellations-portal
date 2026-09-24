@@ -9,7 +9,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.0.2';
+  var VERSION = '1.0.3';
 
   var CFG = {
     path: '/c/northstar',
@@ -690,18 +690,42 @@
     return feed || null;
   }
 
-  /* The portal's hideTitle() hides the parent of any <h1>, which is why the
-     masthead title is a .t1, not an <h1>. This repairs it either way. */
-  function hideOld() {
-    var nvx = document.getElementById('nvx-space');
-    if (nvx && nvx.style.display !== 'none') nvx.style.display = 'none';
-    var mast = document.querySelector('#' + CFG.root + ' .cst-mast');
+  /* Two things keep undoing this page, so both are repaired continuously.
+
+     1. Circle's React reconciles #nvx-space into our own root. portal.css
+        hides everything that FOLLOWS .nvx-space on this space, so that node
+        has to sit outside our root and after it, or the whole page vanishes.
+     2. The portal's hideTitle() hides the parent of any <h1>, which is why
+        the masthead title is a .t1 rather than an <h1>.
+
+     reseat() runs on every tick and on every child change of our container,
+     so neither one is ever visible to a member. */
+  function reseat() {
+    var root = document.getElementById(CFG.root);
+    var nvx  = document.getElementById('nvx-space');
+    if (!root || !root.parentElement) return;
+    if (nvx) {
+      if (root.contains(nvx) || nvx.nextElementSibling === root) {
+        root.parentElement.insertBefore(nvx, root.nextSibling);
+      }
+      if (nvx.style.display !== 'none') nvx.style.display = 'none';
+    }
+    var mast = root.querySelector('.cst-mast');
     if (mast && mast.style.display === 'none') mast.style.display = '';
+  }
+
+  var watcher = null;
+
+  function watch(parent) {
+    if (!parent) return;
+    if (!watcher) watcher = new MutationObserver(reseat);
+    watcher.disconnect();
+    watcher.observe(parent, { childList: true });
   }
 
   function build() {
     if (!onHome()) return;
-    if (document.getElementById(CFG.root)) { hideOld(); return; }
+    if (document.getElementById(CFG.root)) { reseat(); return; }
 
     var host = anchor();
     if (!host || !host.parentElement) return;
@@ -718,7 +742,8 @@
                      '<div id="cst-nsco"></div>' +
                      doorsHTML();
     host.parentElement.insertBefore(root, host);
-    hideOld();
+    watch(root.parentElement);
+    reseat();
 
     fillGatherings(root.querySelector('#cst-nsev')).catch(function () {});
     fillArticles(root.querySelector('#cst-nsar')).catch(function () {});
@@ -726,6 +751,7 @@
   }
 
   function teardown() {
+    if (watcher) watcher.disconnect();
     var r = document.getElementById(CFG.root);
     var nvx = document.getElementById('nvx-space');
     if (nvx) {
