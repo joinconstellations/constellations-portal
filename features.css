@@ -149,3 +149,7 @@ body:has([aria-modal="true"]:not(#chatbase-bubble-window)) #chatbase-message-bub
 /* North Star Home quote tags: wrap cleanly with even gaps, no stray indent on the second line. */
 #cst-nshome .qi .qt{display:flex!important;flex-wrap:wrap;gap:8px;align-items:center}
 #cst-nshome .qi .qt .lab2,#cst-nshome .qi .qt .lab3{margin:0!important}
+
+/* Member cards: the gold line runs the full length of a section when it has more than one paragraph (Kate, 24 Sep). */
+[data-nsm="card"] .tiptap>h2+p+p,[data-nsm="card"] .tiptap>h2+p+p+p,[data-nsm="card"] .tiptap>h2+p+p+p+p{margin-top:0!important;padding-top:10px;padding-left:20px;border-left:3px solid #CBBBA0}
+[data-nsm="card"] .tiptap>h2+p:has(+p),[data-nsm="card"] .tiptap>h2+p+p:has(+p),[data-nsm="card"] .tiptap>h2+p+p+p:has(+p){margin-bottom:0!important;padding-bottom:0}
