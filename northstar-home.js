@@ -9,7 +9,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.0.1';
+  var VERSION = '1.0.2';
 
   var CFG = {
     path: '/c/northstar',
@@ -317,6 +317,8 @@
     'border:1px solid var(--sl);flex:none;object-fit:cover;display:flex;align-items:center;',
     'justify-content:center;font:600 24px "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
     '#cst-nshome .pc .meta{font:500 13px Inter,system-ui,sans-serif;letter-spacing:.06em;color:var(--mu)}',
+    '#cst-nshome .pc .lab{font:600 11px Inter,system-ui,sans-serif;letter-spacing:.14em;',
+    'text-transform:uppercase;color:var(--gd);margin-bottom:4px}',
     '#cst-nshome .pc p{margin:0 0 14px;font-size:18px;line-height:1.55;flex:1;',
     'display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}',
     /* features */
@@ -619,7 +621,8 @@
           return '<div class="pc"><div class="who">' + face +
               '<div><h3>' + esc(who) + '</h3>' +
               '<span class="meta">' + esc(meta) + '</span></div></div>' +
-              '<p>' + esc(hello) + '</p>' +
+              (hello ? '<div class="lab">Say hello if</div><p>' + esc(hello) + '</p>'
+                     : '<p></p>') +
               '<a class="go" href="' + esc(postUrl(p, 'ns-community')) + '">Meet ' +
               esc(who) + ' →</a></div>';
         }).join('');
