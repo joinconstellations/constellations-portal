@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.1.0';
+  var VERSION = '2.2.0';
 
   var CFG = {
     path: '/c/northstar',
@@ -83,8 +83,9 @@
     memberLabels:  ['NEW MEMBER', 'FEATURED MEMBER'],
     featureLabels: ['PASSION PROJECTS', 'THREE QUESTIONS', 'GOOD COMPANY',
                     'A FEW MINUTES WITH', 'WORTH SHARING', 'QUOTE', 'MEMBER STORY'],
-    featureCount: 2,
-    quoteCount: 1,
+    peopleCount: 12,
+    featureCount: 6,
+    quoteCount: 3,
     featureLink: {},
 
     principles: [
@@ -757,7 +758,7 @@
       var people = [], features = [], quotes = [];
       live.forEach(function (p) {
         var l = label(p);
-        if (CFG.memberLabels.indexOf(l) > -1) { if (people.length < 3) people.push(p); }
+        if (CFG.memberLabels.indexOf(l) > -1) { if (people.length < CFG.peopleCount) people.push(p); }
         else if (l === 'QUOTE') { if (quotes.length < CFG.quoteCount) quotes.push(p); }
         else if (CFG.featureLabels.indexOf(l) > -1) { if (features.length < CFG.featureCount) features.push(p); }
       });
