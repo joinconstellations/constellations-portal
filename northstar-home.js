@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.2.0';
+  var VERSION = '2.3.0';
 
   var CFG = {
     path: '/c/northstar',
@@ -797,6 +797,9 @@
         var spots = features.map(function (p, idx) {
           var l    = label(p);
           var ps   = paragraphs(p).slice(1).filter(notLabel);
+          /* Short all-caps lines (30s · MARYLAND) are tags, shown as chips on top, not as text. */
+          var tagx = [];
+          while (ps.length && ps[0].length <= 40 && !/[a-z]/.test(ps[0].replace(/(\d)s\b/g, '$1S'))) tagx.push(ps.shift());
           var src  = photo(p);
           var cta  = CFG.featureLink[l] || 'View Post';
           var role = '', body = '';
@@ -829,6 +832,7 @@
               (src ? '<img src="' + esc(src) + '" alt="">' : '') +
               '<div><span class="lab2">' + esc(l) + '</span>' +
               (memberTag(p) ? '<span class="lab3">' + esc(memberTag(p)) + '</span>' : '') +
+              tagx.map(function (x) { return '<span class="lab3">' + esc(x) + '</span>'; }).join('') +
               '<h2>' + esc(p.name) + '</h2>' +
               (role ? '<p class="role">' + esc(role) + '</p>' : '') +
               mid +
