@@ -91,3 +91,8 @@
 [data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>blockquote{margin-left:0;padding-left:18px;font-size:23px}
 [data-nsm="story"][data-nsm-label="QUOTE"] .tiptap>blockquote+p{margin-left:0;padding-left:21px;font-size:17px}
 }
+
+/* FEATURED MEMBER label: always the filled sand style, whichever position it sits in.
+   The age and location label keeps the light outlined style. portal.js block 49
+   marks FEATURED MEMBER with data-nsm-fm. */
+[data-nsm] [data-nsm="tag"][data-nsm-fm]{background:#E7D7C1;border:0;padding:4px 10px 3px}
