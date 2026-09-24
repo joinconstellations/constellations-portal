@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.15.0';
+  var VERSION = '1.15.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -967,7 +967,7 @@
             var bl = blocks(p), qi = -1;
             for (var k = 0; k < bl.length; k++) { if (bl[k].type === 'h') { qi = k; break; } }
             if (qi > -1) {
-              role = decode(bl[qi].text);
+              var qtext = decode(bl[qi].text); role = '';
               var an = bl.slice(qi + 1).filter(function (b) { return b.type === 'p' && b.text; })[0];
               var txt = an ? decode(an.text) : '', who = '';
               var f = an && an.node && an.node.content && an.node.content[0];
@@ -975,7 +975,8 @@
                 who = (f.text || '').trim();
                 if (who && txt.indexOf(who) === 0) txt = txt.slice(who.length).trim();
               }
-              mid = txt ? '<p>' + (who ? '<b>' + esc(who) + '</b> ' : '') + esc(txt) + '</p>' : '';
+              mid = txt ? '<p style="margin:18px 0 8px;font-family:Inter,system-ui,sans-serif;font-size:11.5px;font-weight:600;font-style:normal;letter-spacing:.14em;line-height:1.6;text-transform:uppercase;color:#7D6220">' + esc(qtext) + '</p>' +
+                    '<p>' + (who ? '<b>' + esc(who) + '</b> ' : '') + esc(txt) + '</p>' : '';
             } else {
               mid = body ? '<p>' + esc(body) + '</p>' : '';
             }
