@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.2.0';
+  var VERSION = '1.2.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -46,7 +46,7 @@
       body:  'Moving through change, waiting for what comes next, and finding a ' +
              'way forward when you feel stuck. You’ll see this theme across the ' +
              'articles, the discussions and the gatherings all month.',
-      next:  'In October we’ll turn to Masking.'
+      next:  'Next month · Masking'
     },
 
     /* Drawn from the Guiding Principles document, not written here. */
@@ -356,6 +356,10 @@
     '#cst-home .msg.cst-one{grid-template-columns:1fr}',
     '#cst-home .btn.cst-quiet{color:var(--mu)!important;border-style:dashed;background:transparent}',
     /* 1.2.0 — alternating grounds and section shapes */
+    /* Circle's own feed sits below our build on Home and has no other rule
+       hiding it. If home.js ever fails to load, nothing matches and the
+       normal Circle page comes back. */
+    'body.view-space--2860046 #cst-home ~ *{display:none !important}',
     '#cst-home .sand{background:#FAF8F4}',
     '#cst-home .band{background:var(--sa)}',
     /* this month */
@@ -755,12 +759,23 @@
     return feed || null;
   }
 
-  /* The portal's hideTitle() hides the parent of any <h1>, which is why the
-     masthead title is a .t1 rather than an <h1>. This repairs it either way. */
+  /* Two repairs, run on every tick.
+
+     1. Circle's React reconciles #nvx-space into our own root. It has to stay
+        outside and after our root, so the feed-hiding rule above keeps working.
+     2. The portal's hideTitle() hides the parent of any <h1>, which is why the
+        masthead title is a .t1 rather than an <h1>. */
   function hideOld() {
-    var nvx = document.getElementById('nvx-space');
-    if (nvx && nvx.style.display !== 'none') nvx.style.display = 'none';
-    var mast = document.querySelector('#' + CFG.root + ' .cst-mast');
+    var root = document.getElementById(CFG.root);
+    var nvx  = document.getElementById('nvx-space');
+    if (nvx) {
+      if (root && root.parentElement &&
+          (root.contains(nvx) || nvx.nextElementSibling === root)) {
+        root.parentElement.insertBefore(nvx, root.nextSibling);
+      }
+      if (nvx.style.display !== 'none') nvx.style.display = 'none';
+    }
+    var mast = root && root.querySelector('.cst-mast');
     if (mast && mast.style.display === 'none') mast.style.display = '';
   }
 
