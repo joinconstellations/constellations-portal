@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.3.0';
+  var VERSION = '2.3.1';
 
   var CFG = {
     path: '/c/northstar',
@@ -849,17 +849,19 @@
         var loc = paragraphs(p).slice(1).filter(notLabel).filter(function (t) {
           return t.length <= 60 && t !== p.name;
         })[0] || '';
+        /* age and place go in a tag on top; the attribution is the name alone */
+        var nm0 = (p.name || '').trim();
+        if (nm0 && loc.toLowerCase().indexOf(nm0.toLowerCase() + ' · ') === 0) loc = loc.slice(nm0.length + 3).trim();
         var src = photo(p);
         return '<a class="qi" href="' + esc(postUrl(p, 'ns-community')) + '">' +
             (src ? '<img src="' + esc(src) + '" alt="">' : '') +
             '<span class="qw">' +
               '<span class="qt"><span class="lab2">' + esc(label(p)) + '</span>' +
               (memberTag(p) ? '<span class="lab3">' + esc(memberTag(p)) + '</span>' : '') +
+              (loc ? '<span class="lab3">' + esc(loc) + '</span>' : '') +
               '</span>' +
               '<q>' + esc(decode(q)) + '</q>' +
-              '<cite>' + esc(p.name || '') +
-                (loc ? '<span class="qloc">' + esc(loc) + '</span>' : '') +
-              '</cite></span></a>';
+              '<cite>' + esc(p.name || '') + '</cite></span></a>';
       }).join('');
       /* the quote rides high on the page, not down in Community */
       if (asides && quoteMount) {
