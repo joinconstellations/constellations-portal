@@ -130,7 +130,7 @@ if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded"
 /* ---- block 26 ---- */
 (function(){
   var SPACE = "2870142|2862303|2860066|2860046";
-  var WORDS = { "NEW MEMBER": 1, "FEATURED MEMBER": 1, "MEMBER STORY": 2, "CONSTELLATIONS COUPLES": 2, "GUIDING PRINCIPLE": 2, "GOOD COMPANY": 2, "THREE QUESTIONS": 2, "PASSION PROJECTS": 2, "A FEW MINUTES WITH": 2, "WORTH SHARING": 2 };
+  var WORDS = { "NEW MEMBER": 1, "FEATURED MEMBER": 1, "MEMBER STORY": 2, "CONSTELLATIONS COUPLES": 2, "GUIDING PRINCIPLE": 2, "GOOD COMPANY": 2, "THREE QUESTIONS": 2, "PASSION PROJECTS": 2, "A FEW MINUTES WITH": 2, "WORTH SHARING": 2, "QUOTE": 2 };
   function norm(t) { return (t || "").replace(/\s+/g, " ").trim().toUpperCase(); }
   function inSpace() { return new RegExp("view-space--(?:" + SPACE + ")" + "(?:\\s|$)").test(document.body.className); }
   function labelled(el) { return (!!el && el.tagName === "P") ? (WORDS[norm(el.textContent)] || 0) : 0; }
