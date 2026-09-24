@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.2.2';
+  var VERSION = '1.2.3';
 
   var CFG = {
     path: '/c/welcome',
@@ -73,6 +73,29 @@
        needs to say where it goes. Name a format here to override it. */
     featureLink: {}
   };
+
+  /* ------------------------------------------- portal-wide: Nova in chat --
+
+     home.js is loaded on every page, which is why this lives here. It belongs
+     in portal.css block 24 and should move there at the next edit of that file.
+
+     The Chatbase launcher lands on top of the chat composer's send button, the
+     primary action of a chat space. It cannot be moved: its containing block
+     shifts, so `bottom`, `top` and margins are all either ignored or clamped
+     back. `display` is the one property that holds, so the floating launcher
+     is hidden on chat spaces only. Nova stays in the sidebar on every page.
+
+     `data-nvx-chat` is set on <html> by the portal's own script on chat
+     spaces, so this affects nothing else. */
+  (function novaChat() {
+    if (document.getElementById('cst-nova-chat')) return;
+    var s = document.createElement('style');
+    s.id = 'cst-nova-chat';
+    s.textContent =
+      'html[data-nvx-chat] #chatbase-bubble-button,' +
+      'html[data-nvx-chat] #chatbase-message-bubbles{display:none !important}';
+    (document.head || document.documentElement).appendChild(s);
+  })();
 
   /* --------------------------------------------------------------- helpers */
 
