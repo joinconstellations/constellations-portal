@@ -9,7 +9,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.0.1';
 
   var CFG = {
     path: '/c/northstar',
@@ -262,13 +262,14 @@
     '#cst-nshome section{padding:48px 46px;border-top:1px solid var(--ha)}',
     '#cst-nshome .cst-mast{border-top:0;padding:72px 46px 56px;background:var(--nv)}',
     '#cst-nshome .cst-mast .ey{color:#CBBBA0}',
-    '#cst-nshome .cst-mast h1{color:#fff}',
+    '#cst-nshome .cst-mast .t1{color:#fff}',
     '#cst-nshome .cst-mast .tag{margin:14px 0 0;font:500 24px/1.35 "Cormorant Garamond",Georgia,serif;',
     'color:#E7D7C1}',
     '#cst-nshome .ey{font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.16em;',
     'text-transform:uppercase;color:var(--mu);margin:0 0 14px}',
     '#cst-nshome .ey.big{font-size:19px;letter-spacing:.18em;margin-bottom:30px}',
-    '#cst-nshome h1{font:600 64px/1.05 "Cormorant Garamond",Georgia,serif;color:var(--nv);',
+    '#cst-nshome .t1{display:block;font:600 64px/1.05 "Cormorant Garamond",Georgia,serif;',
+    'color:var(--nv);',
     'letter-spacing:-.012em;margin:0}',
     '#cst-nshome h3{font:600 24px/1.2 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 6px}',
     '#cst-nshome .sh{font:500 34px/1.12 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 24px}',
@@ -363,7 +364,7 @@
     '@media (max-width:767px){',
     '#cst-nshome section,#cst-nshome .cst-mast,#cst-nshome .what,#cst-nshome .foot',
     '{padding-left:22px;padding-right:22px}',
-    '#cst-nshome h1{font-size:40px}',
+    '#cst-nshome .t1{font-size:40px}',
     '#cst-nshome .sh{font-size:28px}',
     '#cst-nshome .arts,#cst-nshome .ppl,#cst-nshome .help,#cst-nshome .help.two,',
     '#cst-nshome .tq{grid-template-columns:1fr}',
@@ -384,7 +385,7 @@
     return '' +
       '<section class="cst-mast">' +
         '<p class="ey big">Constellations · North Star</p>' +
-        '<h1>Welcome.<br>We’re glad you’re here.</h1>' +
+        '<h2 class="t1">Welcome.<br>We’re glad you’re here.</h2>' +
         '<p class="tag">More Support. Same Independence.</p>' +
       '</section>' +
       '<div class="what">' +
@@ -686,9 +687,13 @@
     return feed || null;
   }
 
+  /* The portal's hideTitle() hides the parent of any <h1>, which is why the
+     masthead title is a .t1, not an <h1>. This repairs it either way. */
   function hideOld() {
     var nvx = document.getElementById('nvx-space');
     if (nvx && nvx.style.display !== 'none') nvx.style.display = 'none';
+    var mast = document.querySelector('#' + CFG.root + ' .cst-mast');
+    if (mast && mast.style.display === 'none') mast.style.display = '';
   }
 
   function build() {
