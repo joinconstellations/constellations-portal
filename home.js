@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.6.0';
+  var VERSION = '1.6.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -432,7 +432,7 @@
     'border-bottom:1px solid var(--sl)}',
     '#cst-home .prc p{margin:0;font-size:15px;line-height:1.5;color:var(--mu)}',
     /* 1.3.0 — welcome opening: two steps as hairline-separated rows */
-    '#cst-home .cst-mast .lead{margin:22px 0 0}',
+    '#cst-home .cst-mast .lead{margin:44px 0 0}',
     '#cst-home .steps{margin-top:46px}',
     '#cst-home .strow{display:flex;align-items:center;gap:22px;padding:24px 0;',
     'border-top:1px solid var(--ha)}',
@@ -568,7 +568,7 @@
       '<section class="cst-mast">' +
         '<p class="ey big">Constellations Member Portal</p>' +
         '<h2 class="t1">Welcome.<br>We’re glad you’re here.</h2>' +
-        '<p class="lead">Start with these two steps.</p>' +
+        '<p class="lead">New here? Start with these two steps.</p>' +
         '<div class="steps">' +
           stepRow(ICON.person, 'Complete your profile',
                   'Share a bit about yourself.<br>Add the cream-background ' +
