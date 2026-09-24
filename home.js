@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.6.1';
+  var VERSION = '1.7.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -28,6 +28,7 @@
       profile:       '/account',
       notifications: '/account/notifications',
       report:      '/c/report',
+      walkthrough:  null,   /* booking link for the 15-minute call; null = Coming soon */
       /* null renders as muted text instead of a dead link */
       beFeatured:          null,   /* '/c/guides/be-featured' once published  */
       connectionRequests:  null,   /* guide not written yet                   */
@@ -534,6 +535,11 @@
             'aria-hidden="true" focusable="false">' +
             '<path d="M18 9a6 6 0 1 0-12 0c0 4.8-2 6.2-2 6.2h16S18 13.8 18 9"/>' +
             '<path d="M10.2 18.6a2.1 2.1 0 0 0 3.6 0"/></svg>',
+    video:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
+            'aria-hidden="true" focusable="false">' +
+            '<path d="M22 8.5 16 12l6 3.5v-7Z"/>' +
+            '<rect x="2" y="6" width="14" height="12" rx="2.5"/></svg>',
     book:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
             'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ' +
             'aria-hidden="true" focusable="false">' +
@@ -551,12 +557,16 @@
             '<path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>'
   };
 
+  /* A step with no link yet shows muted text rather than a dead link, the
+     same way the Be Featured strip does. */
   function stepRow(icon, title, lines, href, label) {
     return '<div class="strow">' +
              '<span class="ico">' + icon + '</span>' +
              '<div class="sb"><h3>' + title + '</h3>' +
                '<p>' + lines + '</p></div>' +
-             '<a class="go" href="' + esc(href) + '">' + label + ' →</a>' +
+             (href
+               ? '<a class="go" href="' + esc(href) + '">' + label + ' →</a>'
+               : '<span class="go cst-soon">Coming soon</span>') +
            '</div>';
   }
 
@@ -568,7 +578,7 @@
       '<section class="cst-mast">' +
         '<p class="ey big">Constellations Member Portal</p>' +
         '<h2 class="t1">Welcome.<br>We’re glad you’re here.</h2>' +
-        '<p class="lead">New here? Start with these two steps.</p>' +
+        '<p class="lead">New here? Start with these three steps.</p>' +
         '<div class="steps">' +
           stepRow(ICON.person, 'Complete your profile',
                   'Share a bit about yourself.<br>Add the cream-background ' +
@@ -578,6 +588,10 @@
                   'Choose which updates you receive by email.<br>' +
                   'You can change this anytime.',
                   u.notifications, 'Customize notifications') +
+          stepRow(ICON.video, 'Book a walkthrough call',
+                  'Optional. Fifteen minutes with our team over Zoom.<br>' +
+                  'See how the Portal works and what happens next.',
+                  u.walkthrough, 'Book a walkthrough') +
         '</div>' +
       '</section>';
   }
@@ -947,13 +961,13 @@
     var root = document.createElement('div');
     root.id = CFG.root;
     root.setAttribute('data-cst-home', VERSION);
-    /* Orientation, then people, then this month's theme with the three ways
-       into it, then what is happening, then where to get help. Each live slot
+    /* Orientation, then this month's theme with the three ways into it, then
+       people, then what is happening, then where to get help. Each live slot
        is a fixed div so the running order never depends on which request
-       answers first. #cst-ar sits inside the theme box. */
+       answers first. #cst-ar and #cst-re sit inside the theme box. */
     root.innerHTML = welcomeHTML() +
-                     '<div id="cst-co"></div>' +
                      themeHTML() +
+                     '<div id="cst-co"></div>' +
                      '<div id="cst-ev"></div>' +
                      supportHTML();
     host.parentElement.insertBefore(root, host);
