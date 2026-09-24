@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.8.0';
+  var VERSION = '1.9.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -71,6 +71,16 @@
       novaAsk:   'What are small steps I can take this month to meet my goals?',
       nextLabel: 'October’s theme?',
       nextTitle: 'Masking'
+    },
+
+    /* A note under The next Gathering. Set to null to take it down. */
+    gatheringNote: {
+      title: 'A note from the Constellations team',
+      body:  'We’re moving our virtual discussions and in-person events from ' +
+             'Acuity Scheduling into the Portal, so everything you need will be ' +
+             'in one place. Some gatherings are already here, and more are on ' +
+             'the way. Please check back by Friday, September 25, for the full ' +
+             'updated calendar.'
     },
 
     /* Drawn from the Guiding Principles document, not written here. */
@@ -425,11 +435,15 @@
     /* 1.4.0 — quotes as small asides below the features */
     '#cst-home .qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px 40px;',
     'margin-top:34px;padding-top:30px;border-top:1px solid var(--ha)}',
-    '#cst-home .qi{display:flex;gap:18px;align-items:flex-start;max-width:720px;text-decoration:none!important;color:inherit!important}',
-    '#cst-home .qi img{width:64px;height:64px;object-fit:cover;object-position:50% 25%;border:1px solid var(--sl);flex:none}',
-    '#cst-home .qi q{display:block;font:italic 500 18px/1.45 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
-    '#cst-home .qi cite{display:block;margin-top:8px;font:600 10.5px Inter,system-ui,sans-serif;font-style:normal;',
-    'letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}',
+    '#cst-home .qi{display:flex;gap:18px;align-items:flex-start;max-width:720px;',
+    'text-decoration:none!important;color:inherit!important}',
+    '#cst-home .qi img{width:56px;height:56px;border-radius:50%;object-fit:cover;',
+    'object-position:50% 25%;flex:none}',
+    /* The quote reads as an excerpt of the post, in body face rather than
+       italic Cormorant: these run several lines and long italic is hard work. */
+    '#cst-home .qi cite{display:block;margin:0 0 8px;font:600 10.5px Inter,system-ui,sans-serif;',
+    'font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}',
+    '#cst-home .qi q{display:block;font:17px/1.6 "EB Garamond",Georgia,serif;color:var(--ik)}',
     /* footer principles */
     '#cst-home .prg{display:grid;grid-template-columns:repeat(3,1fr);gap:44px;margin-top:0}',
     '#cst-home .prc .prm{display:block;width:34px;height:2px;background:var(--gd);margin:0 0 12px}',
@@ -499,6 +513,12 @@
     'font:italic 500 18px/1.45 "Cormorant Garamond",Georgia,serif}',
     '#cst-home .rtxt+.rtxt{margin-top:10px}',
     '#cst-home .threply+.threply{margin-top:14px}',
+    /* a note from the team, under The next Gathering */
+    '#cst-home .gnote{margin-top:26px;background:var(--s2);border-left:3px solid var(--gd);',
+    'padding:20px 24px 22px;max-width:760px}',
+    '#cst-home .gnote h3{margin:0 0 8px;font:600 10.5px Inter,system-ui,sans-serif;',
+    'letter-spacing:.14em;text-transform:uppercase;color:var(--gd)}',
+    '#cst-home .gnote p{margin:0;font-size:16px;line-height:1.55;color:var(--ik)}',
     /* phone */
     '@media (max-width:767px){',
     '#cst-home section,#cst-home .cst-mast,#cst-home .foot{padding-left:22px;padding-right:22px}',
@@ -728,10 +748,16 @@
           '</div>';
       }).join('');
 
+      var note = CFG.gatheringNote;
+      var noteHTML = note
+        ? '<div class="gnote"><h3>' + esc(note.title) + '</h3>' +
+          '<p>' + esc(note.body) + '</p></div>'
+        : '';
+
       mount.appendChild(el(
         '<section><h2 class="sh">The next <b>Gathering</b></h2>' + rows +
         '<p style="margin:14px 0 0"><a class="go" href="' + esc(CFG.urls.calendar) +
-        '">See the full calendar →</a></p></section>'));
+        '">See the full calendar →</a></p>' + noteHTML + '</section>'));
     });
   }
 
@@ -915,7 +941,8 @@
         var src = photo(p);
         return '<a class="qi" href="' + esc(postUrl(p, 'community')) + '">' +
             (src ? '<img src="' + esc(src) + '" alt="">' : '') +
-            '<span><q>' + esc(decode(q)) + '</q><cite>' + esc(who) + '</cite></span></a>';
+            '<span><cite>' + esc(who) + '</cite>' +
+            '<q>' + esc(decode(q)) + '</q></span></a>';
       }).join('');
       if (asides) html += '<div class="qa">' + asides + '</div>';
 
