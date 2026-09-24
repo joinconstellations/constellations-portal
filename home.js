@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.11.0';
+  var VERSION = '1.12.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -78,7 +78,7 @@
       title: 'Important note',
       body:  'We’re moving our virtual discussions and in-person events from ' +
              'Acuity Scheduling into the Portal, so everything you need will be ' +
-             'in one place. Please check back by Friday, September 25, for the ' +
+             'in one place. Please check back by Sunday, September 27, for the ' +
              'full updated calendar.'
     },
 
@@ -392,6 +392,7 @@
     /* where to go */
     '#cst-home .help{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ha)}',
     '#cst-home .help.two{grid-template-columns:repeat(2,1fr)}',
+    '#cst-home .help.one{grid-template-columns:1fr}',
     '#cst-home .hp{padding:22px 22px 24px;font-size:16px;line-height:1.45;display:flex;flex-direction:column}',
     '#cst-home .hp+.hp{border-left:1px solid var(--ha)}',
     '#cst-home .hp .use{font:600 10.5px Inter,system-ui,sans-serif;letter-spacing:.14em;',
@@ -702,13 +703,9 @@
     return '' +
       '<section class="sand">' +
         '<h2 class="sh">We’re <b>Here For You</b></h2>' +
-        '<div class="help two">' +
-          '<div class="hp"><h3>Book coaching</h3>One-to-one time with a coach.' +
-            '<span class="use">Use it for</span>Working through something specific, like a ' +
-            'first date, a message you’re stuck on, or a plan.' +
-            '<span class="use">Good to know</span>' +
-            '<span class="not">Booked and paid for separately from membership.</span>' +
-            '<a class="go" href="' + esc(u.coaching) + '">See coaching →</a></div>' +
+        /* Coaching is temporarily off both Home pages at Kate's direction,
+           24 Sep 2026. Restore the panel and the .help.two class together. */
+        '<div class="help one">' +
           '<div class="hp"><h3>Report a concern</h3>A private route to our team.' +
             '<span class="use">Use it for</span>When someone’s behavior worries you, or ' +
             'something doesn’t feel right.' +
