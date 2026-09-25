@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.3.1';
+  var VERSION = '2.3.2';
 
   var CFG = {
     path: '/c/northstar',
@@ -84,7 +84,7 @@
     featureLabels: ['PASSION PROJECTS', 'THREE QUESTIONS', 'GOOD COMPANY',
                     'A FEW MINUTES WITH', 'WORTH SHARING', 'QUOTE', 'MEMBER STORY'],
     peopleCount: 12,
-    featureCount: 6,
+    featureCount: 10,
     quoteCount: 3,
     featureLink: {},
 
@@ -766,7 +766,7 @@
       if (!people.length && !features.length && !quotes.length) return;
 
       var html = '<section>' +
-                 '<h2 class="sh">Meet the <b>Community</b></h2>' +
+                 '<h2 class="sh">From the <b>Community</b></h2>' +
                  '<p class="lead">These are some of the members of Constellations. ' +
                  'You can read about them here.</p>';
 
