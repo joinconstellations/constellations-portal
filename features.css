@@ -116,6 +116,15 @@ body:has([aria-modal="true"]:not(#chatbase-bubble-window)) #chatbase-message-bub
 [data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"] p{margin:0 0 6px!important;font-size:16px;line-height:1.5}
 [data-circle="post"]:has(a[href$="/c/community/be-featured"]) a[href$="/c/community/be-featured"]{color:#1A2238!important}
 [data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"] em{font:600 13px Inter,system-ui,sans-serif!important;font-style:normal!important;color:#5A5849!important}
+/* Be-featured strip (25 Sep): one line, title hidden, link clearly styled. */
+[data-circle="post"]:has(a[href$="/c/community/be-featured"])>div{display:flex!important;align-items:center!important;gap:12px!important;padding:14px 20px!important}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"])>div>*+*{margin-top:0!important}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"])>div>div:first-child{order:2;flex:0 0 auto;margin-left:auto}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-title"]{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;margin:0!important;padding:0!important}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"]{order:1;flex:1 1 auto}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"] p{margin:0!important;font-size:17px!important;line-height:1.5!important;color:#1A2238!important}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"] a[href*="/c/guides/be-featured"]{color:#7D6220!important;font-weight:600!important;text-decoration:underline!important;text-underline-offset:3px!important;white-space:nowrap}
+[data-circle="post"]:has(a[href$="/c/community/be-featured"]) [data-circle="post-body"] a[href*="/c/guides/be-featured"]:hover{color:#1A2238!important}
 
 /* Comments and the comment box sit inside the feature card, so the template rules above
    (and in portal.css) were reaching them: the empty first line of the comment box was
