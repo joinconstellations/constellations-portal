@@ -11,11 +11,11 @@
 
 /* ---- North Star Home masthead (/c/northstar) ----
    Kate, 26 Sep: the header read as plain — it was navy and pale blue with no
-   gold anywhere, while gold is already the action colour further down the page.
+   gold anywhere, while gold is already the action color further down the page.
    Two touches: a gold cap across the top of the navy masthead box, and the
    86x4 gold rule from the guide cards between the eyebrow and the welcome.
    The North Star glyph stays navy on purpose — the copy tells members to look
-   for the BLUE North Star, so it must not change colour. */
+   for the BLUE North Star, so it must not change color. */
 
 #cst-nshome .nsbox {
   border-top: 5px solid #7D6220 !important;
