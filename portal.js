@@ -373,3 +373,33 @@ document.addEventListener('DOMContentLoaded',ping);ping();
 })();
 
 ;
+
+/* ---- North Star landing ----
+   Members listed here (by Circle public UID) land on North Star Home instead of
+   the main Home, and the main Home link is hidden from their sidebar.
+   Set 25 Sep 2026 at Kate's request: Lucy (333128ee), Hannah (2d2a7d24).
+   To add or remove someone, edit NS_ONLY. */
+(function(){
+var NS_ONLY=['333128ee','2d2a7d24'];
+var NS_HOME='/c/northstar';
+function uid(){var u=window.circleUser;return u&&u.publicUid;}
+function on(){return NS_ONLY.indexOf(uid())>-1;}
+function css(){
+  if(document.getElementById('cst-nsonly-css'))return;
+  var s=document.createElement('style');s.id='cst-nsonly-css';
+  s.textContent='html[data-cst-nsonly] a[href="/c/welcome"],html[data-cst-nsonly] a[href$="portal.joinconstellations.com/c/welcome"]{display:none!important}';
+  (document.head||document.documentElement).appendChild(s);
+}
+function check(){
+  if(!on())return;
+  document.documentElement.setAttribute('data-cst-nsonly','');
+  css();
+  var p=location.pathname.replace(/\/+$/,'');
+  if(p===''||p==='/c/welcome'||p==='/home'||p==='/feed'){location.replace(NS_HOME);}
+}
+var last='';
+function tick(){if(location.pathname!==last){last=location.pathname;check();}}
+new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});
+document.addEventListener('DOMContentLoaded',check);
+tick();
+})();
