@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.4.0';
+  var VERSION = '2.5.0';
 
   var CFG = {
     path: '/c/northstar',
@@ -72,8 +72,8 @@
          fetched live, so a reply the member edits or deletes changes here too. */
       replies: {
         room:     '4f8d094d-69bf-4f2a-bc82-6539c26aca90',
-        parent:   2154691965,
-        messages: [2154692292]
+        parent:   null,   /* null = top-level messages in the room, not a thread */
+        messages: [2156439201, 2156465729, 2156482990, 2156503013, 2156525128]
       },
       novaAsk: 'What are small steps I can take this month to meet my goals?',
       nextLabel: 'October’s theme?',
@@ -713,7 +713,7 @@
     if (!mount || !c || !c.messages || !c.messages.length) return Promise.resolve();
     var base = '/internal_api/chat_rooms/' + c.room;
     return Promise.all([
-      get(base + '/messages?parent_message_id=' + c.parent),
+      get(base + '/messages' + (c.parent ? '?parent_message_id=' + c.parent : '?per_page=100')),
       get(base + '/participants')
     ]).then(function (res) {
       var msgs = records(res[0]), people = records(res[1]);
