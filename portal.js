@@ -407,17 +407,46 @@ tick();
 /* ---- block 60 ---- */
 /* Member posts open as their own page, not in Circle's pop-up. The pop-up has none
    of the hooks the feature styling uses, so it shows plain text. Applies to posts in
-   Community and North Star Community; Cmd/Ctrl-click still opens a new tab. */
+   Community and North Star Community. Covers the title link, "See more", the comment
+   button and comment count; Cmd/Ctrl-click still opens a new tab. If the pop-up opens
+   by any other route, the page reloads as the full post. */
 (function(){
 var RX=/^\/c\/(community|ns-community)\/[^\/?#]+\/?$/;
+function same(p){return p.replace(/\/$/,'')===location.pathname.replace(/\/$/,'');}
+function postPath(el){
+  var post=el.closest&&el.closest('[data-circle="post"]'); if(!post) return null;
+  var t=post.querySelector('[data-circle="post-title"] a[href], a[data-circle="post-title"][href]')||post.querySelector('a[href^="/c/community/"],a[href^="/c/ns-community/"]');
+  if(!t) return null;
+  var u; try{u=new URL(t.getAttribute('href'),location.href);}catch(x){return null;}
+  return RX.test(u.pathname)?u.pathname:null;
+}
 window.addEventListener('click',function(e){
   if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) return;
-  var a=e.target&&e.target.closest&&e.target.closest('a[href]');
-  if(!a) return;
-  var u; try{u=new URL(a.getAttribute('href'),location.href);}catch(x){return;}
-  if(u.origin!==location.origin||!RX.test(u.pathname)) return;
-  if(u.pathname.replace(/\/$/,'')===location.pathname.replace(/\/$/,'')) return;
+  var el=e.target; if(!el||!el.closest) return;
+  if(el.closest('[role="dialog"]')) return;
+  var p=null, a=el.closest('a[href]');
+  if(a){
+    var u; try{u=new URL(a.getAttribute('href'),location.href);}catch(x){return;}
+    if(u.origin===location.origin&&RX.test(u.pathname)) p=u.pathname;
+  } else {
+    var b=el.closest('button,[role="button"]');
+    if(b){
+      var dc=b.getAttribute('data-circle')||'';
+      var txt=(b.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+      if(dc==='post-comment-button'||dc==='post-comment-count'||txt==='see more') p=postPath(b);
+    }
+  }
+  if(!p||same(p)) return;
   e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-  location.assign(u.pathname+u.search+u.hash);
+  location.assign(p);
 },true);
+setInterval(function(){
+  if(!RX.test(location.pathname)) return;
+  var ds=document.querySelectorAll('[role="dialog"]');
+  for(var k=0;k<ds.length;k++){
+    if(ds[k].querySelector('button[aria-label="Bookmark post"]')&&ds[k].querySelector('.tiptap')){
+      location.replace(location.pathname+location.search); return;
+    }
+  }
+},400);
 })();
