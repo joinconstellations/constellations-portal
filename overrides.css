@@ -1,0 +1,42 @@
+/* Constellations — portal style overrides
+   Created 26 Sep 2026.
+
+   Small, late-loading visual corrections. This file exists so a styling tweak
+   does not require rewriting a 50KB component file. Rules here use !important
+   because the component CSS is injected into <head> at runtime by home.js and
+   northstar-home.js, and therefore lands after this stylesheet in the cascade.
+
+   Keep this file small. When a rule here becomes permanent, fold it into the
+   component that owns it and delete it from here. */
+
+/* ---- North Star Home masthead (/c/northstar) ----
+   Kate, 26 Sep: the header read as plain — it was navy and pale blue with no
+   gold anywhere, while gold is already the action colour further down the page.
+   Two touches: a gold cap across the top of the navy masthead box, and the
+   86x4 gold rule from the guide cards between the eyebrow and the welcome.
+   The North Star glyph stays navy on purpose — the copy tells members to look
+   for the BLUE North Star, so it must not change colour. */
+
+#cst-nshome .nsbox {
+  border-top: 5px solid #7D6220 !important;
+}
+
+#cst-nshome .t1::before {
+  content: "";
+  display: block;
+  width: 86px;
+  height: 4px;
+  background: #7D6220;
+  margin: 0 0 22px;
+}
+
+@media (max-width: 767px) {
+  #cst-nshome .nsbox {
+    border-top-width: 4px !important;
+  }
+  #cst-nshome .t1::before {
+    width: 64px;
+    height: 3px;
+    margin-bottom: 18px;
+  }
+}
