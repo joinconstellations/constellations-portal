@@ -403,3 +403,21 @@ new MutationObserver(tick).observe(document.documentElement,{childList:true,subt
 document.addEventListener('DOMContentLoaded',check);
 tick();
 })();
+
+/* ---- block 60 ---- */
+/* Member posts open as their own page, not in Circle's pop-up. The pop-up has none
+   of the hooks the feature styling uses, so it shows plain text. Applies to posts in
+   Community and North Star Community; Cmd/Ctrl-click still opens a new tab. */
+(function(){
+var RX=/^\/c\/(community|ns-community)\/[^\/?#]+\/?$/;
+window.addEventListener('click',function(e){
+  if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) return;
+  var a=e.target&&e.target.closest&&e.target.closest('a[href]');
+  if(!a) return;
+  var u; try{u=new URL(a.getAttribute('href'),location.href);}catch(x){return;}
+  if(u.origin!==location.origin||!RX.test(u.pathname)) return;
+  if(u.pathname.replace(/\/$/,'')===location.pathname.replace(/\/$/,'')) return;
+  e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+  location.assign(u.pathname+u.search+u.hash);
+},true);
+})();
