@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.17.0';
+  var VERSION = '1.17.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -94,7 +94,7 @@
 
     /* How many member features Home shows, and how many short quotes run
        below them as small asides. */
-    featureCount: 8,
+    featureCount: 12,
     quoteCount:   2,
 
     memberLabels:  ['NEW MEMBER', 'FEATURED MEMBER'],
