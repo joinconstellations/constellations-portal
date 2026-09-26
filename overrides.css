@@ -40,3 +40,23 @@
     margin-bottom: 18px;
   }
 }
+
+/* ---- Field Notes door, hidden TEMPORARILY (26 Sep 2026) ----
+   Kate asked for the Field Notes discussion to be hidden for everyone, for now.
+
+   The space itself (2871939, /c/discussions-field-guide) was already out of the
+   sidebar and has no posts in it. What was still visible was its door on the
+   Discussions landing page, drawn by the space-header template that lives in
+   Circle's JavaScript snippet — the field with no headroom left. Hiding the
+   door here instead keeps that snippet untouched and makes this a one-block
+   change to undo.
+
+   This hides the door, not the space: /c/discussions-field-guide still opens
+   for anyone who has the address. If it needs to be genuinely closed rather
+   than out of sight, that is a member-access change in Circle.
+
+   TO RESTORE: delete this block. */
+
+a.nvx-door[href="/c/discussions-field-guide"] {
+  display: none !important;
+}
