@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.3.2';
+  var VERSION = '2.4.0';
 
   var CFG = {
     path: '/c/northstar',
@@ -762,6 +762,20 @@
         else if (l === 'QUOTE') { if (quotes.length < CFG.quoteCount) quotes.push(p); }
         else if (CFG.featureLabels.indexOf(l) > -1) { if (features.length < CFG.featureCount) features.push(p); }
       });
+
+      /* Alternate NEW MEMBER and FEATURED MEMBER cards so the same label
+         never sits side by side when both kinds exist. Newest card still leads. */
+      people = (function (ps) {
+        var n = [], f = [], o = [];
+        ps.forEach(function (p) { (label(p) === 'NEW MEMBER' ? n : f).push(p); });
+        var a = n, b = f;
+        if (ps.length && label(ps[0]) !== 'NEW MEMBER') { a = f; b = n; }
+        while (a.length || b.length) {
+          if (a.length) o.push(a.shift());
+          if (b.length) o.push(b.shift());
+        }
+        return o;
+      })(people);
 
       if (!people.length && !features.length && !quotes.length) return;
 
