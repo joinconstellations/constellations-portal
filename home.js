@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.18.0';
+  var VERSION = '1.18.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -1163,12 +1163,13 @@
   window.addEventListener('popstate', tick);
 })();
 /* ==========================================================================
-   Constellations — Community page (/c/community)             community 1.0.0
+   Constellations — Community page (/c/community)             community 1.1.0
    Lives in home.js because home.js is already loaded on every portal page.
    Replaces Circle's feed on the Community space landing page with:
-     Community title + intro + "Would you like to be featured?" strip
+     Community title + intro
      Recently (newest feature large, next three as cards)
      New Members (swipe row)
+     "Would you like to be featured?" strip
      Member Stories (couples: Member Story / A Few Minutes With)
      Get to Know Our Members (every other feature, filter tabs)
      From the team (posts that are not member features)
@@ -1380,8 +1381,10 @@
   function headHTML() {
     return '<div class="cm-hd"><div class="cm-t1" role="heading" aria-level="1">Community</div><div class="cm-rule"></div>' +
       '<p class="cm-lede">Here you’ll find featured content about our members: who’s new, who you should get to know, ' +
-      'and the stories, projects and favorite things they’ve chosen to share.</p>' +
-      '<div class="cm-feat"><div><div class="cm-ft">Would you like to be featured?</div><p>Share a few answers, something you made, ' +
+      'and the stories, projects and favorite things they’ve chosen to share.</p></div>';
+  }
+  function featHTML() {
+    return '<div class="cm-featwrap"><div class="cm-feat"><div><div class="cm-ft">Would you like to be featured?</div><p>Share a few answers, something you made, ' +
       'a pet, or a recommendation. You approve everything before it goes up.</p></div>' +
       '<a class="cm-go" href="' + CC.guide + '">See how it works →</a></div></div>';
   }
@@ -1402,7 +1405,7 @@
       feats.push(f);
     });
     feats.sort(function (a, b) { return b.when - a.when; });
-    if (!feats.length) { root.innerHTML = headHTML(); return; }
+    if (!feats.length) { root.innerHTML = headHTML() + featHTML(); return; }
 
     var recent = feats.slice(0, 4);
     var news = feats.filter(function (f) { return f.label === 'NEW MEMBER'; });
@@ -1420,6 +1423,8 @@
       h += '<section><div class="cm-h2">New Members</div><p class="cm-sub">Say hello to the newest people in Constellations.</p>' +
            '<div class="cm-row">' + news.map(newCard).join('') + '</div></section>';
     }
+    /* After Recently and New Members: the reader has just seen who gets featured. */
+    h += featHTML();
     if (stories.length) {
       h += '<section><div class="cm-h2">Member Stories</div><p class="cm-sub">Longer conversations with members and couples.</p>' +
            '<div class="cm-stories">' + stories.map(story).join('') + '</div></section>';
@@ -1457,11 +1462,12 @@
     'background:#fff;border:1px solid var(--ha);color:var(--ik);font:17px/1.55 "EB Garamond",Georgia,serif;margin:0 0 20px}',
     R + ' *{box-sizing:border-box}',
     R + ' a{color:inherit;text-decoration:none !important}',
-    R + ' .cm-hd{padding:64px 46px 40px}',
+    R + ' .cm-hd{padding:64px 46px 44px}',
     R + ' .cm-t1{font:600 64px/1.02 "Cormorant Garamond",Georgia,serif;color:var(--nv);letter-spacing:-.01em}',
     R + ' .cm-rule{width:64px;height:3px;background:var(--pl);margin:22px 0}',
     R + ' .cm-lede{font-size:20px;line-height:1.55;color:#3d3d38;max-width:640px;margin:0}',
-    R + ' .cm-feat{margin:30px 0 0;background:var(--s2);border-left:3px solid var(--gd);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px}',
+    R + ' .cm-featwrap{border-top:1px solid var(--ha);padding:36px 46px}',
+    R + ' .cm-feat{margin:0;background:var(--s2);border-left:3px solid var(--gd);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px}',
     R + ' .cm-feat .cm-ft{font:600 24px/1.15 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
     R + ' .cm-feat p{margin:4px 0 0;font-size:17px;color:#3d3d38}',
     R + ' .cm-feat .cm-go{white-space:nowrap;margin-top:0}',
@@ -1519,7 +1525,7 @@
     R + ' .cm-foot{border-top:1px solid var(--ha);padding:24px 46px 30px;font-size:18px;color:#555}',
     R + ' .cm-foot a{margin-left:8px;color:var(--gd) !important}',
     '@media (max-width:767px){',
-    R + ' .cm-hd{padding:40px 18px 28px}' + R + ' section{padding:34px 18px}' + R + ' .cm-foot{padding:22px 18px}',
+    R + ' .cm-hd{padding:40px 18px 28px}' + R + ' .cm-featwrap{padding:26px 18px}' + R + ' section{padding:34px 18px}' + R + ' .cm-foot{padding:22px 18px}',
     R + ' .cm-t1{font-size:46px}' + R + ' .cm-h2{font-size:32px}' + R + ' .cm-bt{font-size:34px}',
     R + ' .cm-feat{flex-direction:column;align-items:flex-start;gap:10px}',
     R + ' .cm-big,' + R + ' .cm-three,' + R + ' .cm-three-up,' + R + ' .cm-stories,' + R + ' .cm-grid{grid-template-columns:minmax(0,1fr)}',
@@ -1553,7 +1559,7 @@
     style();
     var root = document.createElement('div');
     root.id = CC.root;
-    root.setAttribute('data-cst-comm', '1.0.0');
+    root.setAttribute('data-cst-comm', '1.1.0');
     root.innerHTML = headHTML();
     host.parentElement.insertBefore(root, host);
     keepOrder();
