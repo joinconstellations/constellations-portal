@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.17.2';
+  var VERSION = '1.18.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -1159,6 +1159,423 @@
   } else {
     tick();
   }
+  setInterval(tick, 500);
+  window.addEventListener('popstate', tick);
+})();
+/* ==========================================================================
+   Constellations — Community page (/c/community)             community 1.0.0
+   Lives in home.js because home.js is already loaded on every portal page.
+   Replaces Circle's feed on the Community space landing page with:
+     Community title + intro + "Would you like to be featured?" strip
+     Recently (newest feature large, next three as cards)
+     New Members (swipe row)
+     Member Stories (couples: Member Story / A Few Minutes With)
+     Get to Know Our Members (every other feature, filter tabs)
+     From the team (posts that are not member features)
+   Pulls from Community (2862303) and North Star Community (2870142); a
+   feature that exists in both is shown once, from Community. Post pages
+   (/c/community/<slug>) are untouched. Hides itself if the data call fails.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var CC = {
+    path: '/c/community',
+    root: 'cst-comm',
+    bodyClass: 'view-space--2862303',
+    spaces: [2862303, 2870142],
+    guide: '/c/guides/be-featured',
+    skip: ['be-featured', 'kates-bookshelf'],
+    member: ['NEW MEMBER', 'FEATURED MEMBER'],
+    formats: ['THREE QUESTIONS', 'MEMBER STORY', 'A FEW MINUTES WITH', 'PASSION PROJECTS',
+              'WORTH SHARING', 'QUOTE', 'GOOD COMPANY'],
+    /* What members see on the tag. The post itself keeps its own label. */
+    show: {
+      'NEW MEMBER': 'New Member', 'FEATURED MEMBER': 'Featured Member',
+      'THREE QUESTIONS': 'Three Questions', 'MEMBER STORY': 'Member Story',
+      'A FEW MINUTES WITH': 'A Few Minutes With…', 'PASSION PROJECTS': 'Passion Projects',
+      'WORTH SHARING': 'Recommendation', 'QUOTE': 'In Their Own Words',
+      'GOOD COMPANY': 'Good Company'
+    },
+    tabs: [['FEATURED MEMBER', 'Featured Member'], ['THREE QUESTIONS', 'Three Questions'],
+           ['A FEW MINUTES WITH', 'A Few Minutes With…'], ['PASSION PROJECTS', 'Passion Projects'],
+           ['WORTH SHARING', 'Recommendations'], ['QUOTE', 'In Their Own Words'],
+           ['GOOD COMPANY', 'Good Company']]
+  };
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function onPage() { return location.pathname.replace(/\/+$/, '') === CC.path; }
+  function get(url) {
+    return fetch(url, { credentials: 'same-origin', headers: { accept: 'application/json' } })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  function list(id) {
+    return get('/internal_api/spaces/' + id + '/posts?per_page=100&sort=latest')
+      .then(function (j) { return (j && (j.records || j.posts)) || []; })
+      .catch(function () { return []; });
+  }
+
+  /* ------------------------------------------------------------ reading posts */
+  function txt(n) {
+    if (!n) return '';
+    if (n.text) return n.text;
+    if (n.type === 'mention') return n.circle_ios_fallback_text || '';
+    return (n.content || []).map(txt).join('');
+  }
+  function nodes(p) {
+    var b = p && p.tiptap_body && p.tiptap_body.body;
+    return (b && b.content) || [];
+  }
+  function paras(p) {
+    return nodes(p).filter(function (n) { return n.type === 'paragraph'; })
+      .map(function (n) { return txt(n).replace(/\s+/g, ' ').trim(); })
+      .filter(Boolean);
+  }
+  function up(s) { return String(s || '').toUpperCase().replace(/\s+/g, ' ').trim(); }
+  function isTag(s) { return s.length <= 44 && !/[a-z]/.test(s.replace(/(\d)s\b/g, '$1S')); }
+  function known(l) { return CC.member.indexOf(l) > -1 || CC.formats.indexOf(l) > -1; }
+
+  function items(p, type) {
+    var n = nodes(p).filter(function (x) { return x.type === type; })[0];
+    if (!n) return [];
+    return (n.content || []).map(function (li) {
+      var para = (li.content || [])[0], lead = '';
+      var first = para && para.content && para.content[0];
+      if (first && first.marks && first.marks.some(function (m) { return m.type === 'bold'; })) {
+        lead = (first.text || '').trim();
+      }
+      var all = txt(li).replace(/\s+/g, ' ').trim();
+      var rest = lead && all.indexOf(lead) === 0 ? all.slice(lead.length).trim() : all;
+      return { lead: lead, text: rest };
+    });
+  }
+  function quote(p) {
+    var q = nodes(p).filter(function (n) { return n.type === 'blockquote'; })[0];
+    return q ? txt(q).replace(/\s+/g, ' ').trim() : '';
+  }
+  function photo(p) {
+    var att = p.tiptap_body && p.tiptap_body.inline_attachments;
+    if (att && att.length) {
+      for (var i = 0; i < att.length; i++) {
+        var a = att[i];
+        if (a.content_type && a.content_type.indexOf('image') !== 0) continue;
+        var v = a.image_variants || {};
+        var u = v.medium || v.large || v.original || a.url;
+        if (u) return u;
+      }
+    }
+    var img = nodes(p).filter(function (n) { return n.type === 'image'; })[0];
+    return (img && img.attrs && img.attrs.url) || p.cover_image_url || '';
+  }
+  function url(p) {
+    if (p.url) { try { return new URL(p.url, location.origin).pathname; } catch (e) {} }
+    return '/c/' + p.space_slug + '/' + p.slug;
+  }
+  function clip(s, n) {
+    s = String(s || '');
+    if (s.length <= n) return s;
+    return s.slice(0, n).replace(/\s+\S*$/, '') + '…';
+  }
+  function name(p) {
+    return String(p.name || '').replace(/^(meet|three questions with|passion projects with|a few minutes with\.*|good company with)\s+/i, '').trim();
+  }
+
+  function shape(p) {
+    var ps = paras(p), label = up(ps[0]);
+    var tags = [], i = 1;
+    while (i < ps.length && isTag(ps[i])) { tags.push(ps[i]); i++; }
+    var meta = tags.filter(function (t) { return !known(up(t)); })
+      .map(function (t) { return t.replace(/^(MEMBER STORY|A FEW MINUTES WITH)\s*·\s*/i, ''); })
+      .filter(Boolean)[0] || '';
+    var body = ps.slice(i).filter(function (s) { return !/^interviewed by/i.test(s); });
+    var nm = name(p);
+    return {
+      post: p, label: label, name: nm, meta: meta, img: photo(p), href: url(p),
+      when: new Date(p.published_at || 0).getTime(),
+      hello: items(p, 'bulletList'), three: items(p, 'orderedList'),
+      quote: quote(p), body: body,
+      byline: ps.filter(function (s) { return /^interviewed by/i.test(s); })[0] || '',
+      couple: /[&+]| and /.test(nm) &&
+              (label === 'MEMBER STORY' || label === 'A FEW MINUTES WITH')
+    };
+  }
+
+  /* --------------------------------------------------------------- markup */
+  function tag(label) { return '<span class="cm-tg">' + esc(CC.show[label] || label) + '</span>'; }
+  function metaTag(m) { return m ? '<span class="cm-tg cm-alt">' + esc(m) + '</span>' : ''; }
+
+  /* One short line that tells you something about the person. */
+  function teaser(f) {
+    if (f.three.length) {
+      var t = f.three[1] || f.three[0];
+      return { lab: t.lead, text: t.text.replace(/^./, function (c) { return c.toUpperCase(); }) };
+    }
+    if (f.hello.length && CC.member.indexOf(f.label) > -1) return { lab: 'Say hello if', text: f.hello[0].text };
+    if (f.label === 'A FEW MINUTES WITH' && f.byline && !f.quote) return { lab: '', text: f.byline };
+    if (f.quote) return { lab: '', text: '“' + clip(f.quote.replace(/^[“"]|[”"]$/g, ''), 120) + '”', q: 1 };
+    if (f.body.length) return { lab: '', text: clip(f.body[0], 120) };
+    if (f.byline) return { lab: '', text: f.byline };
+    return { lab: '', text: '' };
+  }
+  function linkText(f) {
+    if (CC.member.indexOf(f.label) > -1) return 'Meet ' + f.name;
+    if (f.label === 'THREE QUESTIONS') return 'Read all three';
+    if (f.label === 'A FEW MINUTES WITH') return 'Read the interview';
+    if (f.label === 'MEMBER STORY') return 'Read their story';
+    if (f.label === 'PASSION PROJECTS') return 'See the project';
+    return 'Read more';
+  }
+  function tz(t) {
+    return (t.lab ? '<div class="cm-lb">' + esc(t.lab) + '</div>' : '') +
+      (t.text ? '<p class="' + (t.q ? 'cm-qt' : '') + '">' + esc(t.text) + '</p>' : '<p></p>');
+  }
+  function av(f, cls) {
+    return f.img ? '<img class="' + cls + '" src="' + esc(f.img) + '" alt="" loading="lazy">'
+                 : '<span class="' + cls + ' cm-ph0"></span>';
+  }
+
+  function bigRow(f) {
+    var inner;
+    if (f.three.length) {
+      inner = '<div class="cm-three">' + f.three.slice(0, 3).map(function (t) {
+        return '<div><div class="cm-lb">' + esc(t.lead) + '</div><p>' + esc(t.text) + '</p></div>';
+      }).join('') + '</div>';
+    } else if (f.hello.length && CC.member.indexOf(f.label) > -1) {
+      inner = '<div class="cm-lb">Say hello if</div><ul class="cm-hl">' + f.hello.slice(0, 3).map(function (h) {
+        return '<li>' + esc(h.text) + '</li>';
+      }).join('') + '</ul>';
+    } else {
+      inner = tz(teaser(f));
+    }
+    return '<div class="cm-big">' + av(f, 'cm-bimg') + '<div class="cm-bbody"><div class="cm-tags">' + tag(f.label) + metaTag(f.meta) +
+      '</div><a class="cm-bt" href="' + esc(f.href) + '">' + esc(f.post.name) + '</a><div class="cm-r2"></div>' + inner +
+      '<a class="cm-go" href="' + esc(f.href) + '">' + esc(linkText(f)) + ' →</a></div></div>';
+  }
+  function smallCard(f) {
+    return '<a class="cm-hc" href="' + esc(f.href) + '">' + tag(f.label) + '<span class="cm-who">' + av(f, 'cm-ci') +
+      '<span><span class="cm-nm">' + esc(f.name) + '</span>' + (f.meta ? '<span class="cm-mt">' + esc(f.meta) + '</span>' : '') +
+      '</span></span>' + tz(teaser(f)) + '<span class="cm-go">' + esc(linkText(f)) + ' →</span></a>';
+  }
+  function newCard(f) {
+    return '<a class="cm-nc" href="' + esc(f.href) + '">' + av(f, 'cm-ci') + '<span class="cm-nm">' + esc(f.name) + '</span>' +
+      (f.meta ? '<span class="cm-mt">' + esc(f.meta) + '</span>' : '') +
+      tz(teaser(f)) + '<span class="cm-go">Meet ' + esc(f.name) + ' →</span></a>';
+  }
+  function story(f) {
+    var t = f.quote ? '<blockquote>“' + esc(clip(f.quote.replace(/^[“"]|[”"]$/g, ''), 150)) + '”</blockquote>'
+                    : '<p class="cm-by">' + esc(f.byline || clip(f.body[0] || '', 140)) + '</p>';
+    return '<a class="cm-st" href="' + esc(f.href) + '">' + av(f, 'cm-simg') + '<span class="cm-sb">' + tag(f.label) +
+      '<span class="cm-sn">' + esc(f.name) + '</span>' + t + '<span class="cm-go">' + esc(linkText(f)) + ' →</span></span></a>';
+  }
+  function gridCard(f) {
+    return '<a class="cm-gc" data-k="' + esc(f.label) + '" href="' + esc(f.href) + '"><span class="cm-gp">' + av(f, 'cm-gi') +
+      '</span><span class="cm-gb">' + tag(f.label) + '<span class="cm-nm">' + esc(f.name) + '</span>' +
+      (f.meta ? '<span class="cm-mt">' + esc(f.meta) + '</span>' : '') + tz(teaser(f)) +
+      '<span class="cm-go">' + esc(linkText(f)) + ' →</span></span></a>';
+  }
+
+  function headHTML() {
+    return '<div class="cm-hd"><div class="cm-t1" role="heading" aria-level="1">Community</div><div class="cm-rule"></div>' +
+      '<p class="cm-lede">Here you’ll find featured content about our members: who’s new, who you should get to know, ' +
+      'and the stories, projects and favorite things they’ve chosen to share.</p>' +
+      '<div class="cm-feat"><div><div class="cm-ft">Would you like to be featured?</div><p>Share a few answers, something you made, ' +
+      'a pet, or a recommendation. You approve everything before it goes up.</p></div>' +
+      '<a class="cm-go" href="' + CC.guide + '">See how it works →</a></div></div>';
+  }
+
+  function render(root, all) {
+    var seen = {}, feats = [], team = [];
+    all.forEach(function (p) {
+      if (!p || !p.slug || !p.published_at || (p.status && p.status !== 'published')) return;
+      if (CC.skip.indexOf(p.slug) > -1) return;
+      var f = shape(p);
+      if (!known(f.label)) {
+        if (p.space_id === CC.spaces[0]) team.push(f);
+        return;
+      }
+      var key = f.label + '|' + f.name.toLowerCase().replace(/[^a-z]/g, '');
+      if (seen[key]) return;             /* Community is listed first, so it wins */
+      seen[key] = 1;
+      feats.push(f);
+    });
+    feats.sort(function (a, b) { return b.when - a.when; });
+    if (!feats.length) { root.innerHTML = headHTML(); return; }
+
+    var recent = feats.slice(0, 4);
+    var news = feats.filter(function (f) { return f.label === 'NEW MEMBER'; });
+    var stories = feats.filter(function (f) { return f.couple; });
+    var grid = feats.filter(function (f) { return f.label !== 'NEW MEMBER' && !f.couple; });
+    var present = {};
+    grid.forEach(function (f) { present[f.label] = 1; });
+    var tabs = CC.tabs.filter(function (t) { return present[t[0]]; });
+
+    var h = headHTML();
+    h += '<section><div class="cm-h2">Recently</div>' + bigRow(recent[0]) +
+         (recent.length > 1 ? '<div class="cm-three-up">' + recent.slice(1).map(smallCard).join('') + '</div>' : '') +
+         '</section>';
+    if (news.length) {
+      h += '<section><div class="cm-h2">New Members</div><p class="cm-sub">Say hello to the newest people in Constellations.</p>' +
+           '<div class="cm-row">' + news.map(newCard).join('') + '</div></section>';
+    }
+    if (stories.length) {
+      h += '<section><div class="cm-h2">Member Stories</div><p class="cm-sub">Longer conversations with members and couples.</p>' +
+           '<div class="cm-stories">' + stories.map(story).join('') + '</div></section>';
+    }
+    if (grid.length) {
+      h += '<section><div class="cm-h2 cm-mb">Get to Know Our Members</div>' +
+           (tabs.length > 1 ? '<div class="cm-tabs" role="tablist"><button type="button" class="cm-tab cm-on" data-f="">All</button>' +
+             tabs.map(function (t) { return '<button type="button" class="cm-tab" data-f="' + esc(t[0]) + '">' + esc(t[1]) + '</button>'; }).join('') +
+             '</div>' : '') +
+           '<div class="cm-grid">' + grid.map(gridCard).join('') + '</div></section>';
+    }
+    if (team.length) {
+      h += '<div class="cm-foot">From the team: ' + team.map(function (f) {
+        return '<a href="' + esc(f.href) + '"><i>' + esc(f.post.name) + '</i> →</a>';
+      }).join(' ') + '</div>';
+    }
+    root.innerHTML = h;
+
+    root.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.cm-tab');
+      if (!b) return;
+      var f = b.getAttribute('data-f');
+      [].forEach.call(root.querySelectorAll('.cm-tab'), function (x) { x.classList.toggle('cm-on', x === b); });
+      [].forEach.call(root.querySelectorAll('.cm-gc'), function (c) {
+        c.style.display = !f || c.getAttribute('data-k') === f ? '' : 'none';
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------ CSS */
+  var R = '#' + CC.root;
+  var CSS = [
+    'body.' + CC.bodyClass + ' ' + R + ' ~ *{display:none !important}',
+    R + '{--nv:#1A2238;--ik:#22231E;--mu:#5A5849;--gd:#7D6220;--sa:#F2EADF;--s2:#F5EDE1;--ha:#E6E3DC;--pl:#E7D7C1;--ln:#D9CDB8;',
+    'background:#fff;border:1px solid var(--ha);color:var(--ik);font:17px/1.55 "EB Garamond",Georgia,serif;margin:0 0 20px}',
+    R + ' *{box-sizing:border-box}',
+    R + ' a{color:inherit;text-decoration:none !important}',
+    R + ' .cm-hd{padding:64px 46px 40px}',
+    R + ' .cm-t1{font:600 64px/1.02 "Cormorant Garamond",Georgia,serif;color:var(--nv);letter-spacing:-.01em}',
+    R + ' .cm-rule{width:64px;height:3px;background:var(--pl);margin:22px 0}',
+    R + ' .cm-lede{font-size:20px;line-height:1.55;color:#3d3d38;max-width:640px;margin:0}',
+    R + ' .cm-feat{margin:30px 0 0;background:var(--s2);border-left:3px solid var(--gd);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px}',
+    R + ' .cm-feat .cm-ft{font:600 24px/1.15 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
+    R + ' .cm-feat p{margin:4px 0 0;font-size:17px;color:#3d3d38}',
+    R + ' .cm-feat .cm-go{white-space:nowrap;margin-top:0}',
+    R + ' section{border-top:1px solid var(--ha);padding:44px 46px}',
+    R + ' .cm-h2{font:600 40px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 24px}',
+    R + ' .cm-h2.cm-mb{margin-bottom:20px}',
+    R + ' .cm-sub{font-size:18px;color:var(--mu);margin:-18px 0 24px}',
+    R + ' .cm-tg{display:inline-block;font:600 11px/1.5 Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--nv);background:var(--pl);padding:4px 10px 3px;align-self:flex-start}',
+    R + ' .cm-tg.cm-alt{background:#EEF1F6}',
+    R + ' .cm-tags{display:flex;flex-wrap:wrap;gap:8px}',
+    R + ' .cm-lb{font:600 11px/1.3 Inter,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gd);margin:14px 0 6px}',
+    R + ' p{margin:0 0 14px}',
+    R + ' .cm-qt{font-style:italic}',
+    R + ' .cm-go{font:600 14px/1.2 Inter,system-ui,sans-serif;color:var(--gd) !important;margin-top:auto}',
+    R + ' .cm-nm{display:block;font:600 27px/1.08 "Cormorant Garamond",Georgia,serif;color:var(--nv)}',
+    R + ' .cm-mt{display:block;font:500 11.5px/1.5 Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#666;margin-top:4px}',
+    R + ' .cm-ci{width:78px;height:78px;border-radius:50%;object-fit:cover;border:2px solid var(--pl);background:var(--s2);flex:none;display:block}',
+    R + ' .cm-ph0{display:block;background:var(--s2)}',
+    /* Recently */
+    R + ' .cm-big{display:grid;grid-template-columns:220px minmax(0,1fr);gap:36px;align-items:start;padding-bottom:32px;border-bottom:1px solid var(--ha);margin-bottom:28px}',
+    R + ' .cm-bimg{width:100%;aspect-ratio:1/1;object-fit:cover;border:1px solid var(--sl,#CBBBA0);box-shadow:14px 14px 0 var(--s2);display:block}',
+    R + ' .cm-bbody{display:flex;flex-direction:column}',
+    R + ' .cm-bt{font:600 42px/1.06 "Cormorant Garamond",Georgia,serif;color:var(--nv) !important;margin:16px 0 0}',
+    R + ' .cm-r2{width:100px;height:3px;background:var(--pl);margin:14px 0 6px}',
+    R + ' .cm-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:18px}',
+    R + ' .cm-three p{font-size:18px;line-height:1.4;margin:0}',
+    R + ' .cm-hl{margin:0 0 18px;padding-left:18px;font-size:18px}',
+    R + ' .cm-three-up{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}',
+    R + ' .cm-hc{border:1px solid var(--ln);padding:20px;display:flex;flex-direction:column;background:#fff}',
+    R + ' .cm-who{display:block;margin:14px 0 0}' , R + ' .cm-who .cm-nm{margin-top:12px}',
+    R + ' .cm-hc p,' + R + ' .cm-nc p,' + R + ' .cm-gc p{font-size:18px;line-height:1.42}',
+    /* New members */
+    R + ' .cm-row{display:flex;gap:18px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}',
+    R + ' .cm-nc{flex:0 0 220px;scroll-snap-align:start;border:1px solid var(--ln);padding:20px;display:flex;flex-direction:column;background:#fff}',
+    R + ' .cm-nc .cm-nm{margin-top:12px}',
+    /* Stories */
+    R + ' .cm-stories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}',
+    R + ' .cm-st{border:1px solid var(--ln);display:flex;flex-direction:column;background:#fff}',
+    R + ' .cm-simg{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--s2)}',
+    R + ' .cm-sb{padding:22px 24px 24px;display:flex;flex-direction:column;flex:1}',
+    R + ' .cm-sn{font:600 34px/1.05 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:12px 0 10px}',
+    R + ' .cm-st blockquote{margin:0 0 16px;padding-left:14px;border-left:3px solid var(--gd);font-style:italic;font-size:19px;line-height:1.45;color:#6b5720}',
+    R + ' .cm-by{color:#555}',
+    /* Grid */
+    R + ' .cm-tabs{display:flex;flex-wrap:wrap;gap:6px 26px;margin:0 0 28px;padding:0 0 12px;border-bottom:1px solid var(--ln)}',
+    R + ' .cm-tab{font:500 15px/1.2 Inter,system-ui,sans-serif;padding:4px 0;border:0;border-bottom:2px solid transparent;background:none;color:var(--mu);cursor:pointer}',
+    R + ' .cm-tab:hover{color:var(--nv)}',
+    R + ' .cm-tab.cm-on{color:var(--nv);border-bottom-color:var(--gd);font-weight:600}',
+    R + ' .cm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}',
+    R + ' .cm-gc{border:1px solid var(--ln);display:flex;flex-direction:column;background:#fff}',
+    R + ' .cm-gp{display:block;aspect-ratio:4/3;overflow:hidden;background:var(--s2);border-bottom:1px solid var(--ln)}',
+    R + ' .cm-gi{width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block}',
+    R + ' .cm-gb{padding:16px 18px 20px;display:flex;flex-direction:column;flex:1}',
+    R + ' .cm-gb .cm-nm{margin-top:10px}',
+    R + ' .cm-foot{border-top:1px solid var(--ha);padding:24px 46px 30px;font-size:18px;color:#555}',
+    R + ' .cm-foot a{margin-left:8px;color:var(--gd) !important}',
+    '@media (max-width:767px){',
+    R + ' .cm-hd{padding:40px 18px 28px}' + R + ' section{padding:34px 18px}' + R + ' .cm-foot{padding:22px 18px}',
+    R + ' .cm-t1{font-size:46px}' + R + ' .cm-h2{font-size:32px}' + R + ' .cm-bt{font-size:34px}',
+    R + ' .cm-feat{flex-direction:column;align-items:flex-start;gap:10px}',
+    R + ' .cm-big,' + R + ' .cm-three,' + R + ' .cm-three-up,' + R + ' .cm-stories,' + R + ' .cm-grid{grid-template-columns:minmax(0,1fr)}',
+    R + ' .cm-bimg{max-width:240px}',
+    '}'
+  ].join('\n');
+
+  function style() {
+    if (document.getElementById('cst-comm-css')) return;
+    var s = document.createElement('style');
+    s.id = 'cst-comm-css';
+    s.textContent = CSS;
+    document.head.appendChild(s);
+  }
+
+  function anchor() {
+    var n = document.getElementById('nvx-space');
+    if (n && n.parentElement) return n;
+    return null;
+  }
+  function keepOrder() {
+    var root = document.getElementById(CC.root), n = document.getElementById('nvx-space');
+    if (root && n && root.parentElement && (root.contains(n) || n.nextElementSibling === root)) {
+      root.parentElement.insertBefore(n, root.nextSibling);
+    }
+  }
+  function build() {
+    if (document.getElementById(CC.root)) { keepOrder(); return; }
+    var host = anchor();
+    if (!host) return;
+    style();
+    var root = document.createElement('div');
+    root.id = CC.root;
+    root.setAttribute('data-cst-comm', '1.0.0');
+    root.innerHTML = headHTML();
+    host.parentElement.insertBefore(root, host);
+    keepOrder();
+    Promise.all(CC.spaces.map(list)).then(function (rs) {
+      if (!document.body.contains(root)) return;
+      var all = [].concat.apply([], rs);
+      if (!all.length) { root.remove(); document.body.setAttribute('data-cst-comm-off', '1'); return; }
+      render(root, all);
+    }).catch(function () { root.remove(); });
+  }
+  function teardown() {
+    var r = document.getElementById(CC.root), n = document.getElementById('nvx-space');
+    if (r && n && r.contains(n) && r.parentElement) r.parentElement.insertBefore(n, r);
+    if (r) r.remove();
+  }
+  var last = null;
+  function tick() {
+    var p = location.pathname;
+    if (p !== last) { last = p; if (!onPage()) teardown(); }
+    if (onPage() && !document.body.hasAttribute('data-cst-comm-off')) build();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tick); else tick();
   setInterval(tick, 500);
   window.addEventListener('popstate', tick);
 })();
