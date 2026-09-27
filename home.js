@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.19.1';
+  var VERSION = '1.19.2';
 
   var CFG = {
     path: '/c/welcome',
@@ -1163,7 +1163,7 @@
   window.addEventListener('popstate', tick);
 })();
 /* ==========================================================================
-   Constellations — Community pages                          community 2.1.0
+   Constellations — Community pages                          community 2.2.0
      /c/community     Community (2862303), plus North Star Community features
      /c/ns-community  North Star Community (2870142) only, in North Star dress
    Lives in home.js because home.js is already loaded on every portal page.
@@ -1173,7 +1173,7 @@
      New Members (swipe row)
      "Would you like to be featured?" strip
      Member Stories (couples: Member Story / A Few Minutes With)
-     Get to Know Our Members (every other feature, filter tabs)
+     Member Features (every other feature, filter tabs)
      From the team (posts that are not member features)
    The Community page pulls from both spaces and shows a feature once,
    Community copy first. The North Star page pulls only from North Star
@@ -1448,7 +1448,7 @@
            '<div class="cm-stories">' + stories.map(story).join('') + '</div></section>';
     }
     if (grid.length) {
-      h += '<section><div class="cm-h2 cm-mb">Get to Know Our Members</div>' +
+      h += '<section><div class="cm-h2 cm-mb">Member Features</div>' +
            (tabs.length > 1 ? '<div class="cm-tabs" role="tablist"><button type="button" class="cm-tab cm-on" data-f="">All</button>' +
              tabs.map(function (t) { return '<button type="button" class="cm-tab" data-f="' + esc(t[0]) + '">' + esc(t[1]) + '</button>'; }).join('') +
              '</div>' : '') +
@@ -1598,7 +1598,7 @@
     var root = document.createElement('div');
     root.id = pg.root;
     root.className = 'cst-cm' + (pg.ns ? ' cm-ns' : '');
-    root.setAttribute('data-cst-comm', '2.1.0');
+    root.setAttribute('data-cst-comm', '2.2.0');
     root.innerHTML = headHTML(pg);
     host.parentElement.insertBefore(root, host);
     if (pg.nvx) keepOrder(pg);
