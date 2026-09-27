@@ -60,3 +60,37 @@
 a.nvx-door[href="/c/discussions-field-guide"] {
   display: none !important;
 }
+
+/* ---- Gatherings, hidden TEMPORARILY (27 Sep 2026) ----
+   Kate asked for Gatherings to be hidden, and for the mention of it on the
+   home pages to go with it.
+
+   The SIDEBAR entry is not handled here. The space (2860065, /c/events) was
+   set to hide_from_sidebar in Circle itself, which is the native setting and a
+   truer hide than CSS. TO RESTORE that half: set hide_from_sidebar back to
+   false on space 2860065.
+
+   What this block handles is the Gatherings section on the main Home page
+   (#cst-ev, drawn by home.js) — the "The next Gathering" heading, the October
+   19 Virtual Mixer card, the "See the full calendar" link, and the note about
+   moving events out of Acuity that asked members to check back by Sunday,
+   27 September. Hiding the whole section rather than the links inside it means
+   no orphaned heading is left behind.
+
+   North Star Home needs nothing: it has no Gatherings section and no link to
+   either calendar. Its door to North Star Gatherings renders at zero size
+   while that space stays hidden.
+
+   Andalib's quote on both home pages says he came to a Constellations
+   gathering. That is a member's own words about his own story, not navigation,
+   and it has been left alone.
+
+   TO RESTORE: delete this block AND unhide space 2860065. */
+
+#cst-ev {
+  display: none !important;
+}
+
+a.nvx-door[href="/c/events"] {
+  display: none !important;
+}
