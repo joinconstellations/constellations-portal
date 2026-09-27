@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.18.1';
+  var VERSION = '1.19.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -1163,9 +1163,11 @@
   window.addEventListener('popstate', tick);
 })();
 /* ==========================================================================
-   Constellations — Community page (/c/community)             community 1.1.0
+   Constellations — Community pages                          community 2.0.0
+     /c/community     Community (2862303), plus North Star Community features
+     /c/ns-community  North Star Community (2870142) only, in North Star dress
    Lives in home.js because home.js is already loaded on every portal page.
-   Replaces Circle's feed on the Community space landing page with:
+   Replaces Circle's feed on each space's landing page with:
      Community title + intro
      Recently (newest feature large, next three as cards)
      New Members (swipe row)
@@ -1173,18 +1175,22 @@
      Member Stories (couples: Member Story / A Few Minutes With)
      Get to Know Our Members (every other feature, filter tabs)
      From the team (posts that are not member features)
-   Pulls from Community (2862303) and North Star Community (2870142); a
-   feature that exists in both is shown once, from Community. Post pages
-   (/c/community/<slug>) are untouched. Hides itself if the data call fails.
+   The Community page pulls from both spaces and shows a feature once,
+   Community copy first. The North Star page pulls only from North Star
+   Community, so nothing placed only in Community appears there. Post pages
+   are untouched. Hides itself if the data calls fail.
    ========================================================================== */
 (function () {
   'use strict';
 
+  var PAGES = [
+    { path: '/c/community', root: 'cst-comm', bodyClass: 'view-space--2862303',
+      spaces: [2862303, 2870142], ns: false, nvx: true },
+    { path: '/c/ns-community', root: 'cst-nscomm', bodyClass: 'view-space--2870142',
+      spaces: [2870142], ns: true, nvx: false }
+  ];
+  var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0Q12.82 10.01 20.49 3.51Q13.99 11.18 24 12Q13.99 12.82 20.49 20.49Q12.82 13.99 12 24Q11.18 13.99 3.51 20.49Q10.01 12.82 0 12Q10.01 11.18 3.51 3.51Q11.18 10.01 12 0Z"></path></svg>';
   var CC = {
-    path: '/c/community',
-    root: 'cst-comm',
-    bodyClass: 'view-space--2862303',
-    spaces: [2862303, 2870142],
     guide: '/c/guides/be-featured',
     skip: ['be-featured', 'kates-bookshelf'],
     member: ['NEW MEMBER', 'FEATURED MEMBER'],
@@ -1208,7 +1214,11 @@
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
-  function onPage() { return location.pathname.replace(/\/+$/, '') === CC.path; }
+  function page() {
+    var p = location.pathname.replace(/\/+$/, '');
+    for (var i = 0; i < PAGES.length; i++) if (PAGES[i].path === p) return PAGES[i];
+    return null;
+  }
   function get(url) {
     return fetch(url, { credentials: 'same-origin', headers: { accept: 'application/json' } })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
@@ -1378,25 +1388,31 @@
       '<span class="cm-go">' + esc(linkText(f)) + ' →</span></span></a>';
   }
 
-  function headHTML() {
+  function headHTML(pg) {
+    if (pg.ns) {
+      return '<div class="cm-hd"><div class="cm-nsbox"><div class="cm-ey">' + STAR + '<span>Constellations · North Star</span></div>' +
+        '<div class="cm-rule cm-gold"></div><div class="cm-t1" role="heading" aria-level="1">Community</div>' +
+        '<p class="cm-lede">Get to know other members. See who is new. Read the stories, projects and favorite things members chose to share.</p></div></div>';
+    }
     return '<div class="cm-hd"><div class="cm-t1" role="heading" aria-level="1">Community</div><div class="cm-rule"></div>' +
       '<p class="cm-lede">Here you’ll find featured content about our members: who’s new, who you should get to know, ' +
       'and the stories, projects and favorite things they’ve chosen to share.</p></div>';
   }
-  function featHTML() {
-    return '<div class="cm-featwrap"><div class="cm-feat"><div><div class="cm-ft">Would you like to be featured?</div><p>Share a few answers, something you made, ' +
-      'a pet, or a recommendation. You approve everything before it goes up.</p></div>' +
+  function featHTML(pg) {
+    var p = pg.ns ? 'You can share a few answers, something you made, a pet, or something you like. You see it and say yes before we post it.'
+                  : 'Share a few answers, something you made, a pet, or a recommendation. You approve everything before it goes up.';
+    return '<div class="cm-featwrap"><div class="cm-feat"><div><div class="cm-ft">Would you like to be featured?</div><p>' + p + '</p></div>' +
       '<a class="cm-go" href="' + CC.guide + '">See how it works →</a></div></div>';
   }
 
-  function render(root, all) {
+  function render(root, all, pg) {
     var seen = {}, feats = [], team = [];
     all.forEach(function (p) {
       if (!p || !p.slug || !p.published_at || (p.status && p.status !== 'published')) return;
       if (CC.skip.indexOf(p.slug) > -1) return;
       var f = shape(p);
       if (!known(f.label)) {
-        if (p.space_id === CC.spaces[0]) team.push(f);
+        if (p.space_id === pg.spaces[0]) team.push(f);
         return;
       }
       var key = f.label + '|' + f.name.toLowerCase().replace(/[^a-z]/g, '');
@@ -1405,7 +1421,7 @@
       feats.push(f);
     });
     feats.sort(function (a, b) { return b.when - a.when; });
-    if (!feats.length) { root.innerHTML = headHTML() + featHTML(); return; }
+    if (!feats.length) { root.innerHTML = headHTML(pg) + featHTML(pg); return; }
 
     var recent = feats.slice(0, 4);
     var news = feats.filter(function (f) { return f.label === 'NEW MEMBER'; });
@@ -1415,7 +1431,7 @@
     grid.forEach(function (f) { present[f.label] = 1; });
     var tabs = CC.tabs.filter(function (t) { return present[t[0]]; });
 
-    var h = headHTML();
+    var h = headHTML(pg);
     h += '<section><div class="cm-h2">Recently</div>' + bigRow(recent[0]) +
          (recent.length > 1 ? '<div class="cm-three-up">' + recent.slice(1).map(smallCard).join('') + '</div>' : '') +
          '</section>';
@@ -1424,7 +1440,7 @@
            '<div class="cm-row">' + news.map(newCard).join('') + '</div></section>';
     }
     /* After Recently and New Members: the reader has just seen who gets featured. */
-    h += featHTML();
+    h += featHTML(pg);
     if (stories.length) {
       h += '<section><div class="cm-h2">Member Stories</div><p class="cm-sub">Longer conversations with members and couples.</p>' +
            '<div class="cm-stories">' + stories.map(story).join('') + '</div></section>';
@@ -1455,9 +1471,9 @@
   }
 
   /* ------------------------------------------------------------------ CSS */
-  var R = '#' + CC.root;
+  var R = '.cst-cm';
   var CSS = [
-    'body.' + CC.bodyClass + ' ' + R + ' ~ *{display:none !important}',
+    PAGES.map(function (pg) { return 'body.' + pg.bodyClass + ' #' + pg.root + ' ~ *{display:none !important}'; }).join('\n'),
     R + '{--nv:#1A2238;--ik:#22231E;--mu:#5A5849;--gd:#7D6220;--sa:#F2EADF;--s2:#F5EDE1;--ha:#E6E3DC;--pl:#E7D7C1;--ln:#D9CDB8;',
     'background:#fff;border:1px solid var(--ha);color:var(--ik);font:17px/1.55 "EB Garamond",Georgia,serif;margin:0 0 20px}',
     R + ' *{box-sizing:border-box}',
@@ -1524,7 +1540,16 @@
     R + ' .cm-gb .cm-nm{margin-top:10px}',
     R + ' .cm-foot{border-top:1px solid var(--ha);padding:24px 46px 30px;font-size:18px;color:#555}',
     R + ' .cm-foot a{margin-left:8px;color:var(--gd) !important}',
+    /* North Star dress: the framed masthead and star eyebrow used on North Star Home */
+    R + ' .cm-nsbox{border:1.5px solid var(--nv);border-top:5px solid var(--gd);padding:34px 36px 32px}',
+    R + ' .cm-ey{display:flex;align-items:center;gap:12px;font:600 15px/1.2 Inter,system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--nv)}',
+    R + ' .cm-ey svg{width:18px;height:18px;flex:none}',
+    R + ' .cm-rule.cm-gold{background:var(--gd);width:72px;margin:20px 0 18px}',
+    R + '.cm-ns .cm-hd{padding:40px 38px 40px}',
+    R + '.cm-ns .cm-lede{font-size:21px;color:var(--ik)}',
+    R + '.cm-ns .cm-t1{margin-bottom:14px}',
     '@media (max-width:767px){',
+    R + '.cm-ns .cm-hd{padding:22px 14px}' + R + ' .cm-nsbox{padding:24px 18px}' + R + ' .cm-ey{font-size:12px;letter-spacing:.14em}',
     R + ' .cm-hd{padding:40px 18px 28px}' + R + ' .cm-featwrap{padding:26px 18px}' + R + ' section{padding:34px 18px}' + R + ' .cm-foot{padding:22px 18px}',
     R + ' .cm-t1{font-size:46px}' + R + ' .cm-h2{font-size:32px}' + R + ' .cm-bt{font-size:34px}',
     R + ' .cm-feat{flex-direction:column;align-items:flex-start;gap:10px}',
@@ -1541,45 +1566,60 @@
     document.head.appendChild(s);
   }
 
-  function anchor() {
-    var n = document.getElementById('nvx-space');
-    if (n && n.parentElement) return n;
-    return null;
+  /* Community: in front of the space-header template's #nvx-space, which then
+     falls under the hide rule. North Star Community has no template, so the
+     root goes first in Circle's feed column instead. */
+  function anchor(pg) {
+    if (pg.nvx) {
+      var n = document.getElementById('nvx-space');
+      return n && n.parentElement ? n : null;
+    }
+    var col = document.querySelector('.react-page-space-show .flex.flex-col');
+    return col && col.firstElementChild ? col.firstElementChild : null;
   }
-  function keepOrder() {
-    var root = document.getElementById(CC.root), n = document.getElementById('nvx-space');
+  function keepOrder(pg) {
+    var root = document.getElementById(pg.root), n = document.getElementById('nvx-space');
     if (root && n && root.parentElement && (root.contains(n) || n.nextElementSibling === root)) {
       root.parentElement.insertBefore(n, root.nextSibling);
     }
   }
-  function build() {
-    if (document.getElementById(CC.root)) { keepOrder(); return; }
-    var host = anchor();
+  function build(pg) {
+    var have = document.getElementById(pg.root);
+    if (have) {
+      if (pg.nvx) keepOrder(pg);
+      else if (have.previousElementSibling) have.parentElement.insertBefore(have, have.parentElement.firstElementChild);
+      return;
+    }
+    var host = anchor(pg);
     if (!host) return;
     style();
     var root = document.createElement('div');
-    root.id = CC.root;
-    root.setAttribute('data-cst-comm', '1.1.0');
-    root.innerHTML = headHTML();
+    root.id = pg.root;
+    root.className = 'cst-cm' + (pg.ns ? ' cm-ns' : '');
+    root.setAttribute('data-cst-comm', '2.0.0');
+    root.innerHTML = headHTML(pg);
     host.parentElement.insertBefore(root, host);
-    keepOrder();
-    Promise.all(CC.spaces.map(list)).then(function (rs) {
+    if (pg.nvx) keepOrder(pg);
+    Promise.all(pg.spaces.map(list)).then(function (rs) {
       if (!document.body.contains(root)) return;
       var all = [].concat.apply([], rs);
-      if (!all.length) { root.remove(); document.body.setAttribute('data-cst-comm-off', '1'); return; }
-      render(root, all);
+      if (!all.length) { root.remove(); document.body.setAttribute('data-cst-comm-off', pg.root); return; }
+      render(root, all, pg);
     }).catch(function () { root.remove(); });
   }
   function teardown() {
-    var r = document.getElementById(CC.root), n = document.getElementById('nvx-space');
-    if (r && n && r.contains(n) && r.parentElement) r.parentElement.insertBefore(n, r);
-    if (r) r.remove();
+    PAGES.forEach(function (pg) {
+      var r = document.getElementById(pg.root), n = document.getElementById('nvx-space');
+      if (r && n && r.contains(n) && r.parentElement) r.parentElement.insertBefore(n, r);
+      if (r) r.remove();
+    });
   }
   var last = null;
   function tick() {
     var p = location.pathname;
-    if (p !== last) { last = p; if (!onPage()) teardown(); }
-    if (onPage() && !document.body.hasAttribute('data-cst-comm-off')) build();
+    if (p !== last) { last = p; teardown(); }
+    var pg = page();
+    if (pg && document.body.getAttribute('data-cst-comm-off') !== pg.root) build(pg);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tick); else tick();
   setInterval(tick, 500);
