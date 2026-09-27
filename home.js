@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.19.0';
+  var VERSION = '1.19.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -1163,7 +1163,7 @@
   window.addEventListener('popstate', tick);
 })();
 /* ==========================================================================
-   Constellations — Community pages                          community 2.0.0
+   Constellations — Community pages                          community 2.1.0
      /c/community     Community (2862303), plus North Star Community features
      /c/ns-community  North Star Community (2870142) only, in North Star dress
    Lives in home.js because home.js is already loaded on every portal page.
@@ -1424,9 +1424,11 @@
     if (!feats.length) { root.innerHTML = headHTML(pg) + featHTML(pg); return; }
 
     var recent = feats.slice(0, 4);
-    var news = feats.filter(function (f) { return f.label === 'NEW MEMBER'; });
-    var stories = feats.filter(function (f) { return f.couple; });
-    var grid = feats.filter(function (f) { return f.label !== 'NEW MEMBER' && !f.couple; });
+    /* Anything already in Recently is not repeated further down the page. */
+    function fresh(f) { return recent.indexOf(f) < 0; }
+    var news = feats.filter(function (f) { return fresh(f) && f.label === 'NEW MEMBER'; });
+    var stories = feats.filter(function (f) { return fresh(f) && f.couple; });
+    var grid = feats.filter(function (f) { return fresh(f) && f.label !== 'NEW MEMBER' && !f.couple; });
     var present = {};
     grid.forEach(function (f) { present[f.label] = 1; });
     var tabs = CC.tabs.filter(function (t) { return present[t[0]]; });
@@ -1596,7 +1598,7 @@
     var root = document.createElement('div');
     root.id = pg.root;
     root.className = 'cst-cm' + (pg.ns ? ' cm-ns' : '');
-    root.setAttribute('data-cst-comm', '2.0.0');
+    root.setAttribute('data-cst-comm', '2.1.0');
     root.innerHTML = headHTML(pg);
     host.parentElement.insertBefore(root, host);
     if (pg.nvx) keepOrder(pg);
