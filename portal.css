@@ -303,7 +303,7 @@ body.view-space--2867079 div:has(> [data-testid="message-item"]) > *{margin-left
 /* ---- block 36 ---- */
 [data-nsm="card"][data-nsm-label="FEATURED MEMBER"] .tiptap{display:block!important}
 [data-nsm="card"][data-nsm-label="FEATURED MEMBER"] .tiptap::after{content:"";display:block;clear:both}
-[data-nsm="card"][data-nsm-label="FEATURED MEMBER"] .tiptap>.node-image:first-of-type{float:left!important;width:240px!important;max-width:240px!important;margin:4px 44px 34px 0!important;justify-self:auto!important}
+[data-nsm="card"][data-nsm-label="FEATURED MEMBER"] .tiptap>.node-image:first-of-type{float:left!important;width:200px!important;max-width:200px!important;margin:4px 36px 30px 0!important;justify-self:auto!important}
 [data-nsm="card"][data-nsm-label="FEATURED MEMBER"] .tiptap>.node-image:first-of-type button>div{aspect-ratio:4/5!important;border:1px solid #CBBBA0!important;box-shadow:10px 10px 0 #F2EADF!important}
 [data-nsm="card"][data-nsm-label="FEATURED MEMBER"] .tiptap>p{font-family:Inter,system-ui,sans-serif;font-size:17px;line-height:1.7;color:#22231E;margin:0}
 [data-nsm="card"][data-nsm-label="FEATURED MEMBER"] .tiptap>p+p{margin-top:16px}
