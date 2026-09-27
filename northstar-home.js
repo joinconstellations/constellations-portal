@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.5.0';
+  var VERSION = '2.5.1';
 
   var CFG = {
     path: '/c/northstar',
@@ -652,7 +652,7 @@
             'unkind to you. Something does not feel right.' +
             '<span class="use">Good to know</span>' +
             '<span class="not">A real person reads every report. A person writes ' +
-            'back within two business days. You do not have to give your name.</span>' +
+            'back within two business days.</span>' +
             '<a class="go" href="' + esc(u.report) + '">Report a concern →</a></div>' +
         '</div>' +
       '</section>' +
