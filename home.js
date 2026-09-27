@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.17.1';
+  var VERSION = '1.17.2';
 
   var CFG = {
     path: '/c/welcome',
@@ -747,8 +747,8 @@
             '<span class="use">Use it for</span>When someone’s behavior worries you, or ' +
             'something doesn’t feel right.' +
             '<span class="use">Good to know</span>' +
-            '<span class="not">A person acknowledges it within two business days. You don’t ' +
-            'have to give your name.</span>' +
+            '<span class="not">A member of our team will read your message and send an acknowledgment ' +
+            'within two business days.</span>' +
             '<a class="go" href="' + esc(u.report) + '">Report a concern →</a></div>' +
         '</div>' +
       '</section>' +
