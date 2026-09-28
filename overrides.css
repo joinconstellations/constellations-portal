@@ -95,6 +95,21 @@ html.cst-no-gatherings a.nvx-door[href="/c/events"] {
   display: none !important;
 }
 
+/* ---- The expired Acuity note under The next Gathering (28 Sep 2026) ----
+   home.js carries CFG.gatheringNote, an "Important note" under the Gatherings
+   section on Home telling members the calendar was moving out of Acuity and to
+   check back by Sunday, 27 September. That date has passed and the calendar is
+   in the Portal, so the note came back up stale when Gatherings was restored.
+
+   Hidden here rather than in home.js so the change is one block, not an 85KB
+   commit. THE PERMANENT FIX is gatheringNote: null in home.js — the field is
+   built to be switched off that way. Do that when home.js is next edited, and
+   delete this block. */
+
+#cst-ev .gnote {
+  display: none !important;
+}
+
 /* ---- Community member cards: round photos crop from the top (28 Sep 2026) ----
    Kate, 28 Sep: Evan's photo was cut off on the Community page. His source
    photo is a tall portrait (1024x1536) with his head near the top edge, and
