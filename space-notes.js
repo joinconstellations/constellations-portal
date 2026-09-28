@@ -1,5 +1,5 @@
 /* Constellations — space notes
-   Created 28 Sep 2026.  VERSION 1.0.0
+   Created 28 Sep 2026.  VERSION 1.2.0
 
    Puts a short explanatory note at the top of a space page, above whatever
    Circle renders there.
@@ -13,27 +13,37 @@
    To add a note for another space, add one entry to NOTES. The key is the
    space path. Nothing else needs changing.
 
-   The text is real DOM text in a real heading and real paragraphs — not CSS
-   generated content — so screen readers and text zoom treat it as content. */
+   The text is real DOM text in real paragraphs — not CSS generated content —
+   so screen readers and text zoom treat it as content.
+
+   1.1.0 gates the Gatherings door. See GATES below.
+   1.2.0 adds an optional lead line and makes the heading optional. */
 
 (function () {
   'use strict';
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.2.0';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
              'L12 23l-2.2-6.3L3.5 19l3.1-5.9L0 12l6.6-1.1L3.5 5l6.3 2.3z"/></svg>';
 
-  /* path -> note. eyebrow is the small label above the heading. */
+  /* path -> note.
+
+     eyebrow  small label at the top of the card
+     lead     one warm line in large type, outside the panel. Optional.
+     heading  a real <h2>. Optional. Kate, 28 Sep: not wanted here — the space
+              header already says Gatherings, and a second heading that only
+              announced what was coming was in the way of the welcome.
+     lines    paragraphs inside the pale panel */
   var NOTES = {
     '/c/nsgatherings': {
       eyebrow: 'North Star',
-      heading: 'What these gatherings are like',
+      lead: 'This is where you’ll sign up for events. We’re looking forward to seeing you!',
       lines: [
-        'North Star gatherings are shorter.',
-        'They have more structure. You will know what is happening and what comes next.',
-        'Someone from our team is there the whole time and takes an active part.'
+        'North Star events are for adults who prefer more structure, clearer ' +
+        'language and instructions, and someone from our team who stays for the ' +
+        'whole gathering and takes an active part.'
       ]
     }
   };
@@ -50,12 +60,15 @@
     '#cst-space-note .cst-sn-ey svg{width:16px;height:16px;flex:none;display:block}',
     '#cst-space-note h2{font:600 30px/1.15 "Cormorant Garamond",Georgia,serif;',
     'color:var(--nv);margin:0 0 16px;letter-spacing:-.01em}',
+    '#cst-space-note .cst-sn-lead{font:500 26px/1.3 "Cormorant Garamond",Georgia,serif;',
+    'color:var(--nv);margin:0 0 20px;max-width:640px;letter-spacing:-.01em}',
     '#cst-space-note .cst-sn-panel{background:var(--nb);padding:20px 22px;margin:0}',
     '#cst-space-note p{margin:0 0 12px;max-width:640px}',
     '#cst-space-note p:last-child{margin-bottom:0}',
     '@media (max-width:767px){',
     '#cst-space-note{padding:22px 20px;margin-bottom:16px}',
     '#cst-space-note h2{font-size:25px}',
+    '#cst-space-note .cst-sn-lead{font-size:23px;margin-bottom:16px}',
     '#cst-space-note .cst-sn-panel{padding:16px 18px}}'
   ].join('');
 
@@ -82,17 +95,53 @@
     el.id = 'cst-space-note';
     el.setAttribute('data-cst-space-note', VERSION);
     el.innerHTML =
-      '<p class="cst-sn-ey">' + STAR + esc(note.eyebrow) + '</p>' +
-      '<h2>' + esc(note.heading) + '</h2>' +
+      (note.eyebrow ? '<p class="cst-sn-ey">' + STAR + esc(note.eyebrow) + '</p>' : '') +
+      (note.lead ? '<p class="cst-sn-lead">' + esc(note.lead) + '</p>' : '') +
+      (note.heading ? '<h2>' + esc(note.heading) + '</h2>' : '') +
       '<div class="cst-sn-panel">' +
-      note.lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') +
+      (note.lines || []).map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') +
       '</div>';
     return el;
+  }
+
+
+  /* ------------------------------------------------------------------ GATES
+
+     The two calendars are split: members who use North Star gatherings were
+     taken out of the main Gatherings space (2860065), and that space is now
+     hidden from non-members in Circle, so their sidebar is already correct.
+
+     What Circle does not gate is the door to it drawn by the space-header
+     template in Circle's JavaScript snippet, which is static HTML and shows
+     the same links to everyone. A member without access would see a door that
+     leads nowhere.
+
+     So: ask the space for one post. A member gets 200. A non-member gets an
+     error, and we mark the document, which lets overrides.css hide the door.
+     One cheap request, made only on a page that actually has the door, and
+     only once per page load. If the request fails for any other reason the
+     door is hidden too — a missing door is a smaller fault than a dead one. */
+
+  var GATE_SPACE = 2860065;
+  var gateAsked = false;
+
+  function gate() {
+    if (gateAsked) return;
+    if (!document.querySelector('a.nvx-door[href="/c/events"]')) return;
+    gateAsked = true;
+    fetch('/internal_api/spaces/' + GATE_SPACE + '/posts?per_page=1',
+          { credentials: 'same-origin', headers: { accept: 'application/json' } })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); })
+      .catch(function () {
+        document.documentElement.classList.add('cst-no-gatherings');
+      });
   }
 
   /* Circle is a single-page app: moving between spaces does not reload, so the
      note has to be removed on the way out as well as added on the way in. */
   function sync() {
+    gate();
+
     var note = noteFor();
     var existing = document.getElementById('cst-space-note');
 
