@@ -146,3 +146,80 @@ html.cst-no-gatherings a.nvx-door[href="/c/events"] {
 .cst-cm img.cm-simg {
   object-position: 50% 0% !important;
 }
+
+/* ---- Gatherings lists, Option A (28 Sep 2026) ----
+   Kate approved Option A: both event lists restyled to match Articles.
+   /c/events is space 2860065, /c/nsgatherings is 2867669.
+
+   - The list runs the full width of the masthead in one white panel.
+   - Circle's timeline dots are off.
+   - Each date is one row: the date in Cormorant on the left, its gatherings
+     on the right. A day with two gatherings stacks them with a hairline.
+   - Each gathering reads title, then time in gold, then place. The
+     "By Constellations" host line is hidden.
+   - The RSVP / Going control sits on the right.
+   - North Star uses the same design with larger type and a heavier gold
+     rule. Type, not a marker, per the North Star rule.
+   - Month headings ("October", "4 gatherings") come from data-cst-month
+     and data-cst-count, which space-notes.js 1.4.0 sets on the first date
+     of each month.
+   - Phones stack everything: date line above, button below.
+
+   Scoped to Circle's space body classes. If Circle changes its event markup,
+   the selectors stop matching and the page falls back to Circle's stock look.
+
+   TO RESTORE: delete this block. */
+
+body:is(.view-space--2860065,.view-space--2867669) .max-w-3xl:has(.infinite-scroll-component),
+body:is(.view-space--2860065,.view-space--2867669) .max-w-3xl:has(> .scrollbar-hide){max-width:1024px !important}
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col{background:#fff !important;border:1px solid #E6E1D8 !important;border-radius:16px !important;padding:12px 28px 8px !important;gap:0 !important}
+/* timeline off */
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > div:first-child{display:none !important}
+/* one date = one row: date left, gatherings right */
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2{border-bottom:1px solid #E6E1D8}
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2:last-child{border-bottom:0}
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1{display:grid !important;grid-template-columns:150px 1fr;gap:0 20px !important;padding:22px 0 !important;align-items:start}
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1 > div:first-child{grid-row:1 / span 20;display:flex !important;flex-direction:column !important;align-items:flex-start !important;gap:2px !important;position:static !important;background:transparent !important;padding:4px 0 0 !important;margin:0 !important}
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1 > div:first-child > p:first-child{font-family:'Cormorant Garamond',Georgia,serif !important;font-weight:600 !important;font-size:26px !important;line-height:1.05 !important;color:#22231E !important}
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1 > div:first-child > p:nth-child(2){font-family:Inter,system-ui,sans-serif !important;font-size:11px !important;font-weight:600 !important;letter-spacing:.14em !important;text-transform:uppercase !important;color:#6B6A63 !important}
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1 > div:not(:first-child){grid-column:2;border:0 !important;padding:0 !important}
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1 > div:not(:first-child) + div:not(:first-child){border-top:1px solid #EFEBE4 !important;padding-top:14px !important;margin-top:14px}
+/* the card becomes a row */
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"]{display:flex !important;align-items:center;gap:20px;background:transparent !important;border:0 !important;box-shadow:none !important;border-radius:0 !important}
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > a{flex:1 1 auto;min-width:0;background:transparent !important;box-shadow:none !important}
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > a .md\:px-4{padding:0 !important}
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > div{flex:0 0 auto;background:transparent !important;border:0 !important;padding:0 !important;flex-direction:column-reverse !important;align-items:flex-end !important;gap:6px !important}
+/* title first, then time, then place; host line off */
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > a .flex-1.flex-col > div:first-child{flex-direction:column-reverse !important;gap:2px !important}
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > a .flex-1.flex-col > div:first-child p{font-family:'EB Garamond',Georgia,serif !important;font-weight:600 !important;font-size:22px !important;line-height:1.25 !important;color:#22231E !important}
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > a .flex-1.flex-col > div:first-child span{font-family:Inter,system-ui,sans-serif !important;font-size:14px !important;font-weight:500 !important;color:#7D6220 !important}
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > a .flex-1.flex-col{gap:4px !important}
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > a .flex-1.flex-col > div:nth-child(2) > div:nth-child(2){display:none !important}
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > a .flex-1.flex-col > div:nth-child(2) span{font-size:14px !important;color:#22231E !important}
+/* RSVP button: rounded to match the portal buttons */
+body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > div button{border-radius:8px !important}
+/* North Star: larger type, heavier rule, no marker */
+body.view-space--2867669 [data-testid="event-main-content"] > a .flex-1.flex-col > div:first-child p{font-size:25px !important}
+body.view-space--2867669 [data-testid="event-main-content"] > a .flex-1.flex-col > div:first-child span,
+body.view-space--2867669 [data-testid="event-main-content"] > a .flex-1.flex-col > div:nth-child(2) span{font-size:17px !important}
+body.view-space--2867669 .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1 > div:first-child > p:first-child{font-size:29px !important}
+/* phones: date above, stacked */
+@media (max-width:767px){
+ body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col{padding:4px 16px !important}
+ body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1{grid-template-columns:1fr;padding:18px 0 !important}
+ body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1 > div:first-child{grid-row:auto;flex-direction:row !important;align-items:baseline !important;gap:10px !important;padding:0 0 10px !important}
+ body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2 > .flex-1 > div:not(:first-child){grid-column:1}
+ body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"]{flex-direction:column;align-items:stretch;gap:10px}
+ body:is(.view-space--2860065,.view-space--2867669) [data-testid="event-main-content"] > div{flex-direction:row !important;justify-content:space-between !important;align-items:center !important}
+}
+
+/* Month headings */
+body:is(.view-space--2860065,.view-space--2867669) [data-cst-month]{flex-wrap:wrap;position:relative}
+body:is(.view-space--2860065,.view-space--2867669) [data-cst-month]::before{content:attr(data-cst-month);flex:0 0 100%;display:block;font:600 32px/1.1 'Cormorant Garamond',Georgia,serif;color:#22231E;padding:26px 0 8px;border-bottom:2px solid #A8863A}
+body:is(.view-space--2860065,.view-space--2867669) [data-cst-month]::after{content:attr(data-cst-count);position:absolute;right:0;top:44px;font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#7D6220}
+body:is(.view-space--2860065,.view-space--2867669) .infinite-scroll-component > .flex.flex-col > .flex.gap-2:has(+ [data-cst-month]){border-bottom:0 !important}
+body.view-space--2867669 [data-cst-month]::before{border-bottom-width:3px}
+@media (max-width:767px){
+ body:is(.view-space--2860065,.view-space--2867669) [data-cst-month]::before{font-size:28px;padding-top:20px}
+ body:is(.view-space--2860065,.view-space--2867669) [data-cst-month]::after{top:34px}
+}
