@@ -1,5 +1,5 @@
 /* Constellations — space notes
-   Created 28 Sep 2026.  VERSION 1.3.0
+   Created 28 Sep 2026.  VERSION 1.3.1
 
    Puts a short explanatory note at the top of a space page, above whatever
    Circle renders there.
@@ -18,12 +18,13 @@
 
    1.1.0 gates the Gatherings door. See GATES below.
    1.2.0 adds an optional lead line and makes the heading optional.
-   1.3.0 puts a gold rule under the space header on North Star pages. */
+   1.3.0 puts a gold rule under the space header on North Star pages.
+   1.3.1 Kate's copy edits to the North Star Gatherings note. */
 
 (function () {
   'use strict';
 
-  var VERSION = '1.3.0';
+  var VERSION = '1.3.1';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
@@ -40,11 +41,11 @@
   var NOTES = {
     '/c/nsgatherings': {
       eyebrow: 'North Star',
-      lead: 'This is where you’ll sign up for events. We’re looking forward to seeing you!',
+      lead: 'This is where you’ll sign up for events.',
       lines: [
-        'North Star events are for adults who prefer more structure, clearer ' +
-        'language and instructions, and someone from our team who stays for the ' +
-        'whole gathering and takes an active part.'
+        'North Star events are for adults who prefer more support, structure, ' +
+        'clearer language and instructions, and someone from our team who stays ' +
+        'for the whole gathering and takes an active part.'
       ]
     }
   };
