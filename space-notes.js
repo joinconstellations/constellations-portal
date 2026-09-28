@@ -1,5 +1,5 @@
 /* Constellations — space notes
-   Created 28 Sep 2026.  VERSION 1.3.1
+   Created 28 Sep 2026.  VERSION 1.4.0
 
    Puts a short explanatory note at the top of a space page, above whatever
    Circle renders there.
@@ -19,12 +19,13 @@
    1.1.0 gates the Gatherings door. See GATES below.
    1.2.0 adds an optional lead line and makes the heading optional.
    1.3.0 puts a gold rule under the space header on North Star pages.
-   1.3.1 Kate's copy edits to the North Star Gatherings note. */
+   1.3.1 Kate's copy edits to the North Star Gatherings note.
+   1.4.0 month headings on the Gatherings lists. See MONTHS below. */
 
 (function () {
   'use strict';
 
-  var VERSION = '1.3.1';
+  var VERSION = '1.4.0';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
@@ -171,11 +172,60 @@
       });
   }
 
+  /* ----------------------------------------------------------------- MONTHS
+
+     Kate, 28 Sep, approved Option A for the Gatherings pages: the event list
+     restyled to match Articles, with a month heading and a count above each
+     month. The restyle is CSS in overrides.css. Circle's list has no month
+     grouping, so this marks the first date of each month with two attributes
+     and overrides.css draws the heading from them.
+
+     Attributes only. No elements are inserted into Circle's list, because
+     React owns that list and a foreign node inside it can break its updates.
+     The month is also in every date line ("October 8"), so the heading adds
+     nothing a screen reader would miss.
+
+     Re-runs on every change, so it keeps up when Circle loads more events or
+     the member switches between Upcoming and Past. */
+
+  var MONTH_PATHS = { '/c/events': ['gathering', 'gatherings'],
+                      '/c/nsgatherings': ['event', 'events'] };
+
+  function months() {
+    var noun = MONTH_PATHS[path()];
+    if (!noun) return;
+    var list = document.querySelector('.infinite-scroll-component > .flex.flex-col');
+    if (!list) return;
+    var rows = [], totals = {};
+    Array.prototype.forEach.call(list.children, function (g) {
+      var n = g.querySelectorAll('[data-testid="event-main-content"]').length;
+      if (!n) return;
+      var p = g.querySelector('.flex-1 > div:first-child > p');
+      var m = p ? p.textContent.trim().split(/\s+/)[0] : '';
+      rows.push({ g: g, m: m });
+      totals[m] = (totals[m] || 0) + n;
+    });
+    var prev = null;
+    rows.forEach(function (r) {
+      if (r.m && r.m !== prev) {
+        var t = totals[r.m];
+        var label = t + ' ' + (t === 1 ? noun[0] : noun[1]);
+        if (r.g.getAttribute('data-cst-month') !== r.m) r.g.setAttribute('data-cst-month', r.m);
+        if (r.g.getAttribute('data-cst-count') !== label) r.g.setAttribute('data-cst-count', label);
+      } else if (r.g.hasAttribute('data-cst-month')) {
+        r.g.removeAttribute('data-cst-month');
+        r.g.removeAttribute('data-cst-count');
+      }
+      prev = r.m;
+    });
+  }
+
   /* Circle is a single-page app: moving between spaces does not reload, so the
      note has to be removed on the way out as well as added on the way in. */
   function sync() {
     gate();
     gold();
+    months();
 
     var note = noteFor();
     var existing = document.getElementById('cst-space-note');
