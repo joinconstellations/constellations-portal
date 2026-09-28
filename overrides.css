@@ -61,37 +61,37 @@ a.nvx-door[href="/c/discussions-field-guide"] {
   display: none !important;
 }
 
-/* ---- Gatherings, hidden TEMPORARILY (27 Sep 2026) ----
-   Kate asked for Gatherings to be hidden, and for the mention of it on the
-   home pages to go with it.
+/* ---- Gatherings door, hidden per member (28 Sep 2026) ----
+   Supersedes the 27 Sep block that hid Gatherings from everyone.
 
-   The SIDEBAR entry is not handled here. The space (2860065, /c/events) was
-   set to hide_from_sidebar in Circle itself, which is the native setting and a
-   truer hide than CSS. TO RESTORE that half: set hide_from_sidebar back to
-   false on space 2860065.
+   Kate, 28 Sep: put the main Gatherings calendar back in the sidebar, but keep
+   it away from the members who moved to North Star gatherings. That is now
+   done natively: space 2860065 has hide_from_sidebar false and
+   is_hidden_from_non_members true, so Circle shows it to the 38 members of the
+   space and shows nothing at all to anyone else.
 
-   What this block handles is the Gatherings section on the main Home page
-   (#cst-ev, drawn by home.js) — the "The next Gathering" heading, the October
-   19 Virtual Mixer card, the "See the full calendar" link, and the note about
-   moving events out of Acuity that asked members to check back by Sunday,
-   27 September. Hiding the whole section rather than the links inside it means
-   no orphaned heading is left behind.
+   Two things Circle does not gate:
 
-   North Star Home needs nothing: it has no Gatherings section and no link to
-   either calendar. Its door to North Star Gatherings renders at zero size
-   while that space stays hidden.
+   1. The Gatherings section on the main Home page (#cst-ev, drawn by home.js).
+      No rule needed. fillGatherings asks space 2860065 for its posts and the
+      call is wrapped in .catch(function () {}) — a member without access gets
+      an error, nothing is appended, and the empty #cst-ev div leaves no
+      orphaned heading. Verified against home.js at 10e10ff.
 
-   Andalib's quote on both home pages says he came to a Constellations
-   gathering. That is a member's own words about his own story, not navigation,
-   and it has been left alone.
+   2. The door to /c/events drawn by the space-header template in Circle's
+      JavaScript snippet. That is static HTML and shows the same links to
+      everyone, so a member without access would see a door that leads nowhere.
+      space-notes.js 1.1.0 asks the space for one post and, when that fails,
+      puts cst-no-gatherings on <html>. The rule below does the rest.
 
-   TO RESTORE: delete this block AND unhide space 2860065. */
+   The door is briefly visible to those members before the check returns. A
+   door that goes away is a smaller fault than a door that goes nowhere, and
+   hiding it from everyone to spare seven people a flicker is the worse trade.
 
-#cst-ev {
-  display: none !important;
-}
+   TO RESTORE for everyone: delete this block and set
+   is_hidden_from_non_members back to false on space 2860065. */
 
-a.nvx-door[href="/c/events"] {
+html.cst-no-gatherings a.nvx-door[href="/c/events"] {
   display: none !important;
 }
 
