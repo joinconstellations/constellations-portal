@@ -94,3 +94,15 @@ a.nvx-door[href="/c/discussions-field-guide"] {
 a.nvx-door[href="/c/events"] {
   display: none !important;
 }
+
+/* ---- Community member cards: round photos crop from the top (28 Sep 2026) ----
+   Kate, 28 Sep: Evan's photo was cut off on the Community page. His source
+   photo is a tall portrait (1024x1536) with his head near the top edge, and
+   the round 78px card photo was cropping from the center, which took off the
+   top of his head. Anchoring the crop to the top of the photo keeps faces in
+   frame. Square photos are unaffected. Covers Community and North Star
+   Community (both drawn by home.js with .cst-cm). */
+
+.cst-cm img.cm-ci {
+  object-position: 50% 0% !important;
+}
