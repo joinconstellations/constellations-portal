@@ -106,3 +106,13 @@ a.nvx-door[href="/c/events"] {
 .cst-cm img.cm-ci {
   object-position: 50% 0% !important;
 }
+
+/* ---- Member Stories cards: photos crop from the top (28 Sep 2026) ----
+   Kate, 28 Sep: Ralph & Sara's story photo showed their bodies with their
+   heads cut off. The card image is landscape and their photo is a tall
+   full-length portrait, so a center crop lands on their torsos. Anchoring to
+   the top keeps faces in frame; landscape photos are unaffected. */
+
+.cst-cm img.cm-simg {
+  object-position: 50% 0% !important;
+}
