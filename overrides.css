@@ -41,6 +41,21 @@
   }
 }
 
+/* ---- Gold on the other North Star pages (28 Sep 2026) ----
+   Kate, 28 Sep: the rest of the North Star spaces looked plain next to North
+   Star Home. space-notes.js 1.3.0 puts cst-ns-gold on Circle's space header
+   for /c/nsarticles, /c/ns-community and /c/nsnova, which lands a gold rule
+   at the top of the page content — the same gesture as the cap on the North
+   Star Home masthead.
+
+   /c/northstar and /c/nsgatherings are left out: both already carry a gold
+   cap of their own. /c/nsdiscussions is a chat space with no header bar to
+   rule. See the NORTH STAR GOLD block in space-notes.js. */
+
+.cst-ns-gold {
+  border-bottom: 3px solid #7D6220 !important;
+}
+
 /* ---- Field Notes door, hidden TEMPORARILY (26 Sep 2026) ----
    Kate asked for the Field Notes discussion to be hidden for everyone, for now.
 
