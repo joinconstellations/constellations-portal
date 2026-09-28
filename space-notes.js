@@ -1,5 +1,5 @@
 /* Constellations — space notes
-   Created 28 Sep 2026.  VERSION 1.2.0
+   Created 28 Sep 2026.  VERSION 1.3.0
 
    Puts a short explanatory note at the top of a space page, above whatever
    Circle renders there.
@@ -17,12 +17,13 @@
    so screen readers and text zoom treat it as content.
 
    1.1.0 gates the Gatherings door. See GATES below.
-   1.2.0 adds an optional lead line and makes the heading optional. */
+   1.2.0 adds an optional lead line and makes the heading optional.
+   1.3.0 puts a gold rule under the space header on North Star pages. */
 
 (function () {
   'use strict';
 
-  var VERSION = '1.2.0';
+  var VERSION = '1.3.0';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
@@ -86,8 +87,12 @@
     (document.head || document.documentElement).appendChild(s);
   }
 
+  function path() {
+    return location.pathname.replace(/\/+$/, '');
+  }
+
   function noteFor() {
-    return NOTES[location.pathname.replace(/\/+$/, '')] || null;
+    return NOTES[path()] || null;
   }
 
   function build(note) {
@@ -104,6 +109,34 @@
     return el;
   }
 
+  /* ------------------------------------------------------------ NORTH STAR GOLD
+
+     Kate, 28 Sep: the North Star pages looked plain next to North Star Home,
+     which has a gold cap across the top of its masthead box. Same idea here:
+     a gold rule along the bottom of Circle's own space header, so the gold
+     sits at the top of the page content on every North Star space.
+
+     Not on /c/northstar, which already has its gold cap, and not on
+     /c/nsgatherings, whose note card carries one directly below the header —
+     two gold lines an inch apart is a stripe, not an accent.
+
+     /c/nsdiscussions is a chat space and Circle draws no header bar there, so
+     there is nothing to put a rule on. It is left out on purpose.
+
+     The header is found by structure rather than by name: Circle's utility
+     classes change, and a selector that stops matching should quietly do
+     nothing rather than paint the wrong element. */
+
+  var GOLD_PATHS = ['/c/nsarticles', '/c/ns-community', '/c/nsnova'];
+
+  function gold() {
+    var head = document.querySelector('#circle-ai-workspace-body div.rounded-b-2xl');
+    var marked = document.querySelector('.cst-ns-gold');
+    if (marked && marked !== head) marked.classList.remove('cst-ns-gold');
+    if (!head) return;
+    if (GOLD_PATHS.indexOf(path()) > -1) head.classList.add('cst-ns-gold');
+    else head.classList.remove('cst-ns-gold');
+  }
 
   /* ------------------------------------------------------------------ GATES
 
@@ -141,6 +174,7 @@
      note has to be removed on the way out as well as added on the way in. */
   function sync() {
     gate();
+    gold();
 
     var note = noteFor();
     var existing = document.getElementById('cst-space-note');
