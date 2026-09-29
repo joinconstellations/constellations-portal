@@ -1,5 +1,5 @@
 /* Constellations — space notes
-   Created 28 Sep 2026.  VERSION 1.5.0
+   Created 28 Sep 2026.  VERSION 1.5.1
 
    Puts a short explanatory note at the top of a space page, above whatever
    Circle renders there.
@@ -22,12 +22,16 @@
    1.3.1 Kate's copy edits to the North Star Gatherings note.
    1.4.0 month headings on the Gatherings lists. See MONTHS below.
    1.5.0 North Star Gatherings masthead: a name, a gold rule and numbered
-         sign-up steps (Kate chose Option B, 28 Sep). Shorter panel copy. */
+         sign-up steps (Kate chose Option B, 28 Sep). Shorter panel copy.
+   1.5.1 loads Cormorant Garamond itself. On a fresh load of a Gatherings
+         page nothing else had loaded it, so the headings fell back to Georgia.
+         Numbers set in Cormorant use lining figures: its default old-style
+         "1" reads as a capital I. */
 
 (function () {
   'use strict';
 
-  var VERSION = '1.5.0';
+  var VERSION = '1.5.1';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
@@ -85,7 +89,7 @@
     '#cst-space-note .cst-sn-steps li{padding:18px 20px 2px 0;font-size:21px;line-height:1.4}',
     '#cst-space-note .cst-sn-steps li+li{padding-left:20px;border-left:1px solid var(--ha)}',
     '#cst-space-note .cst-sn-num{display:block;font:600 40px/1 "Cormorant Garamond",Georgia,serif;',
-    'color:var(--gd);margin:0 0 6px}',
+    'color:var(--gd);margin:0 0 6px;font-variant-numeric:lining-nums}',
     '#cst-space-note .cst-sn-steps b{font-weight:600}',
     /* With a name, the card is the page header, so Circle's own title in the
        bar above is hidden. The New event and menu buttons in that bar stay. */
@@ -117,6 +121,25 @@
     s.id = 'cst-space-note-css';
     s.textContent = CSS;
     (document.head || document.documentElement).appendChild(s);
+  }
+
+  /* Cormorant Garamond is not loaded site-wide. Other pages get it from the
+     space-header template or home.js, and a fresh load of North Star
+     Gatherings has neither. Loading it twice on a page is harmless. */
+  var FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap';
+
+  function fonts() {
+    if (document.getElementById('cst-sn-fonts')) return;
+    var l = document.createElement('link');
+    l.id = 'cst-sn-fonts';
+    l.rel = 'stylesheet';
+    l.href = FONTS;
+    (document.head || document.documentElement).appendChild(l);
+    var st = document.createElement('style');
+    st.id = 'cst-sn-figures';
+    st.textContent = 'body:is(.view-space--2860065,.view-space--2867669) ' +
+      '.infinite-scroll-component p{font-variant-numeric:lining-nums}';
+    (document.head || document.documentElement).appendChild(st);
   }
 
   function path() {
@@ -231,6 +254,7 @@
   function months() {
     var noun = MONTH_PATHS[path()];
     if (!noun) return;
+    fonts();
     var list = document.querySelector('.infinite-scroll-component > .flex.flex-col');
     if (!list) return;
     var rows = [], totals = {};
@@ -274,6 +298,7 @@
     if (!mount || !mount.firstElementChild) return;
 
     css();
+    fonts();
     mount.insertBefore(build(note), mount.firstElementChild);
   }
 
