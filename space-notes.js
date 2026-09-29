@@ -1,5 +1,5 @@
 /* Constellations — space notes
-   Created 28 Sep 2026.  VERSION 1.4.0
+   Created 28 Sep 2026.  VERSION 1.5.0
 
    Puts a short explanatory note at the top of a space page, above whatever
    Circle renders there.
@@ -20,12 +20,14 @@
    1.2.0 adds an optional lead line and makes the heading optional.
    1.3.0 puts a gold rule under the space header on North Star pages.
    1.3.1 Kate's copy edits to the North Star Gatherings note.
-   1.4.0 month headings on the Gatherings lists. See MONTHS below. */
+   1.4.0 month headings on the Gatherings lists. See MONTHS below.
+   1.5.0 North Star Gatherings masthead: a name, a gold rule and numbered
+         sign-up steps (Kate chose Option B, 28 Sep). Shorter panel copy. */
 
 (function () {
   'use strict';
 
-  var VERSION = '1.4.0';
+  var VERSION = '1.5.0';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
@@ -34,19 +36,28 @@
   /* path -> note.
 
      eyebrow  small label at the top of the card
+     name     the space name as the page's main heading, with a gold rule
+              under it. Optional. When present, Circle's own title in the bar
+              above is hidden (see CSS), so the page has one header.
      lead     one warm line in large type, outside the panel. Optional.
      heading  a real <h2>. Optional. Kate, 28 Sep: not wanted here — the space
               header already says Gatherings, and a second heading that only
               announced what was coming was in the way of the welcome.
-     lines    paragraphs inside the pale panel */
+     lines    paragraphs inside the pale panel
+     steps    numbered steps under the panel. Optional. *word* sets bold. */
   var NOTES = {
     '/c/nsgatherings': {
       eyebrow: 'North Star',
+      name: 'Gatherings',
       lead: 'This is where you’ll sign up for events.',
       lines: [
-        'North Star events are for adults who prefer more support, structure, ' +
-        'clearer language and instructions, and someone from our team who stays ' +
-        'for the whole gathering and takes an active part.'
+        'North Star events are for adults who prefer more hands-on support, ' +
+        'shorter and more direct content, and clearer language and instructions.'
+      ],
+      steps: [
+        'Find an event you want to go to.',
+        'Press *RSVP*. It changes to *Going*.',
+        'Open the event to see how to join. We also send you an email.'
       ]
     }
   };
@@ -66,13 +77,32 @@
     '#cst-space-note .cst-sn-lead{font:500 26px/1.3 "Cormorant Garamond",Georgia,serif;',
     'color:var(--nv);margin:0 0 20px;max-width:640px;letter-spacing:-.01em}',
     '#cst-space-note .cst-sn-panel{background:var(--nb);padding:20px 22px;margin:0}',
+    '#cst-space-note h1.cst-sn-name{font:600 52px/1 "Cormorant Garamond",Georgia,serif;',
+    'color:var(--nv);margin:0 0 18px;letter-spacing:-.01em}',
+    '#cst-space-note .cst-sn-rule{width:72px;height:4px;background:var(--gd);margin:0 0 22px}',
+    '#cst-space-note ol.cst-sn-steps{list-style:none;margin:24px 0 0;padding:0;',
+    'display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ha)}',
+    '#cst-space-note .cst-sn-steps li{padding:18px 20px 2px 0;font-size:21px;line-height:1.4}',
+    '#cst-space-note .cst-sn-steps li+li{padding-left:20px;border-left:1px solid var(--ha)}',
+    '#cst-space-note .cst-sn-num{display:block;font:600 40px/1 "Cormorant Garamond",Georgia,serif;',
+    'color:var(--gd);margin:0 0 6px}',
+    '#cst-space-note .cst-sn-steps b{font-weight:600}',
+    /* With a name, the card is the page header, so Circle's own title in the
+       bar above is hidden. The New event and menu buttons in that bar stay. */
+    'body:has(#cst-space-note.cst-sn-named) #circle-ai-workspace-body ',
+    'div.rounded-b-2xl h1{display:none!important}',
     '#cst-space-note p{margin:0 0 12px;max-width:640px}',
     '#cst-space-note p:last-child{margin-bottom:0}',
     '@media (max-width:767px){',
     '#cst-space-note{padding:22px 20px;margin-bottom:16px}',
     '#cst-space-note h2{font-size:25px}',
     '#cst-space-note .cst-sn-lead{font-size:23px;margin-bottom:16px}',
-    '#cst-space-note .cst-sn-panel{padding:16px 18px}}'
+    '#cst-space-note .cst-sn-panel{padding:16px 18px}',
+    '#cst-space-note h1.cst-sn-name{font-size:40px}',
+    '#cst-space-note ol.cst-sn-steps{grid-template-columns:1fr}',
+    '#cst-space-note .cst-sn-steps li,#cst-space-note .cst-sn-steps li+li{',
+    'padding:16px 0 4px;border-left:0}',
+    '#cst-space-note .cst-sn-steps li+li{border-top:1px solid var(--ha)}}'
   ].join('');
 
   function esc(s) {
@@ -101,13 +131,20 @@
     var el = document.createElement('section');
     el.id = 'cst-space-note';
     el.setAttribute('data-cst-space-note', VERSION);
+    if (note.name) el.className = 'cst-sn-named';
     el.innerHTML =
       (note.eyebrow ? '<p class="cst-sn-ey">' + STAR + esc(note.eyebrow) + '</p>' : '') +
+      (note.name ? '<h1 class="cst-sn-name">' + esc(note.name) + '</h1>' +
+                   '<div class="cst-sn-rule" aria-hidden="true"></div>' : '') +
       (note.lead ? '<p class="cst-sn-lead">' + esc(note.lead) + '</p>' : '') +
       (note.heading ? '<h2>' + esc(note.heading) + '</h2>' : '') +
       '<div class="cst-sn-panel">' +
       (note.lines || []).map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') +
-      '</div>';
+      '</div>' +
+      (note.steps ? '<ol class="cst-sn-steps">' + note.steps.map(function (t, i) {
+        return '<li><span class="cst-sn-num" aria-hidden="true">' + (i + 1) + '</span>' +
+               esc(t).replace(/\*([^*]+)\*/g, '<b>$1</b>') + '</li>';
+      }).join('') + '</ol>' : '');
     return el;
   }
 
