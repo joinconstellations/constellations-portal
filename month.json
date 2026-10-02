@@ -1,29 +1,54 @@
 {
   "_note": "The monthly theme for both home pages. home.js and northstar-home.js fetch this at load and merge it over their built-in defaults; if the fetch fails they keep those defaults, so a bad edit here can never take a home page down. Changing the month is an edit to this file alone.",
-
   "home": {
     "stamp": "October",
     "label": "This month’s theme",
     "title": "Masking",
     "body": "Showing a version of yourself that feels safer than the real one — in a message, on a first date, in a room full of people. What it protects, what it costs, and how you decide when to let it down.",
-    "articles": ["when-and-whether-to-disclose", "date-or-audition"],
+    "articles": [
+      "when-and-whether-to-disclose",
+      "date-or-audition"
+    ],
     "questions": [],
     "replies": null,
     "novaAsk": "Is it okay to mask when I’m meeting someone new?",
     "nextLabel": "November’s theme?",
-    "nextTitle": null
+    "nextTitle": null,
+    "discussion": {
+      "heading": "This Month’s Discussion",
+      "label": "Discussion · On Zoom",
+      "title": "The Masks We Wear",
+      "when": "Wednesday, October 7 · 7:30–8:15 p.m. ET",
+      "text": "What masking is, why we do it, and how it shows up in friendships, dating, work, family, and everyday life. Come to listen, share, ask questions, or simply be part of the conversation.",
+      "cta": "See details and RSVP →",
+      "url": "/c/events/the-masks-we-wear",
+      "ends": "2026-10-08T00:15:00Z"
+    }
   },
-
   "northstar": {
     "stamp": "October",
     "label": "This month’s theme",
     "title": "Masking",
     "body": "Masking is when you hide parts of yourself so that other people are more comfortable. Most people do it sometimes. It can keep you safe. It can also be tiring. This month our articles are about choosing when to show more of yourself, and when not to.",
-    "articles": ["north-star-when-and-whether-to-disclose", "north-star-date-or-audition"],
+    "articles": [
+      "north-star-when-and-whether-to-disclose",
+      "north-star-date-or-audition"
+    ],
     "questions": [],
     "replies": null,
     "novaAsk": "Is it okay to mask when I’m meeting someone new?",
     "nextLabel": "November’s theme?",
-    "nextTitle": null
-  }
+    "nextTitle": null,
+    "discussion": {
+      "heading": "This month’s discussion",
+      "label": "North Star · On Zoom",
+      "title": "What Is Masking?",
+      "when": "Thursday, October 8 · 7:00–7:45 p.m. ET",
+      "text": "A short, structured conversation about masking. We will explain what masking is, with everyday examples. You can talk, type in the chat, or just listen. Cameras are optional.",
+      "cta": "See details and RSVP →",
+      "url": "/c/nsgatherings/north-star-what-is-masking",
+      "ends": "2026-10-08T23:45:00Z"
+    }
+  },
+  "_note2": "discussion: shown under the theme by month-discussion.js. Set to null to remove; it also hides itself after 'ends'."
 }
