@@ -1,4 +1,4 @@
-/* month-discussion.js — 1.1.0
+/* month-discussion.js — 1.2.0
  * Adds "This Month's Discussion" to the monthly-theme box on both home pages,
  * directly under the theme text (before Suggested Reading).
  * Content lives in month.json: home.discussion and northstar.discussion.
@@ -10,10 +10,12 @@
  *   readHeading  renames the Suggested Reading heading
  *   askHeading   renames the Ask Nova heading
  *   plainAsk     removes the Nova explanation and the tinted box around Ask
+ * 1.2.0:
+ *   excerpts     { article-slug: text } replaces an article's excerpt in Read
  */
 (function () {
   'use strict';
-  var VERSION = '1.1.0';
+  var VERSION = '1.2.0';
   var SRC = 'https://joinconstellations.github.io/constellations-portal/month.json';
   var PAGES = { '/c/welcome': 'home', '/c/northstar': 'northstar' };
   var ID = 'cst-month-disc';
@@ -69,6 +71,15 @@
       var secs = box.querySelectorAll('.thsec');
       for (var i = 0; i < secs.length; i++) {
         if (secs[i].id !== ID && secs[i].querySelector('.tharts')) setHeading(secs[i].querySelector('.thh'), L.readHeading);
+      }
+    }
+    if (L.excerpts) {
+      var cards = box.querySelectorAll('.thsec:not(#' + ID + ') .thart');
+      for (var j = 0; j < cards.length; j++) {
+        var href = cards[j].getAttribute('href') || '';
+        var slug = href.replace(/[?#].*$/, '').replace(/\/$/, '').split('/').pop();
+        var text = L.excerpts[slug], p = cards[j].querySelector('p');
+        if (text && p && p.textContent !== text) p.textContent = text;
       }
     }
     var nova = box.querySelector('.thnova');
