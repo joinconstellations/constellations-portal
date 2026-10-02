@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.6.0';
+  var VERSION = '2.7.0';
 
   var CFG = {
     path: '/c/northstar',
@@ -994,11 +994,32 @@
     if (onHome()) build();
   }
 
+  /* The month block below CFG is the fallback. month.json in this repo is the
+     live one: fetched once, merged over CFG.month, and the page is rebuilt so
+     the new values show. If the fetch fails the built-in values stay, so a bad
+     edit to month.json can never take this page down. Changing the theme, the
+     two articles or the Nova prompt is an edit to month.json alone — this
+     file does not need to change again. */
+  function loadMonth() {
+    var url = 'https://joinconstellations.github.io/constellations-portal/month.json';
+    return fetch(url, { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (j) {
+        var m = j && j.northstar;
+        if (!m || typeof m !== 'object') return;
+        Object.keys(m).forEach(function (k) { CFG.month[k] = m[k]; });
+        teardown();
+        if (onHome()) build();
+      })
+      .catch(function () {});
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', tick);
   } else {
     tick();
   }
+  loadMonth();
   setInterval(tick, 500);
   window.addEventListener('popstate', tick);
 })();
