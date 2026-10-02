@@ -1,4 +1,4 @@
-/* month-discussion.js — 1.2.0
+/* month-discussion.js — 1.3.0
  * Adds "This Month's Discussion" to the monthly-theme box on both home pages,
  * directly under the theme text (before Suggested Reading).
  * Content lives in month.json: home.discussion and northstar.discussion.
@@ -12,10 +12,12 @@
  *   plainAsk     removes the Nova explanation and the tinted box around Ask
  * 1.2.0:
  *   excerpts     { article-slug: text } replaces an article's excerpt in Read
+ * 1.3.0:
+ *   askNote      with plainAsk, keeps one short line (this text) instead of the Nova explanation
  */
 (function () {
   'use strict';
-  var VERSION = '1.2.0';
+  var VERSION = '1.3.0';
   var SRC = 'https://joinconstellations.github.io/constellations-portal/month.json';
   var PAGES = { '/c/welcome': 'home', '/c/northstar': 'northstar' };
   var ID = 'cst-month-disc';
@@ -87,7 +89,11 @@
     if (L.askHeading) setHeading(nova.querySelector('.thh'), L.askHeading);
     if (L.plainAsk) {
       var g = nova.querySelector('.thnovagrid');
-      if (g && g.firstElementChild && g.firstElementChild.tagName === 'P') g.removeChild(g.firstElementChild);
+      var first = g && g.firstElementChild;
+      if (first && first.tagName === 'P') {
+        if (L.askNote) { if (first.textContent !== L.askNote) first.textContent = L.askNote; }
+        else g.removeChild(first);
+      }
       if (g) g.style.gridTemplateColumns = '1fr';
       nova.style.background = 'transparent';
       nova.style.padding = '30px 0 0';
