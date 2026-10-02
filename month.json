@@ -15,7 +15,7 @@
     "nextLabel": "November’s theme?",
     "nextTitle": null,
     "discussion": {
-      "heading": "This Month’s Discussion",
+      "heading": "Join",
       "label": "Discussion · On Zoom",
       "title": "The Masks We Wear",
       "when": "Wednesday, October 7 · 7:30–8:15 p.m. ET",
@@ -23,6 +23,11 @@
       "cta": "See details and RSVP →",
       "url": "/c/events/the-masks-we-wear",
       "ends": "2026-10-08T00:15:00Z"
+    },
+    "layout": {
+      "readHeading": "Read",
+      "askHeading": "Ask",
+      "plainAsk": true
     }
   },
   "northstar": {
@@ -50,5 +55,5 @@
       "ends": "2026-10-08T23:45:00Z"
     }
   },
-  "_note2": "discussion: shown under the theme by month-discussion.js. Set to null to remove; it also hides itself after 'ends'."
+  "_note2": "discussion: shown under the theme by month-discussion.js. Set to null to remove; it also hides itself after 'ends'. layout (optional): readHeading, askHeading, plainAsk (removes the Nova explanation and its tinted box)."
 }
