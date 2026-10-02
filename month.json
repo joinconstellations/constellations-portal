@@ -49,7 +49,7 @@
     "nextLabel": "November’s theme?",
     "nextTitle": null,
     "discussion": {
-      "heading": "This month’s discussion",
+      "heading": "Join",
       "label": "North Star · On Zoom",
       "title": "What Is Masking?",
       "when": "Thursday, October 8 · 7:00–7:45 p.m. ET",
@@ -57,7 +57,13 @@
       "cta": "See details and RSVP →",
       "url": "/c/nsgatherings/north-star-what-is-masking",
       "ends": "2026-10-08T23:45:00Z"
+    },
+    "layout": {
+      "readHeading": "Read",
+      "askHeading": "Ask",
+      "plainAsk": true,
+      "askNote": "Constellations AI Assistant"
     }
   },
-  "_note2": "discussion: shown under the theme by month-discussion.js. Set to null to remove; it also hides itself after 'ends'. layout (optional): readHeading, askHeading, plainAsk (removes the Nova explanation and its tinted box), excerpts ({article-slug: short purpose line} shown in place of the article's opening)."
+  "_note2": "discussion: shown under the theme by month-discussion.js. Set to null to remove; it also hides itself after 'ends'. layout (optional): readHeading, askHeading, plainAsk (removes the Nova explanation and its tinted box), askNote (with plainAsk, one short line in place of the Nova explanation), excerpts ({article-slug: short purpose line} shown in place of the article's opening)."
 }
