@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.19.2';
+  var VERSION = '1.20.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -39,6 +39,7 @@
       pressureIsPoison:    '/c/guides/pressure-is-poison',
       yourProfile:         '/c/guides/your-portal-profile',
       addToHomeScreen:     '/c/guides/add-to-home-screen',
+      startHere:           '/c/guides/start-here',
       notificationsGuide:  null    /* guide not written yet                   */
     },
 
@@ -46,41 +47,26 @@
        month is one edit: the stamp, the title, the body, the two articles by
        slug, the two discussion questions, the Nova prompt, next month. */
     month: {
-      stamp: 'September',
-      title: 'Transitions',
-      body:  'Moving through change, waiting for what comes next, and finding a ' +
-             'way forward when you feel stuck. Explore the theme through reading, ' +
-             'conversation, and Nova.',
+      stamp: 'October',
+      title: 'Masking',
+      body:  'Showing a version of yourself that feels safer than the real one — ' +
+             'in a message, on a first date, in a room full of people. What it ' +
+             'protects, what it costs, and how you decide when to let it down.',
       label:    'This month’s theme',
-      articles: ['when-a-friendship-fades', 'become-a-regular'],
-      questions: [
-        'What’s something you believed about relationships when you were younger ' +
-          'that you see differently now?',
-        'Are you leaving something behind, adjusting to where you are now, or ' +
-          'wondering what might come next?'
-      ],
-      /* Member replies shown under the questions, in this order. They are
-         named by message id rather than copied, so a reply the member edits
-         or deletes changes or disappears here too. `parent` is the question
-         they were posted under. */
-      replies: {
-        room:     '821ece14-f597-44af-a66e-4520f89721f4',
-        parent:   2154696378,
-        messages: [2154697207, 2155838153]
-      },
-      novaAsk:   'What are small steps I can take this month to meet my goals?',
-      nextLabel: 'October’s theme?',
-      nextTitle: 'Masking'
+      articles: ['when-and-whether-to-disclose', 'date-or-audition'],
+      /* Discussion questions and member replies are off the home page as of
+         1.20.0. Put questions back by filling this array; the Join the
+         Discussion section only renders when it has at least one. */
+      questions: [],
+      replies:   null,
+      novaAsk:   'How do I decide how much of myself to share with someone new?',
+      /* nextTitle: null leaves the next-month line off until it is decided. */
+      nextLabel: 'November’s theme?',
+      nextTitle: null
     },
 
     /* A note under The next Gathering. Set to null to take it down. */
-    gatheringNote: {
-      title: 'Important note',
-      body:  'We’re moving our virtual discussions and in-person events from ' +
-             'Acuity Scheduling into the Portal, so everything you need will be ' +
-             'in one place. Please check back by Sunday, September 27, for the ' +
-             'full updated calendar.'
-    },
+    gatheringNote: null,
 
     /* Drawn from the Guiding Principles document, not written here. */
     principles: [
@@ -625,6 +611,9 @@
 
   /* A step with no link yet shows muted text rather than a dead link, the
      same way the Be Featured strip does. */
+  /* Unused since 1.20.0 — the three onboarding steps moved to the Start Here
+     guide. Kept because putting a step row back on the home page is then one
+     call rather than a rewrite. */
   function stepRow(icon, title, lines, href, label) {
     return '<div class="strow">' +
              '<span class="ico">' + icon + '</span>' +
@@ -638,29 +627,18 @@
            '</div>';
   }
 
-  /* Welcome. Masthead and the two first steps are one block: a member opening
-     the Portal sees the greeting and what to do next without scrolling. */
+  /* Welcome. The masthead and one line pointing new members at the Start Here
+     guide. The three onboarding steps lived here until 1.20.0; they are in the
+     guide now so settled members stop being shown them. */
   function welcomeHTML() {
     var u = CFG.urls;
     return '' +
       '<section class="cst-mast">' +
         '<p class="ey big">Constellations Member Portal</p>' +
         '<h2 class="t1">Welcome.<br>We’re glad you’re here.</h2>' +
-        '<p class="lead">New here? Start with these three steps.</p>' +
-        '<div class="steps">' +
-          stepRow(ICON.person, 'Complete your profile',
-                  'Share a bit about yourself.<br>Add the cream-background ' +
-                  'photograph we emailed you.',
-                  u.profile, 'Edit my profile') +
-          stepRow(ICON.bell, 'Customize notifications',
-                  'Choose which updates you receive by email.<br>' +
-                  'You can change this anytime.',
-                  u.notifications, 'Customize notifications') +
-          stepRow(ICON.video, 'Book a walkthrough call',
-                  'Optional. Fifteen minutes with our team over Zoom.<br>' +
-                  'See how the Portal works and what happens next.',
-                  u.walkthrough, 'Book a walkthrough') +
-        '</div>' +
+        '<p class="lead">New here? Start with the ' +
+          '<a class="go" href="' + esc(u.startHere) + '">Start Here guide →</a>' +
+        '</p>' +
       '</section>';
   }
 
@@ -670,9 +648,20 @@
   function themeHTML() {
     var m = CFG.month, u = CFG.urls;
 
+    /* The discussion questions are off the home page unless CFG.month.questions
+       has something in it. Filling that array brings the section back. */
     var qs = (m.questions || []).map(function (q) {
       return '<a class="thq" href="' + esc(u.discussions) + '">' + esc(q) + '</a>';
     }).join('');
+
+    var talk = !qs ? '' :
+          '<div class="thsec">' +
+            '<h3 class="thh">' + ICON.talk + 'Join the Discussion</h3>' +
+            '<div class="thqs">' + qs + '</div>' +
+            '<div id="cst-re"></div>' +
+            '<p class="thmore"><a class="go" href="' + esc(u.discussions) +
+              '">Go to Discussions →</a></p>' +
+          '</div>';
 
     return '' +
       '<section class="mo">' +
@@ -685,8 +674,10 @@
               '<p class="ey">' + esc(m.label) + '</p>' +
               '<h2 class="thti">' + esc(m.title) + '</h2>' +
               '<p class="thtx">' + esc(m.body) + '</p>' +
-              '<p class="thnext"><span class="ey">' + esc(m.nextLabel) + '</span>' +
-                '<b>' + esc(m.nextTitle) + '</b></p>' +
+              (m.nextTitle
+                ? '<p class="thnext"><span class="ey">' + esc(m.nextLabel) +
+                  '</span><b>' + esc(m.nextTitle) + '</b></p>'
+                : '') +
             '</div>' +
           '</div>' +
 
@@ -695,13 +686,7 @@
             '<div id="cst-ar"></div>' +
           '</div>' +
 
-          '<div class="thsec">' +
-            '<h3 class="thh">' + ICON.talk + 'Join the Discussion</h3>' +
-            '<div class="thqs">' + qs + '</div>' +
-            '<div id="cst-re"></div>' +
-            '<p class="thmore"><a class="go" href="' + esc(u.discussions) +
-              '">Go to Discussions →</a></p>' +
-          '</div>' +
+          talk +
 
           '<div class="thnova">' +
             '<h3 class="thh">' + ICON.spark + 'Ask Nova</h3>' +
