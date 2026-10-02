@@ -1,14 +1,19 @@
-/* month-discussion.js — 1.0.0
+/* month-discussion.js — 1.1.0
  * Adds "This Month's Discussion" to the monthly-theme box on both home pages,
  * directly under the theme text (before Suggested Reading).
  * Content lives in month.json: home.discussion and northstar.discussion.
  * Set a discussion to null to remove it. It also hides itself once `ends` has passed.
  * Uses the home pages' own classes (thsec, thh, tharts, thart, lab2, go), so it
  * inherits their styling. Home pages are not modified.
+ *
+ * 1.1.0: optional `layout` in month.json per page:
+ *   readHeading  renames the Suggested Reading heading
+ *   askHeading   renames the Ask Nova heading
+ *   plainAsk     removes the Nova explanation and the tinted box around Ask
  */
 (function () {
   'use strict';
-  var VERSION = '1.0.0';
+  var VERSION = '1.1.0';
   var SRC = 'https://joinconstellations.github.io/constellations-portal/month.json';
   var PAGES = { '/c/welcome': 'home', '/c/northstar': 'northstar' };
   var ID = 'cst-month-disc';
@@ -48,10 +53,44 @@
     return sec;
   }
 
+
+  function setHeading(h, text) {
+    if (!h || !text) return;
+    var nodes = [].filter.call(h.childNodes, function (n) { return n.nodeType === 3; });
+    var tn = nodes[nodes.length - 1];
+    if (tn) { if (tn.nodeValue !== text) tn.nodeValue = text; }
+    else h.appendChild(document.createTextNode(text));
+  }
+
+  function tidy(box, key) {
+    var L = data && data[key] && data[key].layout;
+    if (!L) return;
+    if (L.readHeading) {
+      var secs = box.querySelectorAll('.thsec');
+      for (var i = 0; i < secs.length; i++) {
+        if (secs[i].id !== ID && secs[i].querySelector('.tharts')) setHeading(secs[i].querySelector('.thh'), L.readHeading);
+      }
+    }
+    var nova = box.querySelector('.thnova');
+    if (!nova) return;
+    if (L.askHeading) setHeading(nova.querySelector('.thh'), L.askHeading);
+    if (L.plainAsk) {
+      var g = nova.querySelector('.thnovagrid');
+      if (g && g.firstElementChild && g.firstElementChild.tagName === 'P') g.removeChild(g.firstElementChild);
+      if (g) g.style.gridTemplateColumns = '1fr';
+      nova.style.background = 'transparent';
+      nova.style.padding = '30px 0 0';
+      nova.style.marginTop = '34px';
+      nova.style.borderTop = '1px solid rgb(230, 227, 220)';
+    }
+  }
+
   function place() {
     var d = current();
     var box = document.querySelector('.thbox');
     var have = document.getElementById(ID);
+    var key = PAGES[location.pathname.replace(/\/$/, '')];
+    if (box && key) tidy(box, key);
     if (!d || !box) { if (have && !d) have.remove(); return; }
     if (have && box.contains(have)) return;
     if (have) have.remove();
