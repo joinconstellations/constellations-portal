@@ -1,8 +1,8 @@
 /* Constellations — North Star Home (/c/northstar)
    Loaded from the Head code snippet as:
    <script defer src="https://joinconstellations.github.io/constellations-portal/northstar-home.js"></script>
-   The North Star sibling of home.js. Same welcome, same three steps, same
-   monthly theme, written in North Star register: short sentences, one idea at
+   The North Star sibling of home.js. Same welcome, same monthly theme,
+   written in North Star register: short sentences, one idea at
    a time, concrete words, larger type. White page throughout. Blue is used as
    an outline and a star, never as a filled block. No gatherings on this page.
    Every live-data block hides itself if its call fails. */
@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.5.1';
+  var VERSION = '2.6.0';
 
   var CFG = {
     path: '/c/northstar',
@@ -29,6 +29,9 @@
       articles:    '/c/nsarticles',
       nova:        '/c/nsnova',
       guides:      '/c/guides',          /* there is no nsguides space */
+      /* The Start Here guide is the standard version; a North Star version
+         has not been written yet. */
+      startHere:   '/c/guides/start-here',
       /* coaching is temporarily off both Home pages at Kate's direction */
       report:      '/c/report',
       profile:       '/account',
@@ -57,27 +60,24 @@
 
     /* This month. Mirrors the Constellations Home, in North Star register. */
     month: {
-      stamp: 'September',
+      stamp: 'October',
       label: 'This month’s theme',
-      title: 'Transitions',
-      body:  'A transition is an in-between time. Something in your life is ' +
-             'changing. You are waiting to see how it turns out. This month our ' +
-             'articles and our discussions are about transitions.',
-      articles: ['north-star-when-a-friendship-fades',
-                 'north-star-a-clear-ending-is-a-kindness'],
-      questions: [ 'Are you in a transition right now?',
-                   'How have your interests changed as you have gotten older? ' +
-                   'What has stayed the same?' ],
-      /* One member reply, shown under the questions. Named by message id and
-         fetched live, so a reply the member edits or deletes changes here too. */
-      replies: {
-        room:     '4f8d094d-69bf-4f2a-bc82-6539c26aca90',
-        parent:   null,   /* null = top-level messages in the room, not a thread */
-        messages: [2156439201, 2156465729, 2156482990, 2156503013, 2156525128]
-      },
-      novaAsk: 'What are small steps I can take this month to meet my goals?',
-      nextLabel: 'October’s theme?',
-      nextTitle: 'Masking'
+      title: 'Masking',
+      body:  'Masking is when you hide parts of yourself so that other people ' +
+             'are more comfortable. Most people do it sometimes. It can keep you ' +
+             'safe. It can also be tiring. This month our articles are about ' +
+             'choosing when to show more of yourself, and when not to.',
+      articles: ['north-star-when-and-whether-to-disclose',
+                 'north-star-date-or-audition'],
+      /* Discussion questions and member replies are off the home page as of
+         2.6.0. Put questions back by filling this array; the Join the
+         discussion section only renders when it has at least one. */
+      questions: [],
+      replies:   null,
+      novaAsk: 'How do I decide how much of myself to share with someone new?',
+      /* nextTitle: null leaves the next-month line off until it is decided. */
+      nextLabel: 'November’s theme?',
+      nextTitle: null
     },
 
     memberLabels:  ['NEW MEMBER', 'FEATURED MEMBER'],
@@ -547,8 +547,8 @@
   }
 
   /* Welcome. The outlined blue box is the blue heading members are told to
-     look for. The three steps are the same three as the Constellations Home,
-     written plainly. */
+     look for. The three onboarding steps lived here until 2.6.0; they are in
+     the Start Here guide now, so members who are settled stop seeing them. */
   function welcomeHTML() {
     var u = CFG.urls;
     return '' +
@@ -563,23 +563,10 @@
               '<span class="nsexl">' + esc(CFG.tagSample) + '</span></div>' +
           '</div>' +
         '</div>' +
-        '<p class="lead">New here? Start with these three steps.<br>' +
-          'You can do one step today and the next step another day.</p>' +
-        '<div class="steps">' +
-          stepRow(ICON.person, 'Fill in your profile',
-                  'Write a little about yourself. Other members will read it.<br>' +
-                  'Then add the photograph we emailed you. It has a cream background.',
-                  u.profile, 'Go to my profile') +
-          stepRow(ICON.bell, 'Choose your emails',
-                  'Pick which emails you want from the Portal.<br>' +
-                  'You can change this any time.',
-                  u.notifications, 'Choose my emails') +
-          stepRow(ICON.video, 'Book a walkthrough call',
-                  'This one is your choice. You do not have to.<br>' +
-                  'It is 15 minutes on Zoom with our team. We show you how the ' +
-                  'Portal works and what happens next.',
-                  u.walkthrough, 'Book a walkthrough') +
-        '</div>' +
+        '<p class="lead">New here? The Start Here guide tells you the first ' +
+          'things to do.<br>You can do one today and the next one another day.' +
+          '<br><a class="go" href="' + esc(u.startHere) + '">Go to Start Here →</a>' +
+        '</p>' +
       '</section>';
   }
 
@@ -589,9 +576,20 @@
   function themeHTML() {
     var m = CFG.month, u = CFG.urls;
 
+    /* The discussion questions are off the home page unless CFG.month.questions
+       has something in it. Filling that array brings the section back. */
     var qs = (m.questions || []).map(function (q) {
       return '<a class="thq" href="' + esc(u.discussions) + '">' + esc(q) + '</a>';
     }).join('');
+
+    var talk = !qs ? '' :
+          '<div class="thsec">' +
+            '<h3 class="thh">' + ICON.talk + 'Join the discussion</h3>' +
+            '<div class="thqs">' + qs + '</div>' +
+            '<div id="cst-nsre"></div>' +
+            '<p class="thmore"><a class="go" href="' + esc(u.discussions) +
+              '">Go to Discussions →</a></p>' +
+          '</div>';
 
     return '' +
       '<section>' +
@@ -604,8 +602,10 @@
               '<p class="ey">' + esc(m.label) + '</p>' +
               '<h2 class="thti">' + esc(m.title) + '</h2>' +
               '<p class="thtx">' + esc(m.body) + '</p>' +
-              '<p class="thnext"><span class="ey">' + esc(m.nextLabel) + '</span>' +
-                '<b>' + esc(m.nextTitle) + '</b></p>' +
+              (m.nextTitle
+                ? '<p class="thnext"><span class="ey">' + esc(m.nextLabel) +
+                  '</span><b>' + esc(m.nextTitle) + '</b></p>'
+                : '') +
             '</div>' +
           '</div>' +
 
@@ -614,13 +614,7 @@
             '<div id="cst-nsar"></div>' +
           '</div>' +
 
-          '<div class="thsec">' +
-            '<h3 class="thh">' + ICON.talk + 'Join the discussion</h3>' +
-            '<div class="thqs">' + qs + '</div>' +
-            '<div id="cst-nsre"></div>' +
-            '<p class="thmore"><a class="go" href="' + esc(u.discussions) +
-              '">Go to Discussions →</a></p>' +
-          '</div>' +
+          talk +
 
           '<div class="thnova">' +
             '<h3 class="thh">' + ICON.spark + 'Ask Nova</h3>' +
