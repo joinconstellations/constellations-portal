@@ -1022,7 +1022,7 @@
 
           /* alternate the photograph side so two features do not mirror */
           return '<div class="spot' + (idx % 2 ? ' alt' : '') +
-              (/HARRINGTON MATCHMAKING/i.test(paragraphs(p).slice(0, 5).join(' ')) ? ' hm' : '') + '">' +
+              (paragraphs(p).slice(1, 5).some(function (t) { return /^(HARRINGTON )?MATCHMAKING$/i.test(t.trim()); }) ? ' hm' : '') + '">' +
               (src ? '<img src="' + esc(src) + '" alt="">' : '') +
               '<div>' + chips(l, tl.tags) +
               '<h2>' + esc(p.name) + '</h2>' +
@@ -1340,7 +1340,7 @@
     return {
       post: p, label: label, name: nm, meta: meta, img: photo(p), href: url(p),
       when: new Date(p.published_at || 0).getTime(),
-      hm: /HARRINGTON MATCHMAKING/.test(up(ps.slice(0, 5).join(' '))),
+      hm: tags.some(function (t) { return /^(HARRINGTON )?MATCHMAKING$/.test(up(t)); }),
       isNew: label === 'NEW MEMBER' || tags.some(function (t) { return up(t) === 'NEW MEMBER'; }),
       hello: items(p, 'bulletList'), three: items(p, 'orderedList'),
       quote: quote(p), body: body,
