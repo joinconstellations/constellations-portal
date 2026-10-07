@@ -188,7 +188,8 @@
 
   function paragraphs(post) {
     return blocks(post).filter(function (b) { return b.type === 'p' && b.text; })
-                       .map(function (b) { return decode(b.text); });
+                       .map(function (b) { return decode(b.text); })
+                       .filter(function (t) { return !/^Want to connect\?/i.test(t); });
   }
 
   function label(post) {
@@ -201,6 +202,31 @@
     var u = t.toUpperCase().replace(/\s+/g, ' ').trim();
     return CFG.memberLabels.indexOf(u) < 0 && CFG.featureLabels.indexOf(u) < 0;
   }
+
+  /* Profile links ("Go to X's profile") at the end of a feature post, shown
+     on cards beside View Post. 7 Oct 2026. */
+  function profLinks(post) {
+    var out = [], seen = {};
+    (function walk(n) {
+      if (!n) return;
+      if (n.type === 'text' && n.marks) n.marks.forEach(function (m) {
+        var h = (m.type === 'link' && m.attrs && m.attrs.href) || '';
+        if (/\/u\/[^\/?#]+/.test(h) && !seen[h]) {
+          seen[h] = 1;
+          var t = String(n.text || '').replace(/^\s*go to\s+/i, '').replace(/\s*→\s*$/, '').replace(/\bprofile\b/, 'Profile').trim();
+          out.push({ href: h, text: t || 'Profile' });
+        }
+      });
+      (n.content || []).forEach(walk);
+    })(post && post.tiptap_body && post.tiptap_body.body);
+    return out;
+  }
+  function profLinksHTML(post, cls) {
+    return profLinks(post).map(function (x) {
+      return '<a class="' + cls + '" style="margin-left:26px" href="' + esc(x.href) + '">' + esc(x.text) + ' →</a>';
+    }).join('');
+  }
+  window.cstProfLinksHTML = profLinksHTML;
 
   function photo(post) {
     var att = post && post.tiptap_body && post.tiptap_body.inline_attachments;
@@ -845,7 +871,7 @@
               (role ? '<p class="role">' + esc(role) + '</p>' : '') +
               mid +
               '<a class="go" href="' + esc(postUrl(p, 'ns-community')) + '">' +
-              esc(cta) + ' →</a></div></div>';
+              esc(cta) + ' →</a>' + profLinksHTML(p, 'go') + '</div></div>';
         }).join('');
         html += '<div style="margin-top:38px;padding-top:38px;border-top:1px solid var(--ha)">' +
                 spots + '</div>';
