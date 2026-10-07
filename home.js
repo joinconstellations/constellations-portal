@@ -1370,7 +1370,7 @@
     if (f.label === 'THREE QUESTIONS') return 'Read all three';
     if (f.label === 'A FEW MINUTES WITH') return 'Read the interview';
     if (f.label === 'MEMBER STORY') return 'Read their story';
-    if (f.label === 'PASSION PROJECTS') return 'See the project';
+    if (f.label === 'PASSION PROJECTS') return 'See post';
     return 'Read more';
   }
   function tz(t) {
