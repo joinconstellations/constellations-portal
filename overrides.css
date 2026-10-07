@@ -223,3 +223,22 @@ body.view-space--2867669 [data-cst-month]::before{border-bottom-width:3px}
  body:is(.view-space--2860065,.view-space--2867669) [data-cst-month]::before{font-size:28px;padding-top:20px}
  body:is(.view-space--2860065,.view-space--2867669) [data-cst-month]::after{top:34px}
 }
+
+/* ---- Spotlight "Connect" link, joined to the Say Hello box (7 Oct 2026) ----
+   Kate, 7 Oct: members could not find a featured member's profile, so they
+   never reached the Connect button. Each spotlight now ends with a paragraph
+   right after the SAY HELLO IF… list: "Want to connect? " plus a bold link
+   to the member's profile (/u/<id>). This sets that paragraph as the last row
+   of the cream Say Hello box and the link as a navy pill button.
+
+   Matches only a paragraph that directly follows a list and links to a /u/
+   profile, so ordinary links in posts are untouched.
+
+   TO RESTORE: delete this block. The links still work as plain text. */
+
+.tiptap>ul+p:has(a[href*="/u/"]){margin:0 !important;padding:18px 22px 24px !important;background:#F5EDE1;border-top:1px solid #E4D8C4;font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.5;color:#5A5849}
+.tiptap>ul+p a[href*="/u/"]{display:inline-block;margin-left:10px;padding:10px 18px;border-radius:999px;background:#1A2238;color:#FBF8F2 !important;font-size:14px;font-weight:600;letter-spacing:.02em;text-decoration:none !important}
+.tiptap>ul+p a[href*="/u/"]:hover{background:#7D6220}
+@media (max-width:767px){
+ .tiptap>ul+p a[href*="/u/"]{display:table;margin:10px 0 0}
+}
