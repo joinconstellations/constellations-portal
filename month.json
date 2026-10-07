@@ -14,6 +14,14 @@
     "novaAsk": "Is it okay to mask when I’m meeting someone new?",
     "nextLabel": "November’s theme?",
     "nextTitle": null,
+    "notes": {
+      "heading": "Discussion Notes",
+      "label": "The Masks We Wear · 4-page PDF",
+      "title": "Did you miss our discussion? That’s okay.",
+      "text": "We can still share our notes with you. These notes discuss what masking can look like, why we do it, ten tips for letting the mask down at your own pace, and scripts for asking for what you need.",
+      "cta": "Open the notes →",
+      "url": "/c/articles/the-masks-we-wear-discussion-notes"
+    },
     "discussion": {
       "heading": "Join",
       "label": "Discussion · On Zoom",
