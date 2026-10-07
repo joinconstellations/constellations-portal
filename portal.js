@@ -314,9 +314,11 @@ for(var c=w.firstElementChild.nextElementSibling;c;c=c.nextElementSibling){if(!i
 if(!isFM(p)&&extra>0) break;
 p.setAttribute('data-nsm','tag'); w.appendChild(p);
 }
+var hmT=null;for(var z=w.firstElementChild;z;z=z.nextElementSibling){if(up(z.textContent)==='HARRINGTON MATCHMAKING'){hmT=z;if(!z.hasAttribute('data-nsm-hmtag'))z.setAttribute('data-nsm-hmtag','1');}}
+if(hmT){if(!ps[i].hasAttribute('data-nsm-hm'))ps[i].setAttribute('data-nsm-hm','1');}else if(ps[i].hasAttribute('data-nsm-hm'))ps[i].removeAttribute('data-nsm-hm');
 var fm=null;
 for(var d=w.firstElementChild;d;d=d.nextElementSibling){if(isFM(d)){fm=d;break;}}
-if(!fm&&FEAT[up(w.firstElementChild.textContent)]&&!/FROM (KATE|THE TEAM)/.test(up(w.textContent))){
+if(!fm&&FEAT[up(w.firstElementChild.textContent)]&&!/FROM (KATE|THE TEAM)|NEW MEMBER|HARRINGTON MATCHMAKING/.test(up(w.textContent))){
 fm=document.createElement('p');fm.textContent='FEATURED MEMBER';
 fm.setAttribute('data-nsm','tag');fm.setAttribute('data-nsm-auto','1');
 }
