@@ -1339,6 +1339,7 @@
     return {
       post: p, label: label, name: nm, meta: meta, img: photo(p), href: url(p),
       when: new Date(p.published_at || 0).getTime(),
+      isNew: label === 'NEW MEMBER' || tags.some(function (t) { return up(t) === 'NEW MEMBER'; }),
       hello: items(p, 'bulletList'), three: items(p, 'orderedList'),
       quote: quote(p), body: body,
       byline: ps.filter(function (s) { return /^interviewed by/i.test(s); })[0] || '',
@@ -1460,7 +1461,9 @@
     var recent = feats.slice(0, 4);
     /* Anything already in Recently is not repeated further down the page. */
     function fresh(f) { return recent.indexOf(f) < 0; }
-    var news = feats.filter(function (f) { return fresh(f) && f.label === 'NEW MEMBER'; });
+    /* New members always appear here, even when also in Recently, and
+       whatever their format (a Three Questions post tagged NEW MEMBER counts). */
+    var news = feats.filter(function (f) { return f.isNew; });
     var stories = feats.filter(function (f) { return fresh(f) && f.couple; });
     var grid = feats.filter(function (f) { return fresh(f) && f.label !== 'NEW MEMBER' && !f.couple; });
     var present = {};
