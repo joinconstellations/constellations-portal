@@ -862,7 +862,8 @@
           }
 
           /* alternate the photograph side so two features do not mirror */
-          return '<div class="spot' + (idx % 2 ? ' alt' : '') + '">' +
+          return '<div class="spot' + (idx % 2 ? ' alt' : '') +
+              (/HARRINGTON MATCHMAKING/i.test(paragraphs(p).slice(0, 5).join(' ')) ? ' hm' : '') + '">' +
               (src ? '<img src="' + esc(src) + '" alt="">' : '') +
               '<div><span class="lab2">' + esc(l) + '</span>' +
               (memberTag(p) ? '<span class="lab3">' + esc(memberTag(p)) + '</span>' : '') +
