@@ -1021,7 +1021,8 @@
           }
 
           /* alternate the photograph side so two features do not mirror */
-          return '<div class="spot' + (idx % 2 ? ' alt' : '') + '">' +
+          return '<div class="spot' + (idx % 2 ? ' alt' : '') +
+              (/HARRINGTON MATCHMAKING/i.test(paragraphs(p).slice(0, 5).join(' ')) ? ' hm' : '') + '">' +
               (src ? '<img src="' + esc(src) + '" alt="">' : '') +
               '<div>' + chips(l, tl.tags) +
               '<h2>' + esc(p.name) + '</h2>' +
@@ -1339,6 +1340,7 @@
     return {
       post: p, label: label, name: nm, meta: meta, img: photo(p), href: url(p),
       when: new Date(p.published_at || 0).getTime(),
+      hm: /HARRINGTON MATCHMAKING/.test(up(ps.slice(0, 5).join(' '))),
       isNew: label === 'NEW MEMBER' || tags.some(function (t) { return up(t) === 'NEW MEMBER'; }),
       hello: items(p, 'bulletList'), three: items(p, 'orderedList'),
       quote: quote(p), body: body,
@@ -1395,13 +1397,13 @@
     } else {
       inner = tz(teaser(f));
     }
-    return '<div class="cm-big">' + av(f, 'cm-bimg') + '<div class="cm-bbody"><div class="cm-tags">' + tag(f.label) + metaTag(f.meta) +
+    return '<div class="cm-big"' + (f.hm ? ' data-hm="1"' : '') + '>' + av(f, 'cm-bimg') + '<div class="cm-bbody"><div class="cm-tags">' + tag(f.label) + metaTag(f.meta) +
       '</div><a class="cm-bt" href="' + esc(f.href) + '">' + esc(f.post.name) + '</a><div class="cm-r2"></div>' + inner +
       '<div style="display:flex;flex-wrap:wrap;row-gap:8px;margin-top:auto"><a class="cm-go" href="' + esc(f.href) + '">' + esc(linkText(f)) + ' →</a>' +
       (window.cstProfLinksHTML ? window.cstProfLinksHTML(f.post, 'cm-go') : '') + '</div></div></div>';
   }
   function smallCard(f) {
-    return '<a class="cm-hc" href="' + esc(f.href) + '">' + tag(f.label) + '<span class="cm-who">' + av(f, 'cm-ci') +
+    return '<a class="cm-hc"' + (f.hm ? ' data-hm="1"' : '') + ' href="' + esc(f.href) + '">' + tag(f.label) + '<span class="cm-who">' + av(f, 'cm-ci') +
       '<span><span class="cm-nm">' + esc(f.name) + '</span>' + (f.meta ? '<span class="cm-mt">' + esc(f.meta) + '</span>' : '') +
       '</span></span>' + tz(teaser(f)) + '<span class="cm-go">' + esc(linkText(f)) + ' →</span></a>';
   }
@@ -1417,7 +1419,7 @@
       '<span class="cm-sn">' + esc(f.name) + '</span>' + t + '<span class="cm-go">' + esc(linkText(f)) + ' →</span></span></a>';
   }
   function gridCard(f) {
-    return '<a class="cm-gc" data-k="' + esc(f.label) + '" href="' + esc(f.href) + '"><span class="cm-gp">' + av(f, 'cm-gi') +
+    return '<a class="cm-gc"' + (f.hm ? ' data-hm="1"' : '') + ' data-k="' + esc(f.label) + '" href="' + esc(f.href) + '"><span class="cm-gp">' + av(f, 'cm-gi') +
       '</span><span class="cm-gb">' + tag(f.label) + '<span class="cm-nm">' + esc(f.name) + '</span>' +
       (f.meta ? '<span class="cm-mt">' + esc(f.meta) + '</span>' : '') + tz(teaser(f)) +
       '<span class="cm-go">' + esc(linkText(f)) + ' →</span></span></a>';
