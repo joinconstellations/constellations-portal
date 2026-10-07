@@ -888,7 +888,8 @@
         var nm0 = (p.name || '').trim();
         if (nm0 && loc.toLowerCase().indexOf(nm0.toLowerCase() + ' · ') === 0) loc = loc.slice(nm0.length + 3).trim();
         var src = photo(p);
-        return '<a class="qi" href="' + esc(postUrl(p, 'ns-community')) + '">' +
+        var qpl = profLinks(p)[0];
+        return '<a class="qi" href="' + esc(qpl ? qpl.href : postUrl(p, 'ns-community')) + '">' +
             (src ? '<img src="' + esc(src) + '" alt="">' : '') +
             '<span class="qw">' +
               '<span class="qt"><span class="lab2">' + esc(label(p)) + '</span>' +
