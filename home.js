@@ -1463,7 +1463,14 @@
     function fresh(f) { return recent.indexOf(f) < 0; }
     /* New members always appear here, even when also in Recently, and
        whatever their format (a Three Questions post tagged NEW MEMBER counts). */
-    var news = feats.filter(function (f) { return f.isNew; });
+    var newSeen = {};
+    var news = feats.filter(function (f) {
+      if (!f.isNew) return false;
+      var k = f.name.toLowerCase().replace(/[^a-z]/g, '');
+      if (newSeen[k]) return false;
+      newSeen[k] = 1;
+      return true;
+    });
     var stories = feats.filter(function (f) { return fresh(f) && f.couple; });
     var grid = feats.filter(function (f) { return fresh(f) && f.label !== 'NEW MEMBER' && !f.couple; });
     var present = {};
