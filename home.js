@@ -818,7 +818,7 @@
         : '';
 
       mount.appendChild(el(
-        '<section><h2 class="sh">The next <b>Gathering</b></h2>' + rows +
+        '<section><h2 class="sh">What’s <b>Coming Up</b></h2>' + rows +
         '<p style="margin:14px 0 0"><a class="go" href="' + esc(CFG.urls.calendar) +
         '">See the full calendar →</a></p>' + noteHTML + '</section>'));
     });
