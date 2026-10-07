@@ -310,7 +310,7 @@ var x=p.textContent.trim();
 if(!x||x.length>60) break;
 if(x===w.firstElementChild.textContent.trim()) break;
 var extra=0;
-for(var c=w.firstElementChild.nextElementSibling;c;c=c.nextElementSibling){if(!isFM(c))extra++;}
+for(var c=w.firstElementChild.nextElementSibling;c;c=c.nextElementSibling){if(!isFM(c)&&!/^(NEW MEMBER|(HARRINGTON )?MATCHMAKING)$/.test(up(c.textContent)))extra++;}
 if(!isFM(p)&&extra>0) break;
 p.setAttribute('data-nsm','tag'); w.appendChild(p);
 }
