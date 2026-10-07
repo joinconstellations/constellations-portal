@@ -404,9 +404,9 @@
     /* the short tan rule that sits under every post title in Community */
     '#cst-home .spot h2::after{content:"";display:block;',
     'width:74px;height:3px;background:var(--pl);margin:14px 0 0}',
-    '#cst-home .spot .role{margin:0 0 10px;font:italic 500 19px "Cormorant Garamond",Georgia,serif;color:var(--gd)}',
+    '#cst-home .spot .role{margin:22px 0 16px;line-height:1.35;font:italic 500 19px "Cormorant Garamond",Georgia,serif;color:var(--gd)}',
     '#cst-home .spot p{margin:0 0 12px}',
-    '#cst-home .tq{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:4px 0 14px;font-size:16px}',
+    '#cst-home .tq{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:22px 0 18px;font-size:16px}',
     '#cst-home .q2{display:block;margin:0 0 4px;font:600 10.5px Inter,system-ui,sans-serif;',
     'letter-spacing:.14em;text-transform:uppercase;color:var(--gd)}',
     /* be featured / discussions / messages */
