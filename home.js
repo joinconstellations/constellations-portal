@@ -205,7 +205,8 @@
 
   function paragraphs(post) {
     return blocks(post).filter(function (b) { return b.type === 'p' && b.text; })
-                       .map(function (b) { return decode(b.text); });
+                       .map(function (b) { return decode(b.text); })
+                       .filter(function (t) { return !/^Want to connect\?/i.test(t); });
   }
 
   /* Short all-caps lines under the format label (FEATURED MEMBER, 30s · MARYLAND,
@@ -238,6 +239,31 @@
     var u = t.toUpperCase().replace(/\s+/g, ' ').trim();
     return CFG.memberLabels.indexOf(u) < 0 && CFG.featureLabels.indexOf(u) < 0;
   }
+
+  /* Profile links ("Go to X's profile") at the end of a feature post, shown
+     on cards beside View Post. 7 Oct 2026. */
+  function profLinks(post) {
+    var out = [], seen = {};
+    (function walk(n) {
+      if (!n) return;
+      if (n.type === 'text' && n.marks) n.marks.forEach(function (m) {
+        var h = (m.type === 'link' && m.attrs && m.attrs.href) || '';
+        if (/\/u\/[^\/?#]+/.test(h) && !seen[h]) {
+          seen[h] = 1;
+          var t = String(n.text || '').replace(/^\s*go to\s+/i, '').replace(/\s*→\s*$/, '').replace(/\bprofile\b/, 'Profile').trim();
+          out.push({ href: h, text: t || 'Profile' });
+        }
+      });
+      (n.content || []).forEach(walk);
+    })(post && post.tiptap_body && post.tiptap_body.body);
+    return out;
+  }
+  function profLinksHTML(post, cls) {
+    return profLinks(post).map(function (x) {
+      return '<a class="' + cls + '" style="margin-left:26px" href="' + esc(x.href) + '">' + esc(x.text) + ' →</a>';
+    }).join('');
+  }
+  window.cstProfLinksHTML = profLinksHTML;
 
   function photo(post) {
     var att = post && post.tiptap_body && post.tiptap_body.inline_attachments;
@@ -1002,7 +1028,7 @@
               (role ? '<p class="role">' + esc(role) + '</p>' : '') +
               mid +
               '<a class="go" href="' + esc(postUrl(p, 'community')) + '">' +
-              esc(cta) + ' →</a></div></div>';
+              esc(cta) + ' →</a>' + profLinksHTML(p, 'go') + '</div></div>';
         }).join('');
         html += '<div style="margin-top:38px;padding-top:38px;border-top:1px solid var(--ha)">' +
                 spots + '</div>';
@@ -1249,7 +1275,8 @@
   function paras(p) {
     return nodes(p).filter(function (n) { return n.type === 'paragraph'; })
       .map(function (n) { return txt(n).replace(/\s+/g, ' ').trim(); })
-      .filter(Boolean);
+      .filter(Boolean)
+      .filter(function (t) { return !/^Want to connect\?/i.test(t); });
   }
   function up(s) { return String(s || '').toUpperCase().replace(/\s+/g, ' ').trim(); }
   function isTag(s) { return s.length <= 44 && !/[a-z]/.test(s.replace(/(\d)s\b/g, '$1S')); }
@@ -1369,7 +1396,8 @@
     }
     return '<div class="cm-big">' + av(f, 'cm-bimg') + '<div class="cm-bbody"><div class="cm-tags">' + tag(f.label) + metaTag(f.meta) +
       '</div><a class="cm-bt" href="' + esc(f.href) + '">' + esc(f.post.name) + '</a><div class="cm-r2"></div>' + inner +
-      '<a class="cm-go" href="' + esc(f.href) + '">' + esc(linkText(f)) + ' →</a></div></div>';
+      '<div style="display:flex;flex-wrap:wrap;row-gap:8px;margin-top:auto"><a class="cm-go" href="' + esc(f.href) + '">' + esc(linkText(f)) + ' →</a>' +
+      (window.cstProfLinksHTML ? window.cstProfLinksHTML(f.post, 'cm-go') : '') + '</div></div></div>';
   }
   function smallCard(f) {
     return '<a class="cm-hc" href="' + esc(f.href) + '">' + tag(f.label) + '<span class="cm-who">' + av(f, 'cm-ci') +
