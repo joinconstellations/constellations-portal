@@ -110,22 +110,26 @@
   function notesData() {
     var key = PAGES[location.pathname.replace(/\/$/, '')];
     var n = key && data && data[key] && data[key].notes;
-    return (n && n.title && n.url) ? n : null;
+    var list = (Array.isArray(n) ? n : [n]).filter(function (x) { return x && x.title && x.url; });
+    return list.length ? list : null;
   }
 
-  function buildNotes(n) {
+  function buildNotes(list) {
     var sec = document.createElement('div');
     sec.className = 'thsec';
     sec.id = NID;
-    sec.innerHTML =
-      '<h3 class="thh">' + NICON + esc(n.heading || 'Discussion Notes') + '</h3>' +
-      '<div><div class="tharts" style="grid-template-columns:1fr">' +
-        '<a class="thart" href="' + esc(n.url) + '">' +
+    var cards = list.map(function (n) {
+      return '<a class="thart" href="' + esc(n.url) + '">' +
           (n.label ? '<span class="lab2">' + esc(n.label) + '</span>' : '') +
           '<h4>' + esc(n.title) + '</h4>' +
           '<p>' + esc(n.text) + '</p>' +
           '<span class="go">' + esc(n.cta || 'Open the notes →') + '</span>' +
-        '</a>' +
+        '</a>';
+    }).join('');
+    sec.innerHTML =
+      '<h3 class="thh">' + NICON + esc(list[0].heading || 'Discussion Notes') + '</h3>' +
+      '<div><div class="tharts" style="grid-template-columns:' + (list.length > 1 ? 'repeat(auto-fit,minmax(240px,1fr))' : '1fr') + '">' +
+        cards +
       '</div></div>';
     return sec;
   }
