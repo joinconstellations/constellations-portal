@@ -14,14 +14,23 @@
     "novaAsk": "Is it okay to mask when I’m meeting someone new?",
     "nextLabel": "November’s theme?",
     "nextTitle": null,
-    "notes": {
-      "heading": "Discussion Notes",
-      "label": "Held Wed, Oct 7 · 7:30 PM ET · PDF",
-      "title": "The Masks We Wear",
-      "text": "Missed the discussion? Read our notes.",
-      "cta": "Open the notes →",
-      "url": "/c/articles/the-masks-we-wear-discussion-notes"
-    },
+    "notes": [
+      {
+        "heading": "Discussion Notes",
+        "label": "Held Thu, Oct 8 · 8:00 PM ET · PDF",
+        "title": "Navigating Dating Apps",
+        "text": "Missed the discussion? Read our notes.",
+        "cta": "Open the notes →",
+        "url": "/c/articles/navigating-dating-apps-discussion-notes"
+      },
+      {
+        "label": "Held Wed, Oct 7 · 7:30 PM ET · PDF",
+        "title": "The Masks We Wear",
+        "text": "Missed the discussion? Read our notes.",
+        "cta": "Open the notes →",
+        "url": "/c/articles/the-masks-we-wear-discussion-notes"
+      }
+    ],
     "discussion": {
       "heading": "Join",
       "label": "Discussion · On Zoom",
