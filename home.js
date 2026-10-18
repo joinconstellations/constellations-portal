@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.21.0';
+  var VERSION = '1.22.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -1122,13 +1122,13 @@
     root.id = CFG.root;
     root.setAttribute('data-cst-home', VERSION);
     /* Orientation, then this month's theme with the three ways into it, then
-       people, then what is happening, then where to get help. Each live slot
+       what is happening, then people, then where to get help. Each live slot
        is a fixed div so the running order never depends on which request
        answers first. #cst-ar and #cst-re sit inside the theme box. */
     root.innerHTML = welcomeHTML() +
                      themeHTML() +
-                     '<div id="cst-co"></div>' +
                      '<div id="cst-ev"></div>' +
+                     '<div id="cst-co"></div>' +
                      shelfHTML() +
                      supportHTML();
     host.parentElement.insertBefore(root, host);
