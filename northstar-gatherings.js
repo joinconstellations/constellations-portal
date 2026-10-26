@@ -96,13 +96,22 @@
     };
   }
 
-  function postUrl(p) {
+  
+   function postUrl(p) {
     if (p.url) {
       try { return new URL(p.url, location.origin).pathname; } catch (e) {}
     }
     return '/c/' + (p.space_slug || 'nsgatherings') + '/' + p.slug;
   }
-
+  function placeName(v) {
+    if (!v) return 'In person';
+    var o = v;
+    if (typeof v === 'string') { try { o = JSON.parse(v); } catch (err) { return v; } }
+    if (!o || typeof o !== 'object') return String(v);
+    var parts = (o.formatted_address || '').split(',');
+    var city = parts.length >= 3 ? parts[parts.length - 2].trim() : '';
+    return [o.name, city].filter(Boolean).join(', ') || 'In person';
+  }
   function rowsFrom(list) {
     var now = Date.now();
     var evs = list.map(function (p) {
@@ -118,7 +127,7 @@
     return evs.map(function (e) {
       var w = when(e.starts, e.tz);
       if (!w) return '';
-      var place = /person/i.test(e.kind || '') ? (e.place || 'In person') : 'Online';
+      var place = /person/i.test(e.kind || '') ? placeName(e.place) : 'Online';
       return '<div class="nsev">' +
           '<div class="nsevd"><span>' + esc(w.mon) + '</span>' +
             '<b>' + esc(w.day) + '</b></div>' +
