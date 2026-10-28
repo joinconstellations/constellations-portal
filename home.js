@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.23.0';
+  var VERSION = '1.24.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -378,6 +378,8 @@
     '#cst-home .nextm{margin:22px 0 0;font:600 11px Inter,system-ui,sans-serif;letter-spacing:.16em;',
     'text-transform:uppercase;color:var(--mu)}',
     /* gatherings */
+    '#cst-home .thbox #cst-ev>section{padding:30px 0 0;margin:34px 0 0;border-top:1px solid var(--ha)}',
+    '#cst-home .thbox #cst-ev .sh{font-size:26px;margin-bottom:16px}',
     '#cst-home .ev{display:flex;gap:20px;align-items:center;padding:14px 0;border-top:1px solid var(--ha)}',
     '#cst-home .ev:last-of-type{border-bottom:1px solid var(--ha)}',
     '#cst-home .date{width:86px;flex:none;text-align:center;border:1px solid var(--sl);padding:8px 0}',
@@ -715,6 +717,8 @@
                 : '') +
             '</div>' +
           '</div>' +
+
+          '<div id="cst-ev"></div>' +
 
           '<div class="thsec">' +
             '<h3 class="thh">' + ICON.book + 'Suggested Reading</h3>' +
@@ -1144,7 +1148,6 @@
        answers first. #cst-ar and #cst-re sit inside the theme box. */
     root.innerHTML = welcomeHTML() +
                      themeHTML() +
-                     '<div id="cst-ev"></div>' +
                      '<div id="cst-co"></div>' +
                      shelfHTML() +
                      supportHTML();
