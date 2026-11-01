@@ -1,86 +1,35 @@
 {
   "_note": "The monthly theme for both home pages. home.js and northstar-home.js fetch this at load and merge it over their built-in defaults; if the fetch fails they keep those defaults, so a bad edit here can never take a home page down. Changing the month is an edit to this file alone.",
   "home": {
-    "stamp": "October",
+    "stamp": "November",
     "label": "This month’s theme",
-    "title": "Masking",
-    "body": "Showing a version of yourself that feels safer than the real one — in a message, on a first date, in a room full of people. What it protects, what it costs, and how you decide when to let it down.",
-    "articles": [
-      "specific-beats-impressive",
-      "your-profile-is-a-screen-not-a-sales-pitch"
-    ],
+    "title": "Community",
+    "body": "The people who make a community good are rarely the loudest. They show up, remember names, and notice who’s standing alone. This month: how to help build a community, how to protect it, and what to do when someone in it is unkind — including the boundaries you’re allowed to keep with people you’ll keep seeing.",
+    "articles": [],
     "questions": [],
     "replies": null,
-    "novaAsk": "Is it okay to mask when I’m meeting someone new?",
-    "nextLabel": "November’s theme?",
+    "novaAsk": "How do I set a boundary with someone I’ll keep seeing at events?",
+    "nextLabel": "December’s theme?",
     "nextTitle": null,
-    "notes": [
-      {
-        "heading": "Discussion Notes",
-        "label": "Held Thu, Oct 8 · 8:00 PM ET · PDF",
-        "title": "Navigating Dating Apps",
-        "text": "Missed the discussion? Read our notes.",
-        "cta": "Open the notes →",
-        "url": "/c/articles/navigating-dating-apps-discussion-notes"
-      },
-      {
-        "label": "Held Wed, Oct 7 · 7:30 PM ET · PDF",
-        "title": "The Masks We Wear",
-        "text": "Missed the discussion? Read our notes.",
-        "cta": "Open the notes →",
-        "url": "/c/articles/the-masks-we-wear-discussion-notes"
-      }
-    ],
-    "discussion": {
-      "heading": "Join",
-      "label": "Discussion · On Zoom",
-      "title": "The Masks We Wear",
-      "when": "Wednesday, October 7 · 7:30–8:15 p.m. ET",
-      "text": "What masking is, why we do it, and how it shows up in friendships, dating, work, family, and everyday life. Come to listen, share, ask questions, or simply be part of the conversation.",
-      "cta": "See details and RSVP →",
-      "url": "/c/events/the-masks-we-wear",
-      "ends": "2026-10-08T00:15:00Z"
-    },
-    "layout": {
-      "readHeading": "Read",
-      "askHeading": "Ask",
-      "plainAsk": true,
-      "excerpts": {
-        "when-and-whether-to-disclose": "How to decide what to share about a diagnosis, disability, or your history: what, with whom, and when. On your terms.",
-        "date-or-audition": "A first date isn’t a test you have to pass. How to stop performing and start finding out whether you like each other."
-      }
-    }
+    "eventsNote": "More events will be posted at the end of the first week of November.",
+    "notes": [],
+    "discussion": null,
+    "layout": null
   },
   "northstar": {
-    "stamp": "October",
+    "stamp": "November",
     "label": "This month’s theme",
-    "title": "Masking",
-    "body": "Masking is when you hide parts of yourself so that other people are more comfortable. Most people do it sometimes. It can keep you safe. It can also be tiring. This month our articles are about choosing when to show more of yourself, and when not to.",
-    "articles": [
-      "north-star-when-and-whether-to-disclose",
-      "north-star-date-or-audition"
-    ],
+    "title": "Community",
+    "body": "Community means a group of people who know each other and look out for each other. This month we talk about three things. How to help build community. How to keep it safe. What to do if someone is unkind to you. You are allowed to set a boundary. A boundary is a clear rule about how you want to be treated. If someone is unkind, you can tell our team.",
+    "articles": [],
     "questions": [],
     "replies": null,
-    "novaAsk": "Is it okay to mask when I’m meeting someone new?",
-    "nextLabel": "November’s theme?",
+    "novaAsk": "What can I say if someone is unkind to me?",
+    "nextLabel": "December’s theme?",
     "nextTitle": null,
-    "discussion": {
-      "heading": "Join",
-      "label": "North Star · On Zoom",
-      "title": "What Is Masking?",
-      "when": "Thursday, October 8 · 7:00–7:45 p.m. ET",
-      "text": "A short, structured conversation about masking. We will explain what masking is, with everyday examples. You can talk, type in the chat, or just listen. Cameras are optional.",
-      "cta": "See details and RSVP →",
-      "url": "/c/nsgatherings/north-star-what-is-masking",
-      "ends": "2026-10-08T23:45:00Z"
-    },
-    "layout": {
-      "readHeading": "Read",
-      "askHeading": "Ask",
-      "plainAsk": true,
-      "askNote": "Constellations AI Assistant"
-    }
+    "notes": [],
+    "discussion": null,
+    "layout": null
   },
-  "_note2": "discussion: shown under the theme by month-discussion.js. Set to null to remove; it also hides itself after 'ends'. layout (optional): readHeading, askHeading, plainAsk (removes the Nova explanation and its tinted box), askNote (with plainAsk, one short line in place of the Nova explanation), excerpts ({article-slug: short purpose line} shown in place of the article's opening)."
+  "_note2": "discussion: shown under the theme by month-discussion.js. Set to null to remove; it also hides itself after 'ends'. notes: Discussion Notes cards, [] for none. eventsNote (home only): one plain line under What’s Coming Up, null to remove. layout (optional): readHeading, askHeading, plainAsk, askNote, excerpts."
 }
