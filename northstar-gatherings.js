@@ -22,7 +22,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.1.0';
+  var VERSION = '1.2.0';
   var SPACE   = 2867669;            /* North Star Gatherings */
   var CAL     = '/c/nsgatherings';
   var HOME    = '/c/northstar';
@@ -38,12 +38,15 @@
     title: 'The Art of Connection: An Evening with Artist Justin Valenti',
     when:  'Thursday, November 5 · 6:00 to 7:30 p.m. ET',
     where: 'Main Street, 50 Monroe Place, Rockville, Maryland',
+    /* Copied from the Eventbrite listing, Kate 1 Nov 2026. */
     lines: [
-      'Justin Valenti is an artist. He is the Constellations 2026 resident artist.',
-      'Kate will ask Justin about his art and his story. Then you can ask questions.',
-      'After that, you can make art, have snacks, and meet people. At the end there is an art raffle.'
+      'Come create, connect and celebrate with us! The Art of Connection is a North Star evening with artist Justin Valenti, Constellations\u2019 2026 resident artist.',
+      'Kate will interview Justin about his story, his art, and creative expression, followed by audience questions.',
+      'Then, get creative with art supplies and crafts. Enjoy light refreshments, conversation, and time to meet new people or reconnect with friends. We\u2019ll end the evening with an art raffle.',
+      'Members attend for free. Sign up on the event page.'
     ]
   };
+  var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0Q12.82 10.01 20.49 3.51Q13.99 11.18 24 12Q13.99 12.82 20.49 20.49Q12.82 13.99 12 24Q11.18 13.99 3.51 20.49Q10.01 12.82 0 12Q10.01 11.18 3.51 3.51Q11.18 10.01 12 0Z"/></svg>';
   function featureOn() { return Date.now() < Date.parse(FEATURE.until); }
 
   /* One line under the list until more gatherings are posted. */
@@ -75,6 +78,9 @@
     'padding:28px;margin:22px 0 30px;background:#fff}',
     '#cst-nsev .nsft img{width:190px;flex:none;aspect-ratio:3/4;object-fit:cover;border:1px solid var(--sl)}',
     '#cst-nsev .nsftb{flex:1;min-width:0}',
+    '#cst-nsev .nsftl{display:flex;align-items:center;gap:10px}',
+    '#cst-nsev .nsftstar{width:18px;height:18px;flex:none;color:var(--nv)}',
+    '#cst-nsev .nsftstar svg{width:18px;height:18px;display:block}',
     '#cst-nsev .nsftl{margin:0 0 10px;font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.16em;',
     'text-transform:uppercase;color:var(--nv)}',
     '#cst-nsev .nsft h3{margin:0 0 10px;color:var(--nv);font:600 32px/1.12 "Cormorant Garamond",Georgia,serif}',
@@ -198,7 +204,7 @@
     return '<div class="nsft">' +
         '<img src="' + esc(f.img) + '" alt="Justin Valenti holding one of his paintings">' +
         '<div class="nsftb">' +
-          '<p class="nsftl">Featured gathering · In person</p>' +
+          '<p class="nsftl"><span class="nsftstar">' + STAR + '</span>North Star gathering · In person</p>' +
           '<h3>' + esc(f.title) + '</h3>' +
           '<span class="nsftw">' + esc(f.when) + '<br>' + esc(f.where) + '</span>' +
           f.lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') +
