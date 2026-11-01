@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.7.0';
+  var VERSION = '2.8.0';
 
   var CFG = {
     path: '/c/northstar',
@@ -386,6 +386,9 @@
     'font:500 24px/1.32 "Cormorant Garamond",Georgia,serif}',
     '#cst-nshome .thmore{margin:22px 0 0}',
     '#cst-nshome .thnova{margin-top:34px;background:var(--nb);padding:26px 28px 28px}',
+    '#cst-nshome .nvrbox{background:var(--nb);padding:26px 28px 28px}',
+    '#cst-nshome .nvrbox .thh{margin-bottom:14px}',
+    '#cst-nshome .nvrbox p{margin:0 0 12px;font-size:19px;line-height:1.55;max-width:700px}',
     '#cst-nshome .thnovagrid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}',
     '#cst-nshome .thnovagrid p{margin:0;font-size:18px;line-height:1.55}',
     '#cst-nshome .thask{margin:0 0 14px!important;color:var(--nv);',
@@ -635,25 +638,21 @@
             '</div>' +
           '</div>' +
 
-          '<div class="thsec">' +
-            '<h3 class="thh">' + ICON.book + 'Articles to read</h3>' +
-            '<div id="cst-nsar"></div>' +
-          '</div>' +
+        '</div>' +
+      '</section>';
+  }
 
-          talk +
-
-          '<div class="thnova">' +
-            '<h3 class="thh">' + ICON.spark + 'Ask Nova</h3>' +
-            '<div class="thnovagrid">' +
-              '<p>Nova is the Constellations AI assistant. Nova is a computer ' +
-              'program. Nova is not a person. You can ask Nova about dating, ' +
-              'friendship, what to say in a message, and how the Portal works. ' +
-              'Nova cannot tell our team if something is wrong.</p>' +
-              '<div><p class="thask">“' + esc(m.novaAsk) + '”</p>' +
-                '<a class="go" href="' + esc(u.nova) + '">Ask Nova →</a></div>' +
-            '</div>' +
-          '</div>' +
-
+  /* Nova reminder: its own block under the theme, Nov 2026 at Kate's direction. */
+  function novaHTML() {
+    return '' +
+      '<section class="nvr">' +
+        '<div class="nvrbox">' +
+          '<h3 class="thh">' + ICON.spark + 'Have a small question?</h3>' +
+          '<p>You can ask Nova. You do not need a coaching session for a small question.</p>' +
+          '<p>Nova is a computer program. Nova is not a person. Nova can help with ' +
+          'basic questions about dating, friendship, and messages. Nova cannot tell ' +
+          'our team if something is wrong.</p>' +
+          '<a class="go" href="' + esc(CFG.urls.nova) + '">Ask Nova →</a>' +
         '</div>' +
       '</section>';
   }
@@ -774,6 +773,13 @@
       }).sort(function (a, b) {
         return new Date(b.published_at) - new Date(a.published_at);
       });
+
+      /* Shuffled on every visit so the same people are not always first.
+         Kate, 1 Nov 2026. */
+      for (var si = live.length - 1; si > 0; si--) {
+        var sj = Math.floor(Math.random() * (si + 1));
+        var st = live[si]; live[si] = live[sj]; live[sj] = st;
+      }
 
       var people = [], features = [], quotes = [];
       live.forEach(function (p) {
@@ -984,8 +990,10 @@
     root.id = CFG.root;
     root.setAttribute('data-cst-nshome', VERSION);
     root.innerHTML = welcomeHTML() +
+                     '<div id="cst-nsevslot"></div>' +
                      '<div id="cst-nsq"></div>' +
                      themeHTML() +
+                     novaHTML() +
                      '<div id="cst-nsco"></div>' +
                      supportHTML();
     host.parentElement.insertBefore(root, host);
