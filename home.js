@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.25.0';
+  var VERSION = '1.26.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -382,6 +382,9 @@
     '#cst-home .thbox #cst-ev .sh{font-size:26px;margin-bottom:16px}',
     '#cst-home .evmore{margin:14px 0 0;font:500 14px/1.5 Inter,system-ui,sans-serif;color:var(--mu)}',
     '#cst-home .nvr{padding-top:8px}',
+    '#cst-home .refr{padding-top:8px}',
+    '#cst-home .refrbox{border:1px solid var(--sl);padding:22px 26px 24px}',
+    '#cst-home .refrt{margin:0 0 10px;font-size:18px;line-height:1.55;max-width:680px}',
     '#cst-home .nvrbox{background:var(--s2);padding:26px 28px 28px}',
     '#cst-home .nvrbox .thh{margin-bottom:12px}',
     '#cst-home .nvrbox p{margin:0 0 12px;font-size:17px;line-height:1.55;max-width:680px}',
@@ -739,6 +742,21 @@
           'messages and finding your way around the Portal. Nova is not a coach ' +
           'or a counselor.</p>' +
           '<a class="go" href="' + esc(CFG.urls.nova) + '">Ask Nova →</a>' +
+        '</div>' +
+      '</section>' +
+      referralHTML();
+  }
+
+  /* Referral line, from month.json `referral`. Kate, 1 Nov 2026. */
+  function referralHTML() {
+    var r = CFG.month.referral;
+    if (!r || !r.text) return '';
+    return '' +
+      '<section class="refr">' +
+        '<div class="refrbox">' +
+          '<p class="ey">' + esc(r.label || 'Referral fees') + '</p>' +
+          '<p class="refrt">' + esc(r.text) + '</p>' +
+          (r.cta && r.url ? '<a class="go" href="' + esc(r.url) + '">' + esc(r.cta) + '</a>' : '') +
         '</div>' +
       '</section>';
   }
