@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.24.0';
+  var VERSION = '1.25.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -380,6 +380,11 @@
     /* gatherings */
     '#cst-home .thbox #cst-ev>section{padding:30px 0 0;margin:34px 0 0;border-top:1px solid var(--ha)}',
     '#cst-home .thbox #cst-ev .sh{font-size:26px;margin-bottom:16px}',
+    '#cst-home .evmore{margin:14px 0 0;font:500 14px/1.5 Inter,system-ui,sans-serif;color:var(--mu)}',
+    '#cst-home .nvr{padding-top:8px}',
+    '#cst-home .nvrbox{background:var(--s2);padding:26px 28px 28px}',
+    '#cst-home .nvrbox .thh{margin-bottom:12px}',
+    '#cst-home .nvrbox p{margin:0 0 12px;font-size:17px;line-height:1.55;max-width:680px}',
     '#cst-home .ev{display:flex;gap:20px;align-items:center;padding:14px 0;border-top:1px solid var(--ha)}',
     '#cst-home .ev:last-of-type{border-bottom:1px solid var(--ha)}',
     '#cst-home .date{width:86px;flex:none;text-align:center;border:1px solid var(--sl);padding:8px 0}',
@@ -718,26 +723,22 @@
             '</div>' +
           '</div>' +
 
-          '<div id="cst-ev"></div>' +
+        '</div>' +
+      '</section>';
+  }
 
-          '<div class="thsec">' +
-            '<h3 class="thh">' + ICON.book + 'Suggested Reading</h3>' +
-            '<div id="cst-ar"></div>' +
-          '</div>' +
-
-          talk +
-
-          '<div class="thnova">' +
-            '<h3 class="thh">' + ICON.spark + 'Ask Nova</h3>' +
-            '<div class="thnovagrid">' +
-              '<p>Nova is the Constellations AI assistant. It can answer ' +
-              'questions about dating, friendship, communication, and finding ' +
-              'your way around the Portal. Nova is not a coach or a counselor.</p>' +
-              '<div><p class="thask">“' + esc(m.novaAsk) + '”</p>' +
-                '<a class="go" href="' + esc(u.nova) + '">Ask Nova →</a></div>' +
-            '</div>' +
-          '</div>' +
-
+  /* Nova reminder: its own quiet block under the theme, Nov 2026 at Kate's
+     direction. Reading and Ask came out of the theme box. */
+  function novaHTML() {
+    return '' +
+      '<section class="nvr">' +
+        '<div class="nvrbox">' +
+          '<h3 class="thh">' + ICON.spark + 'Quick question?</h3>' +
+          '<p>Not ready for a full coaching session? Nova, the Constellations AI ' +
+          'assistant, can help with basic questions about dating, friendship, ' +
+          'messages and finding your way around the Portal. Nova is not a coach ' +
+          'or a counselor.</p>' +
+          '<a class="go" href="' + esc(CFG.urls.nova) + '">Ask Nova →</a>' +
         '</div>' +
       '</section>';
   }
@@ -841,7 +842,9 @@
       mount.appendChild(el(
         '<section><h2 class="sh">What’s <b>Coming Up</b></h2>' + rows +
         '<p style="margin:14px 0 0"><a class="go" href="' + esc(CFG.urls.calendar) +
-        '">See the full calendar →</a></p>' + noteHTML + '</section>'));
+        '">See the full calendar →</a></p>' +
+        (CFG.month.eventsNote ? '<p class="evmore">' + esc(CFG.month.eventsNote) + '</p>' : '') +
+        noteHTML + '</section>'));
     });
   }
 
@@ -1147,8 +1150,9 @@
        is a fixed div so the running order never depends on which request
        answers first. #cst-ar and #cst-re sit inside the theme box. */
     root.innerHTML = welcomeHTML() +
+                     '<div id="cst-ev"></div>' +
                      themeHTML() +
-                     '<div id="cst-co"></div>' +
+                     novaHTML() +
                      shelfHTML() +
                      supportHTML();
     host.parentElement.insertBefore(root, host);
@@ -1158,7 +1162,6 @@
     fillGatherings(root.querySelector('#cst-ev')).catch(function () {});
     fillArticles(root.querySelector('#cst-ar')).catch(function () {});
     fillReply(root.querySelector('#cst-re')).catch(function () {});
-    fillCommunity(root.querySelector('#cst-co')).catch(function () {});
   }
 
   function teardown() {
