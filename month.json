@@ -12,6 +12,12 @@
     "nextLabel": "December’s theme?",
     "nextTitle": null,
     "eventsNote": "More events will be posted at the end of the first week of November.",
+    "referral": {
+      "label": "Referral fees",
+      "text": "We’re now offering referral fees! Refer someone to a Harrington Matchmaking service or a Constellations membership, and you’ll receive a referral fee when they enroll.",
+      "cta": "Email us for details →",
+      "url": "mailto:member@joinconstellations.com?subject=Referral"
+    },
     "notes": [],
     "discussion": null,
     "layout": null
