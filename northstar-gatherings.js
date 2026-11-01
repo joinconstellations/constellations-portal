@@ -22,11 +22,33 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.1.0';
   var SPACE   = 2867669;            /* North Star Gatherings */
   var CAL     = '/c/nsgatherings';
   var HOME    = '/c/northstar';
   var MAX     = 3;
+
+  /* Featured gathering, shown above the list until it ends. Kate, 1 Nov 2026:
+     really push Justin's evening on the North Star Home. */
+  var FEATURE = {
+    slug:  'north-star-art-advocacy-with-justin-valenti-in-person',
+    until: '2026-11-06T00:30:00Z',
+    url:   '/c/nsgatherings/north-star-art-advocacy-with-justin-valenti-in-person',
+    img:   'https://assets-v2.circle.so/b34pt5n8jfviow5fbobsb3u83pmn',
+    title: 'The Art of Connection: An Evening with Artist Justin Valenti',
+    when:  'Thursday, November 5 · 6:00 to 7:30 p.m. ET',
+    where: 'Main Street, 50 Monroe Place, Rockville, Maryland',
+    lines: [
+      'Justin Valenti is an artist. He is the Constellations 2026 resident artist.',
+      'Kate will ask Justin about his art and his story. Then you can ask questions.',
+      'After that, you can make art, have snacks, and meet people. At the end there is an art raffle.'
+    ]
+  };
+  function featureOn() { return Date.now() < Date.parse(FEATURE.until); }
+
+  /* One line under the list until more gatherings are posted. */
+  var MORE = 'More gatherings will be added at the end of the first week of November.';
+  var MORE_UNTIL = '2026-11-09T05:00:00Z';
 
   var CSS = [
     '#cst-nsev{padding:48px 46px;border-top:1px solid var(--ha)}',
@@ -49,6 +71,19 @@
     'font:600 15px Inter,system-ui,sans-serif;color:var(--nv)!important;',
     'border:1.5px solid var(--nv);padding:11px 20px}',
     '#cst-nsev .nsevm{margin:22px 0 0}',
+    '#cst-nsev .nsft{display:flex;gap:28px;align-items:flex-start;border:2px solid var(--nv);',
+    'padding:28px;margin:22px 0 30px;background:#fff}',
+    '#cst-nsev .nsft img{width:190px;flex:none;aspect-ratio:3/4;object-fit:cover;border:1px solid var(--sl)}',
+    '#cst-nsev .nsftb{flex:1;min-width:0}',
+    '#cst-nsev .nsftl{margin:0 0 10px;font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.16em;',
+    'text-transform:uppercase;color:var(--nv)}',
+    '#cst-nsev .nsft h3{margin:0 0 10px;color:var(--nv);font:600 32px/1.12 "Cormorant Garamond",Georgia,serif}',
+    '#cst-nsev .nsftw{display:block;margin:0 0 14px;color:var(--ik);font:600 16px/1.5 Inter,system-ui,sans-serif}',
+    '#cst-nsev .nsft p{margin:0 0 10px;font-size:19px;line-height:1.5}',
+    '#cst-nsev a.nsftgo{display:inline-block;margin-top:8px;text-decoration:none;',
+    'font:600 16px Inter,system-ui,sans-serif;color:var(--nv)!important;',
+    'border:2px solid var(--nv);padding:12px 22px}',
+    '#cst-nsev .nsevmore{margin:18px 0 0;font:500 16px/1.5 Inter,system-ui,sans-serif;color:var(--mu)}',
     '#cst-nsev a.go{display:inline-block;text-decoration:none;',
     'font:600 15px Inter,system-ui,sans-serif;color:var(--gd)!important}',
     '@media (max-width:767px){',
@@ -57,6 +92,10 @@
     '#cst-nsev .nsev{flex-wrap:wrap;gap:16px}',
     '#cst-nsev .nsevt{flex:1 1 calc(100% - 118px)}',
     '#cst-nsev a.nsevgo{flex-basis:100%;text-align:center}',
+    '#cst-nsev .nsft{flex-direction:column;padding:20px;gap:18px}',
+    '#cst-nsev .nsft img{width:100%;max-width:260px}',
+    '#cst-nsev .nsft h3{font-size:27px}',
+    '#cst-nsev a.nsftgo{display:block;text-align:center}',
     '}'
   ].join('');
 
@@ -119,7 +158,8 @@
       return { p: p, starts: st.starts_at, tz: st.time_zone,
                kind: st.location_type, place: st.in_person_location };
     }).filter(function (e) {
-      return e.starts && new Date(e.starts).getTime() > now;
+      return e.starts && new Date(e.starts).getTime() > now &&
+             !(featureOn() && e.p.slug === FEATURE.slug);
     }).sort(function (a, b) {
       return new Date(a.starts) - new Date(b.starts);
     }).slice(0, MAX);
@@ -152,6 +192,21 @@
       .catch(function () { cached = ''; });
   }
 
+  function featureHTML() {
+    if (!featureOn()) return '';
+    var f = FEATURE;
+    return '<div class="nsft">' +
+        '<img src="' + esc(f.img) + '" alt="Justin Valenti holding one of his paintings">' +
+        '<div class="nsftb">' +
+          '<p class="nsftl">Featured gathering · In person</p>' +
+          '<h3>' + esc(f.title) + '</h3>' +
+          '<span class="nsftw">' + esc(f.when) + '<br>' + esc(f.where) + '</span>' +
+          f.lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') +
+          '<a class="nsftgo" href="' + esc(f.url) + '">Read more and sign up →</a>' +
+        '</div>' +
+      '</div>';
+  }
+
   function build(rows) {
     var sec = document.createElement('section');
     sec.id = 'cst-nsev';
@@ -160,7 +215,9 @@
       '<h2 class="sh">Gatherings <b>Coming Up</b></h2>' +
       '<p class="nsevi">These are the next North Star gatherings. ' +
       'Click Details to read about one and sign up.</p>' +
+      featureHTML() +
       rows +
+      (Date.now() < Date.parse(MORE_UNTIL) ? '<p class="nsevmore">' + esc(MORE) + '</p>' : '') +
       '<p class="nsevm"><a class="go" href="' + esc(CAL) +
         '">See all North Star gatherings →</a></p>';
     return sec;
@@ -177,10 +234,10 @@
     if (root.querySelector('#cst-nsev')) return;
 
     if (cached === null) { load(); return; }
-    if (!cached) return;
+    if (!cached && !featureOn()) return;
 
     css();
-    var anchor = root.querySelector('#cst-nsco');
+    var anchor = root.querySelector('#cst-nsevslot') || root.querySelector('#cst-nsco');
     if (anchor) root.insertBefore(build(cached), anchor);
     else root.appendChild(build(cached));
   }
