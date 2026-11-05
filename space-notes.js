@@ -31,7 +31,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.5.1';
+  var VERSION = '1.6.0';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
@@ -281,12 +281,78 @@
     });
   }
 
+  /* ------------------------------------------------------------- CROSS-LIST
+
+     1.6.0, Kate 5 Nov 2026: a North Star event shown at the top of the main
+     Gatherings page too, with the North Star star. Its own card above
+     Circle's list, never inside it. Disappears by itself when it ends. */
+
+  var CROSS = [{
+    on: '/c/events',
+    until: '2026-11-06T00:30:00Z',
+    title: 'The Art of Connection: An Evening with Artist Justin Valenti',
+    when: 'Thursday, November 5 · 6:00 to 7:30 p.m. ET',
+    where: 'Main Street, 50 Monroe Place, Rockville, Maryland',
+    text: 'An interview with Justin, Constellations’ 2026 resident artist, followed by audience questions, crafts, light refreshments and an art raffle.',
+    late: 'Want to join last-minute? Just email us at member@joinconstellations.com.',
+    mail: 'mailto:member@joinconstellations.com?subject=Joining%20The%20Art%20of%20Connection',
+    url: '/c/nsgatherings/north-star-art-advocacy-with-justin-valenti-in-person'
+  }];
+
+  var XCSS = [
+    '#cst-gx{--nv:#1A2238;--gd:#7D6220;--ik:#22231E;--ha:#E6E3DC;background:#fff;',
+    'border:2px solid var(--nv);padding:24px 28px;margin:0 0 20px;color:var(--ik);',
+    'font:18px/1.55 "EB Garamond",Georgia,serif}',
+    '#cst-gx .gx-ey{display:flex;align-items:center;gap:10px;margin:0 0 10px;',
+    'font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--nv)}',
+    '#cst-gx .gx-ey svg{width:16px;height:16px;flex:none;display:block}',
+    '#cst-gx h2{font:600 28px/1.15 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:0 0 8px}',
+    '#cst-gx .gx-w{display:block;font:600 15px/1.5 Inter,system-ui,sans-serif;margin:0 0 10px}',
+    '#cst-gx p{margin:0 0 10px;max-width:680px}',
+    '#cst-gx .gx-late{font-weight:600}',
+    '#cst-gx .gx-late a{color:var(--nv)!important;text-decoration:underline}',
+    '#cst-gx a.gx-go{display:inline-block;margin-top:4px;text-decoration:none;',
+    'font:600 15px Inter,system-ui,sans-serif;color:var(--nv)!important;border:1.5px solid var(--nv);padding:10px 18px}',
+    '@media (max-width:767px){#cst-gx{padding:20px}#cst-gx h2{font-size:24px}#cst-gx a.gx-go{display:block;text-align:center}}'
+  ].join('');
+
+  function cross() {
+    var c = null, now = Date.now();
+    CROSS.forEach(function (x) { if (x.on === path() && now < Date.parse(x.until)) c = x; });
+    var ex = document.getElementById('cst-gx');
+    if (!c) { if (ex) ex.remove(); return; }
+    if (ex) return;
+    var mount = document.querySelector('.react-page-space-show');
+    if (!mount || !mount.firstElementChild) return;
+    if (!document.getElementById('cst-gx-css')) {
+      var s = document.createElement('style');
+      s.id = 'cst-gx-css';
+      s.textContent = XCSS;
+      (document.head || document.documentElement).appendChild(s);
+    }
+    fonts();
+    var el = document.createElement('section');
+    el.id = 'cst-gx';
+    el.setAttribute('data-cst-gx', VERSION);
+    var late = esc(c.late).replace('member@joinconstellations.com',
+      '<a href="' + esc(c.mail) + '">member@joinconstellations.com</a>');
+    el.innerHTML =
+      '<p class="gx-ey">' + STAR + 'North Star gathering · In person</p>' +
+      '<h2>' + esc(c.title) + '</h2>' +
+      '<span class="gx-w">' + esc(c.when) + '<br>' + esc(c.where) + '</span>' +
+      '<p>' + esc(c.text) + '</p>' +
+      '<p class="gx-late">' + late + '</p>' +
+      '<a class="gx-go" href="' + esc(c.url) + '">See details →</a>';
+    mount.insertBefore(el, mount.firstElementChild);
+  }
+
   /* Circle is a single-page app: moving between spaces does not reload, so the
      note has to be removed on the way out as well as added on the way in. */
   function sync() {
     gate();
     gold();
     months();
+    try { cross(); } catch (e) {}
 
     var note = noteFor();
     var existing = document.getElementById('cst-space-note');
