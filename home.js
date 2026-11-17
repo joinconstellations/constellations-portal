@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.26.0';
+  var VERSION = '1.27.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -383,6 +383,16 @@
     '#cst-home .evmore{margin:14px 0 0;font:500 14px/1.5 Inter,system-ui,sans-serif;color:var(--mu)}',
     '#cst-home .nvr{padding-top:8px}',
     '#cst-home .refr{padding-top:8px}',
+    '#cst-home .spot{padding-top:8px}',
+    '#cst-home .spotbox{background:#F5EDE1;border-left:3px solid #7D6220;padding:26px 30px 24px}',
+    '#cst-home .spott{margin:0 0 6px;color:var(--nv);font:600 32px/1.12 "Cormorant Garamond",Georgia,serif}',
+    '#cst-home .spotw{margin:0 0 14px;color:var(--nv);font:600 15px/1.55 Inter,system-ui,sans-serif}',
+    '#cst-home .spotx{margin:0 0 10px;font-size:18px;line-height:1.55;max-width:680px}',
+    '#cst-home .spotn{margin:0 0 18px;font-size:18px;line-height:1.55;max-width:680px;font-weight:600}',
+    '#cst-home a.spotgo{display:inline-block;background:var(--nv);color:#fff;text-decoration:none;font:600 15px/1 Inter,system-ui,sans-serif;padding:13px 20px}',
+    '#cst-home a.spotgo:hover{background:#2E3A5C}',
+    '#cst-home .spote{margin:16px 0 0;font-size:16px;color:var(--mu)}',
+    '#cst-home .spote a{color:var(--nv)}',
     '#cst-home .refrbox{border:1px solid var(--sl);padding:22px 26px 24px}',
     '#cst-home .refrt{margin:0 0 10px;font-size:18px;line-height:1.55;max-width:680px}',
     '#cst-home .nvrbox{background:var(--s2);padding:26px 28px 28px}',
@@ -745,6 +755,41 @@
         '</div>' +
       '</section>' +
       referralHTML();
+  }
+
+  /* Featured gathering, shown under the welcome until it ends. Kate, 17 Nov 2026:
+     advertise the Nov 18 happy hour at True Food Kitchen Ballston. To feature a
+     different gathering, edit SPOT; it hides itself after `until`. */
+  var SPOT = {
+    until: '2026-11-19T00:30:00Z',
+    label: 'Featured gathering \u00b7 In person',
+    title: 'Singles Happy Hour',
+    when:  'Wednesday, November 18 \u00b7 6:00 to 7:30 p.m. ET',
+    where: 'True Food Kitchen, Arlington Ballston \u00b7 4238 Wilson Blvd, Suite 1110',
+    text:  'An easygoing evening for single members open to meeting someone or simply making new friends. Come for a drink or a mocktail and good conversation, for all of it or just part.',
+    note:  'Tickets are complimentary for members, but you must RSVP in the Portal so we know to expect you.',
+    url:   '/c/events/singles-happy-hour-in-person',
+    go:    'RSVP in the Portal',
+    extText: 'Bringing a friend who isn\u2019t a member? They can get a ticket on',
+    extLink: 'Eventbrite',
+    ext:   'https://www.eventbrite.com/e/neurodivergent-singles-happy-hour-tickets-2002463137148'
+  };
+
+  function spotHTML() {
+    var s = SPOT;
+    if (!s || Date.now() >= Date.parse(s.until)) return '';
+    return '' +
+      '<section class="spot">' +
+        '<div class="spotbox">' +
+          '<p class="ey">' + esc(s.label) + '</p>' +
+          '<p class="spott">' + esc(s.title) + '</p>' +
+          '<p class="spotw">' + esc(s.when) + '<br>' + esc(s.where) + '</p>' +
+          '<p class="spotx">' + esc(s.text) + '</p>' +
+          '<p class="spotn">' + esc(s.note) + '</p>' +
+          '<a class="spotgo" href="' + esc(s.url) + '">' + esc(s.go) + ' \u2192</a>' +
+          '<p class="spote">' + esc(s.extText) + ' <a href="' + esc(s.ext) + '" target="_blank" rel="noopener">' + esc(s.extLink) + '</a>.</p>' +
+        '</div>' +
+      '</section>';
   }
 
   /* Referral line, from month.json `referral`. Kate, 1 Nov 2026. */
@@ -1168,6 +1213,7 @@
        is a fixed div so the running order never depends on which request
        answers first. #cst-ar and #cst-re sit inside the theme box. */
     root.innerHTML = welcomeHTML() +
+                     spotHTML() +
                      '<div id="cst-ev"></div>' +
                      themeHTML() +
                      novaHTML() +
