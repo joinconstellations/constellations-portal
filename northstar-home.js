@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.9.0';
+  var VERSION = '2.9.1';
 
   var CFG = {
     path: '/c/northstar',
@@ -599,8 +599,8 @@
         s + ' h3{font:600 40px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:14px 0 18px}' +
         s + ' p,' + s + ' li{font-size:19px;line-height:1.6;color:var(--ik)}' +
         s + ' p{margin:0 0 12px}' +
-        s + ' ul{margin:0 0 16px;padding-left:24px}' +
-        s + ' li{margin:0 0 6px}' +
+        s + ' ul{margin:0 0 16px;padding-left:24px;list-style:disc outside}' +
+        s + ' li{margin:0 0 6px;display:list-item;list-style:disc outside}' +
         '@media (max-width:760px){' + s + ' .rc{flex-direction:column;gap:20px}' +
           s + ' figure{width:100%}' + s + ' h3{font-size:32px}}' +
       '</style>' +
