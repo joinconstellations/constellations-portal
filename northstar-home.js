@@ -11,7 +11,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '2.8.0';
+  var VERSION = '2.9.0';
 
   var CFG = {
     path: '/c/northstar',
@@ -578,6 +578,53 @@
   /* Welcome. The outlined blue box is the blue heading members are told to
      look for. The three onboarding steps lived here until 2.6.0; they are in
      the Start Here guide now, so members who are settled stop seeing them. */
+  /* Recap: The Art of Connection (Kate, 17 Nov 2026). North Star home only.
+     Hides itself after RECAP.until. Image is Justin's own art, hosted on Circle. */
+  var RECAP = {
+    until: '2026-12-01T05:00:00Z',
+    img: 'https://assets-v2.circle.so/c0bx96b7vjqn4cnh44za5it24wdo',
+    alt: 'Digital art by Justin Valenti: a smiling golden dog lying down, on a dark blue background.'
+  };
+
+  function recapHTML() {
+    if (Date.now() > Date.parse(RECAP.until)) return '';
+    var s = '#cst-nsrecap';
+    return '' +
+      '<style>' +
+        s + ' .rc{display:flex;gap:34px;align-items:flex-start}' +
+        s + ' figure{margin:0;flex:none;width:320px;max-width:100%}' +
+        s + ' img{display:block;width:100%;height:auto;border:2px solid var(--nv)}' +
+        s + ' figcaption{font-size:14px;color:var(--mu);margin-top:8px}' +
+        s + ' .ey{color:var(--nv)}' +
+        s + ' h3{font:600 40px/1.1 "Cormorant Garamond",Georgia,serif;color:var(--nv);margin:14px 0 18px}' +
+        s + ' p,' + s + ' li{font-size:19px;line-height:1.6;color:var(--ik)}' +
+        s + ' p{margin:0 0 12px}' +
+        s + ' ul{margin:0 0 16px;padding-left:24px}' +
+        s + ' li{margin:0 0 6px}' +
+        '@media (max-width:760px){' + s + ' .rc{flex-direction:column;gap:20px}' +
+          s + ' figure{width:100%}' + s + ' h3{font-size:32px}}' +
+      '</style>' +
+      '<section id="cst-nsrecap">' +
+        '<p class="ey">Thank you · The Art of Connection</p>' +
+        '<h3>Thank you, Justin</h3>' +
+        '<div class="rc">' +
+          '<figure><img src="' + esc(RECAP.img) + '" alt="' + esc(RECAP.alt) + '" loading="lazy">' +
+            '<figcaption>Art by Justin Valenti</figcaption></figure>' +
+          '<div>' +
+            '<p>On November 5, artist Justin Valenti talked with us about his art. We talked about:</p>' +
+            '<ul>' +
+              '<li>How art can help us heal</li>' +
+              '<li>How art can help us connect with people</li>' +
+              '<li>How art is part of Justin’s relationship with his girlfriend</li>' +
+              '<li>How colors can change how we feel</li>' +
+              '<li>Why advocacy is important</li>' +
+            '</ul>' +
+            '<p>After the talk, we colored pages made from Justin’s art.</p>' +
+          '</div>' +
+        '</div>' +
+      '</section>';
+  }
+
   function welcomeHTML() {
     var u = CFG.urls;
     return '' +
@@ -991,6 +1038,7 @@
     root.setAttribute('data-cst-nshome', VERSION);
     root.innerHTML = welcomeHTML() +
                      '<div id="cst-nsevslot"></div>' +
+                     recapHTML() +
                      '<div id="cst-nsq"></div>' +
                      themeHTML() +
                      novaHTML() +
