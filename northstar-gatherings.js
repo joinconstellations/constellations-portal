@@ -22,7 +22,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.3.0';
+  var VERSION = '1.3.1';
   var SPACE   = 2867669;            /* North Star Gatherings */
   var CAL     = '/c/nsgatherings';
   var HOME    = '/c/northstar';
@@ -37,7 +37,7 @@
     extText: 'Have a friend who is not a member? They can get a ticket on',
     extLink: 'Eventbrite',
     ext:   'https://www.eventbrite.com/e/neurodivergent-singles-happy-hour-tickets-2002463137148',
-    until: '2026-11-19T00:30:00Z',
+    until: '2026-11-17T00:00:00Z', /* off: Kate 17 Nov, the happy hour is not a North Star gathering */
     url:   '/c/nsgatherings/singles-happy-hour-in-person',
     img:   '',
     oldImg: 'https://assets-v2.circle.so/b34pt5n8jfviow5fbobsb3u83pmn',
