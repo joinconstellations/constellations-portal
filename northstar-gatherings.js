@@ -22,7 +22,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.2.0';
+  var VERSION = '1.3.0';
   var SPACE   = 2867669;            /* North Star Gatherings */
   var CAL     = '/c/nsgatherings';
   var HOME    = '/c/northstar';
@@ -31,19 +31,25 @@
   /* Featured gathering, shown above the list until it ends. Kate, 1 Nov 2026:
      really push Justin's evening on the North Star Home. */
   var FEATURE = {
-    slug:  'north-star-art-advocacy-with-justin-valenti-in-person',
-    until: '2026-11-06T00:30:00Z',
-    url:   '/c/nsgatherings/north-star-art-advocacy-with-justin-valenti-in-person',
-    img:   'https://assets-v2.circle.so/b34pt5n8jfviow5fbobsb3u83pmn',
-    title: 'The Art of Connection: An Evening with Artist Justin Valenti',
-    when:  'Thursday, November 5 · 6:00 to 7:30 p.m. ET',
-    where: 'Main Street, 50 Monroe Place, Rockville, Maryland',
+    slug:  'singles-happy-hour-in-person',
+    label: 'Featured gathering · In person',
+    go:    'RSVP in the Portal',
+    extText: 'Have a friend who is not a member? They can get a ticket on',
+    extLink: 'Eventbrite',
+    ext:   'https://www.eventbrite.com/e/neurodivergent-singles-happy-hour-tickets-2002463137148',
+    until: '2026-11-19T00:30:00Z',
+    url:   '/c/nsgatherings/singles-happy-hour-in-person',
+    img:   '',
+    oldImg: 'https://assets-v2.circle.so/b34pt5n8jfviow5fbobsb3u83pmn',
+    title: 'Singles Happy Hour',
+    when:  'Wednesday, November 18 · 6:00 to 7:30 p.m. ET',
+    where: 'True Food Kitchen, 4238 Wilson Blvd, Arlington, Virginia (Ballston)',
     /* Copied from the Eventbrite listing, Kate 1 Nov 2026. */
     lines: [
-      'Come create, connect and celebrate with us! The Art of Connection is a North Star evening with artist Justin Valenti, Constellations\u2019 2026 resident artist.',
-      'Kate will interview Justin about his story, his art, and creative expression, followed by audience questions.',
-      'Then, get creative with art supplies and crafts. Enjoy light refreshments, conversation, and time to meet new people or reconnect with friends. We\u2019ll end the evening with an art raffle.',
-      'Members attend for free. Sign up on the event page.'
+      'A relaxed happy hour for single members who want to meet someone or make new friends.',
+      'Come for a drink or a mocktail and easy conversation. Stay for all of it or just part.',
+      
+      'Tickets are free for members. You must RSVP in the Portal so we know you are coming.'
     ]
   };
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0Q12.82 10.01 20.49 3.51Q13.99 11.18 24 12Q13.99 12.82 20.49 20.49Q12.82 13.99 12 24Q11.18 13.99 3.51 20.49Q10.01 12.82 0 12Q10.01 11.18 3.51 3.51Q11.18 10.01 12 0Z"/></svg>';
@@ -78,6 +84,8 @@
     'padding:28px;margin:22px 0 30px;background:#fff}',
     '#cst-nsev .nsft img{width:190px;flex:none;aspect-ratio:3/4;object-fit:cover;border:1px solid var(--sl)}',
     '#cst-nsev .nsftb{flex:1;min-width:0}',
+    '#cst-nsev .nsft p.nsftx{margin:14px 0 0;font-size:16px;color:var(--mu)}',
+    '#cst-nsev .nsft p.nsftx a{color:var(--nv)}',
     '#cst-nsev .nsftl{display:flex;align-items:center;gap:10px}',
     '#cst-nsev .nsftstar{width:18px;height:18px;flex:none;color:var(--nv)}',
     '#cst-nsev .nsftstar svg{width:18px;height:18px;display:block}',
@@ -202,13 +210,14 @@
     if (!featureOn()) return '';
     var f = FEATURE;
     return '<div class="nsft">' +
-        '<img src="' + esc(f.img) + '" alt="Justin Valenti holding one of his paintings">' +
+        (f.img ? '<img src="' + esc(f.img) + '" alt="">' : '') +
         '<div class="nsftb">' +
-          '<p class="nsftl"><span class="nsftstar">' + STAR + '</span>North Star gathering · In person</p>' +
+          '<p class="nsftl"><span class="nsftstar">' + STAR + '</span>' + esc(f.label || 'North Star gathering · In person') + '</p>' +
           '<h3>' + esc(f.title) + '</h3>' +
           '<span class="nsftw">' + esc(f.when) + '<br>' + esc(f.where) + '</span>' +
           f.lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') +
-          '<a class="nsftgo" href="' + esc(f.url) + '">Read more and sign up →</a>' +
+          '<a class="nsftgo" href="' + esc(f.url) + '">' + esc(f.go || 'Read more and sign up') + ' →</a>' +
+          (f.ext ? '<p class="nsftx">' + esc(f.extText) + ' <a href="' + esc(f.ext) + '" target="_blank" rel="noopener">' + esc(f.extLink) + '</a>.</p>' : '') +
         '</div>' +
       '</div>';
   }
