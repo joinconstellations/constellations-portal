@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.28.0';
+  var VERSION = '1.28.1';
 
   var CFG = {
     path: '/c/welcome',
@@ -892,7 +892,14 @@
       var groups = [];
       evs.forEach(function (e) {
         var g = groups.filter(function (x) { return x.starts === e.starts; })[0];
-        if (g) g.items.push(e); else groups.push({ starts: e.starts, items: [e] });
+        /* A North Star copy of the same event is a duplicate, not a second group. */
+        if (!g) groups.push({ starts: e.starts, items: [e] });
+        else if (e.p._ns) return;
+        else if (g.items[0].p._ns) g.items = [e];
+        else g.items.push(e);
+      });
+      groups.forEach(function (g) {
+        g.items.sort(function (a, b) { return a.p.name < b.p.name ? -1 : 1; });
       });
       groups = groups.slice(0, 4);
 
