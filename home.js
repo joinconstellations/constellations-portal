@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.28.1';
+  var VERSION = '1.29.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -1258,8 +1258,7 @@
                      spotHTML() +
                      '<div id="cst-ev"></div>' +
                      themeHTML() +
-                     novaHTML() +
-                     shelfHTML() +
+                     /* novaHTML() and shelfHTML() taken off Home. Kate, 20 Nov 2026. */
                      supportHTML();
     host.parentElement.insertBefore(root, host);
     hideOld();
