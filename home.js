@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.27.0';
+  var VERSION = '1.28.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -878,21 +878,56 @@
         var pa = a.p.pinned_at ? 0 : 1, pb = b.p.pinned_at ? 0 : 1;
         if (pa !== pb) return pa - pb;
         return new Date(a.starts) - new Date(b.starts);
-      }).slice(0, 3);
+      }).filter(function (e) {
+        /* Harrington Matchmaking events shared on the calendar stay off Home,
+           to match the members' Coming Up post. Kate, 20 Nov 2026. */
+        return !/harrington matchmaking/i.test(e.p.host || '') &&
+          ['low-key-singles-night-in-west-hartford-connecticut'].indexOf(e.p.slug) < 0;
+      });
 
       if (!evs.length) return;
 
-      var rows = evs.map(function (e) {
+      /* Events that start at the same moment share one row (the men's and
+         women's discussions), each name linking to its own event. */
+      var groups = [];
+      evs.forEach(function (e) {
+        var g = groups.filter(function (x) { return x.starts === e.starts; })[0];
+        if (g) g.items.push(e); else groups.push({ starts: e.starts, items: [e] });
+      });
+      groups = groups.slice(0, 4);
+
+      /* In person: gold. Virtual: outlined. Kate, 20 Nov 2026. */
+      function stamp(inPerson) {
+        var base = 'display:inline-block;font:600 11px/1 Inter,system-ui,sans-serif;' +
+          'letter-spacing:.12em;text-transform:uppercase;border-radius:3px;' +
+          'vertical-align:1px;margin:0 8px 0 0;';
+        return inPerson
+          ? '<span style="' + base + 'background:#C9A961;color:#1A2238;padding:4px 8px 3px">In person</span>'
+          : '<span style="' + base + 'border:1px solid #7D6220;color:#7D6220;padding:3px 7px 2px">Virtual</span>';
+      }
+      function nameHTML(g) {
+        if (g.items.length < 2) return esc(g.items[0].p.name);
+        return g.items.map(function (x) {
+          return '<a href="' + esc(postUrl(x.p, 'events')) + '" style="color:inherit;' +
+            'text-decoration:underline;text-decoration-color:#C9A961;text-underline-offset:3px">' +
+            esc(x.p.name) + '</a>';
+        }).join('<br>');
+      }
+
+      var rows = groups.map(function (g) {
+        var e = g.items[0];
         var w = when(e.starts, e.tz);
         if (!w) return '';
-        var place = /person|in_person/i.test(e.kind || '')
-          ? (placeName(e.place) || 'In person') : 'Online';
+        var inPerson = /person/i.test(e.kind || '');
+        var place = inPerson ? (placeName(e.place) || '') : '';
         return '<div class="ev">' +
             '<div class="date"><span>' + esc(w.mon) + '</span><b>' + esc(w.day) + '</b></div>' +
-            '<div style="flex:1"><h3>' + (e.p._ns ? '<span style="display:inline-block;font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;background:#1A2238;color:#FAF7F1;padding:5px 8px;border-radius:2px;vertical-align:middle;margin:0 8px 3px 0">North Star</span>' : '') + esc(e.p.name) + '</h3>' +
-              '<span class="where">' + esc(w.wday) + ' · ' + esc(w.time) + ' · ' +
-              esc(place) + '</span></div>' +
-            '<a class="btn" href="' + esc(postUrl(e.p, 'events')) + '">Details</a>' +
+            '<div style="flex:1"><h3>' + (e.p._ns ? '<span style="display:inline-block;font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;background:#1A2238;color:#FAF7F1;padding:5px 8px;border-radius:2px;vertical-align:middle;margin:0 8px 3px 0">North Star</span>' : '') + nameHTML(g) + '</h3>' +
+              (g.items.length > 1 ? '<span class="where" style="display:block;margin:0 0 6px">Separate groups at the same time.</span>' : '') +
+              '<span class="where">' + stamp(inPerson) + esc(w.wday) + ' · ' + esc(w.time) +
+              (place ? ' · ' + esc(place) : '') + '</span></div>' +
+            (g.items.length > 1 ? '' :
+              '<a class="btn" href="' + esc(postUrl(e.p, 'events')) + '">Details</a>') +
           '</div>';
       }).join('');
 
