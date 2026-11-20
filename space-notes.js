@@ -31,7 +31,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.7.1';
+  var VERSION = '1.8.0';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
@@ -421,8 +421,28 @@
       st.id = 'cst-eb-css';
       st.textContent = '.cst-eb{margin:6px 0 0;max-width:60ch;font:400 17px/1.45 "EB Garamond",Georgia,serif;' +
         'color:#45463D;white-space:normal}' +
-        '@media (max-width:767px){.cst-eb{font-size:16px}}';
+        '#cst-eb-more{width:100%;max-width:48rem;margin:0 auto;padding:14px 18px;background:#FAF7F1;' +
+        'border-left:3px solid #C9A961;font:400 17px/1.5 "EB Garamond",Georgia,serif;color:#22231E}' +
+        '#cst-eb-more a{color:#1A2238;text-decoration:underline;text-decoration-color:#C9A961;' +
+        'text-underline-offset:3px;overflow-wrap:anywhere}' +
+        '@media (max-width:767px){.cst-eb{font-size:16px}#cst-eb-more{font-size:16px}}';
       (document.head || document.documentElement).appendChild(st);
+    }
+    /* Note pointing to the website Gatherings pages. Kate, 20 Nov 2026. */
+    if (!document.getElementById('cst-eb-more')) {
+      var btns = document.querySelectorAll('button');
+      for (var b = 0; b < btns.length; b++) {
+        if (!/^(Upcoming|Past)$/.test((btns[b].textContent || '').trim())) continue;
+        var bar = btns[b].closest('.max-w-3xl');
+        if (!bar || !bar.parentNode) break;
+        var more = document.createElement('p');
+        more.id = 'cst-eb-more';
+        more.innerHTML = 'More gatherings are posted on our websites. Check ' +
+          '<a href="https://www.joinconstellations.com/gatherings" target="_blank" rel="noopener">joinconstellations.com/gatherings</a>' +
+          ' and <a href="https://www.harringtonmatchmaking.com/gatherings" target="_blank" rel="noopener">harringtonmatchmaking.com/gatherings</a> too.';
+        bar.parentNode.insertBefore(more, bar);
+        break;
+      }
     }
     var links = document.querySelectorAll('[data-testid="event-main-content"] a[href*="/c/' + sp + '/"]');
     for (var i = 0; i < links.length; i++) {
