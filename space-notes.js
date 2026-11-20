@@ -31,7 +31,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.6.0';
+  var VERSION = '1.7.0';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
@@ -346,6 +346,101 @@
     mount.insertBefore(el, mount.firstElementChild);
   }
 
+  /* Short descriptions under each event on the Gatherings lists (/c/events
+     and /c/nsgatherings). Kate, 20 Nov 2026. Circle's event list shows only
+     the title, time and place. BLURBS holds a line per event, keyed by
+     space slug + event slug; North Star lines are shorter and more direct.
+     An event without a line falls back to the first sentence of its own
+     description when that sentence is short. */
+  var BLURBS = {
+    'events/low-key-singles-night-in-west-hartford-connecticut':
+      'A small, low-pressure evening in West Hartford, Connecticut, for singles in their 20s and 30s.',
+    'events/navigating-holiday-overwhelm':
+      'Tips from a Maryland therapist on family, crowds, sensory overwhelm and changes to your routine.',
+    'events/women-s-dating-friendship-discussion':
+      'A moderated conversation for women about dating and friendship, focused on what to try next.',
+    'events/men-s-dating-friendship-discussion':
+      'A moderated conversation for men about dating and friendship, focused on what to try next.',
+    'events/holiday-member-meetup-in-person':
+      'A holiday afternoon in Bethesda with other members and light refreshments.',
+    'events/new-year-kickoff-with-constellations':
+      'An afternoon get-together in D.C. to start the new year with other members.',
+    'nsgatherings/navigating-holiday-overwhelm':
+      'Tips for the holidays from a therapist, on Zoom.',
+    'nsgatherings/north-star-speed-connections-friends-dating':
+      'Meet other members on Zoom for new friends, dating or both.',
+    'nsgatherings/women-s-dating-friendship-discussion':
+      'A group talk on Zoom for women about dating and making friends.',
+    'nsgatherings/men-s-dating-friendship-discussion':
+      'A group talk on Zoom for men about dating and making friends.'
+  };
+  var BLURB_SPACES = { events: 2860065, nsgatherings: 2867669 };
+  var blurbCache = {};
+
+  function blurbSpace() {
+    var m = location.pathname.match(/^\/c\/(events|nsgatherings)\/?$/);
+    return m ? m[1] : null;
+  }
+
+  function firstSentence(html) {
+    var d = document.createElement('div');
+    d.innerHTML = html || '';
+    var p = d.querySelector('p');
+    var t = ((p || d).textContent || '').replace(/\s+/g, ' ').trim();
+    var m = t.match(/^.*?[.!?](\s|$)/);
+    t = (m ? m[0] : t).trim();
+    return t.length && t.length <= 150 ? t : '';
+  }
+
+  function loadBlurbs(sp) {
+    if (blurbCache[sp]) return;
+    blurbCache[sp] = { ready: false, map: {} };
+    fetch('/internal_api/spaces/' + BLURB_SPACES[sp] + '/posts?per_page=40&sort=latest',
+          { credentials: 'same-origin', headers: { accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        var rs = (j && (j.records || j)) || [];
+        rs.forEach(function (p) {
+          if (p && p.slug) blurbCache[sp].map[p.slug] = firstSentence(p.body_trix_content);
+        });
+        blurbCache[sp].ready = true;
+        ping();
+      })
+      .catch(function () { blurbCache[sp].ready = true; });
+  }
+
+  function blurbs() {
+    var sp = blurbSpace();
+    if (!sp) return;
+    if (!document.getElementById('cst-eb-css')) {
+      var st = document.createElement('style');
+      st.id = 'cst-eb-css';
+      st.textContent = '.cst-eb{margin:6px 0 0;max-width:60ch;font:400 17px/1.45 "EB Garamond",Georgia,serif;' +
+        'color:#45463D;white-space:normal}' +
+        '@media (max-width:767px){.cst-eb{font-size:16px}}';
+      (document.head || document.documentElement).appendChild(st);
+    }
+    var links = document.querySelectorAll('[data-testid="event-main-content"] a[href*="/c/' + sp + '/"]');
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      var col = a.querySelector('div.flex.flex-col.gap-2');
+      if (!col || col.querySelector('.cst-eb')) continue;
+      var slug = (a.getAttribute('href') || '').split('/c/' + sp + '/')[1] || '';
+      slug = slug.split(/[?#\/]/)[0];
+      var text = BLURBS[sp + '/' + slug];
+      if (!text) {
+        loadBlurbs(sp);
+        if (!blurbCache[sp].ready) continue;
+        text = blurbCache[sp].map[slug];
+      }
+      if (!text) continue;
+      var p = document.createElement('p');
+      p.className = 'cst-eb';
+      p.textContent = text;
+      col.appendChild(p);
+    }
+  }
+
   /* Circle is a single-page app: moving between spaces does not reload, so the
      note has to be removed on the way out as well as added on the way in. */
   function sync() {
@@ -353,6 +448,7 @@
     gold();
     months();
     try { cross(); } catch (e) {}
+    try { blurbs(); } catch (e) {}
 
     var note = noteFor();
     var existing = document.getElementById('cst-space-note');
