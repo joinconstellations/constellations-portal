@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.29.0';
+  var VERSION = '1.30.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -808,6 +808,29 @@
 
   /* Kate's Bookshelf: one quiet block near the end of Home, added 24 Sep 2026 at
      Kate's direction. Links to her Community post, which carries the affiliate note. */
+  /* November Snapshots: photos from recent gatherings, between the theme
+     box and We're Here For You. Kate, 20 Nov 2026. Images live on Circle's
+     CDN; swap or remove them by editing SNAPS. An empty list hides the section. */
+  var SNAPS = [
+    { src: 'https://assets-v2.circle.so/e7y23b4dtpl3j41f258py9cwuab2',
+      alt: 'Members smiling around a table of cookies and wraps at a recent happy hour' },
+    { src: 'https://assets-v2.circle.so/vt21rnj2e4odcnlm1rpdiql0ovqo',
+      alt: 'Members around a table at game night, with cards, Jenga and snacks' }
+  ];
+  function snapHTML() {
+    if (!SNAPS.length) return '';
+    return '<style>' +
+      '#cst-home .snapg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}' +
+      '#cst-home .snapg img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;' +
+        'border-radius:4px;background:#EFE9DD}' +
+      '@media (max-width:767px){#cst-home .snapg{grid-template-columns:1fr;gap:12px}}' +
+      '</style>' +
+      '<section class="snap"><h2 class="sh">November <b>Snapshots</b></h2>' +
+      '<div class="snapg">' + SNAPS.map(function (s) {
+        return '<img src="' + esc(s.src) + '" alt="' + esc(s.alt) + '" loading="lazy">';
+      }).join('') + '</div></section>';
+  }
+
   function shelfHTML() {
     return '' +
       '<section style="padding:8px 46px 40px">' +
@@ -1259,6 +1282,7 @@
                      '<div id="cst-ev"></div>' +
                      themeHTML() +
                      /* novaHTML() and shelfHTML() taken off Home. Kate, 20 Nov 2026. */
+                     snapHTML() +
                      supportHTML();
     host.parentElement.insertBefore(root, host);
     hideOld();
