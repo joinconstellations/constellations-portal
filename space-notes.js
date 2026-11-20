@@ -31,7 +31,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.7.0';
+  var VERSION = '1.7.1';
 
   var STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M12 1l2.2 6.3L20.5 5l-3.1 5.9 6.6 1.1-6.6 1.1 3.1 5.9-6.3-2.3' +
@@ -372,7 +372,11 @@
     'nsgatherings/women-s-dating-friendship-discussion':
       'A group talk on Zoom for women about dating and making friends.',
     'nsgatherings/men-s-dating-friendship-discussion':
-      'A group talk on Zoom for men about dating and making friends.'
+      'A group talk on Zoom for men about dating and making friends.',
+    'nsgatherings/north-star-holiday-member-meetup-in-person':
+      'A holiday party with other members in Bethesda.',
+    'nsgatherings/north-star-new-year-kickoff-with-constellations-in-person':
+      'An afternoon with other members in D.C. to start the new year.'
   };
   var BLURB_SPACES = { events: 2860065, nsgatherings: 2867669 };
   var blurbCache = {};
