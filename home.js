@@ -7,7 +7,7 @@
 
   /* ---------------------------------------------------------------- config */
 
-  var VERSION = '1.30.0';
+  var VERSION = '1.31.0';
 
   var CFG = {
     path: '/c/welcome',
@@ -477,7 +477,10 @@
     /* Circle's own feed sits below our build on Home and has no other rule
        hiding it. If home.js ever fails to load, nothing matches and the
        normal Circle page comes back. */
-    'body.view-space--2860046 #cst-home ~ *{display:none !important}',
+    'body.view-space--2860046 #cst-home ~ *:not(.max-w-2xl){display:none !important}',
+    /* 1.31.0 — Home posts (e.g. new member welcome) show below our build with their comment box; the composer stays hidden. */
+    'body.view-space--2860046 #cst-home ~ .max-w-2xl{margin-top:8px}',
+    'body.view-space--2860046 #cst-home ~ .max-w-2xl > .md\\:block{display:none !important}',
     /* The page is white throughout. Restore a ground here if that changes. */
     '#cst-home .sand{background:#fff}',
     /* this month */
